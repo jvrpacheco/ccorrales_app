@@ -1,20 +1,32 @@
 package com.corporacioncorrales.cotizacionesapp.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ClientsFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    @BindView(R.id.spinner)
+    Spinner spinner;
+    @BindView(R.id.recyclerViewClients)
+    RecyclerView recyclerViewClients;
+    @BindView(R.id.textView2)
+    TextView textView2;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -47,11 +59,18 @@ public class ClientsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_clients, container, false);
+        View view = inflater.inflate(R.layout.fragment_clients, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        StaggeredGridLayoutManager mStaggeredGridManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+        recyclerViewClients.setLayoutManager(mStaggeredGridManager);
+
+
     }
 }
