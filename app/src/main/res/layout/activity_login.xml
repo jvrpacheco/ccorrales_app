@@ -55,6 +55,7 @@
                         android:layout_height="70dp"
                         android:textColor="@color/blanco"
                         android:hint="Usuario"
+                        android:singleLine="true"
                         android:textColorHint="@color/blanco"
                         android:id="@+id/etLoginUser"/>
                 </LinearLayout>
@@ -72,6 +73,7 @@
                         android:textColor="@color/blanco"
                         android:textColorHint="@color/blanco"
                         android:inputType="textPassword"
+                        android:singleLine="true"
                         android:hint="Clave"
                         android:ems="10"
                         android:id="@+id/etLoginClave"/>

@@ -13,5 +13,13 @@ public class LoginRequest {
 
     private String CodUsu;
 
+    public String getCodUsu() {
+        return CodUsu;
+    }
+
+    public void setCodUsu(String codUsu) {
+        CodUsu = codUsu;
+    }
+
 
 }
