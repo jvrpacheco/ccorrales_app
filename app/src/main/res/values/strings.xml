@@ -18,4 +18,7 @@
     <string name="log_arrow_response">--------> RESPONSE</string>
     <string name="log_arrow_failure">--------> FAILURE</string>
 
+    <string name="drawer_layout_title">Corporación Corrales</string>
+    <string name="drawer_layout_subtitle">Cotizaciones App</string>
+
 </resources>

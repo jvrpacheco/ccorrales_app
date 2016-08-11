@@ -12,7 +12,7 @@ public class LoginResponse {
     @Expose
     private String CodUsu;
 
-    //--------------------------
+
 
     public String getCodUsu() {
         return CodUsu;

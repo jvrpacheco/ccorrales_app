@@ -20,13 +20,10 @@ import android.view.MenuItem;
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ClientsFragment;
 
-//import fragments.ClientsFragment;
-//import fragments.ProductsFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    //http://stackoverflow.com/questions/32944798/switch-between-fragments-with-onnavigationitemselected-in-new-navigation-drawer
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +130,7 @@ public class MainActivity extends AppCompatActivity
             default:
                 fragment = new ClientsFragment();
                 title  = "Clientes - Default";
+                break;
         }
 
         try {

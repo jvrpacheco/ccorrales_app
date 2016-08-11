@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                         Common.showToastMessage(getApplicationContext(), "Bienvenido " + user.trim() + "!");
                         enterToApp();
                     } else {
-                        Log.d(getString(R.string.log_arrow_response), response.body().getCodUsu());
+                        Log.d(getString(R.string.log_arrow_response), "response null");
                         Common.showToastMessage(getApplicationContext(), "Usuario incorrecto!");
                     }
                 }
