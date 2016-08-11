@@ -13,4 +13,9 @@
     <string name="category_clients">Clientes</string>
     <string name="category_products">Productos</string>
     <string name="category_cotizaciones">Cotizaciones</string>
+
+    <string name="log_arrow">--------> </string>
+    <string name="log_arrow_response">--------> RESPONSE</string>
+    <string name="log_arrow_failure">--------> FAILURE</string>
+
 </resources>
