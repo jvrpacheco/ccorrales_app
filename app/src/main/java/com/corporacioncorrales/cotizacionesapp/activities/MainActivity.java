@@ -1,34 +1,58 @@
 package com.corporacioncorrales.cotizacionesapp.activities;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ClientsFragment;
+import com.corporacioncorrales.cotizacionesapp.utils.Constants;
+import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private String TAG = getClass().getCanonicalName();
+
+    @BindView(R.id.progressBar) public ProgressBar mProgressBar;
+    //public Dialog mOverlayDialog;
+    //private String userFromLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
+
+        //mOverlayDialog = new Dialog(this, android.R.style.Theme_Holo_Dialog); //display an invisible overlay dialog to prevent user interaction and pressing back
+        /*mOverlayDialog.setCancelable(false);
+        mOverlayDialog.show();*/
+
+        //mProgressBar = (ProgressBar)findViewById(R.id.progressBar);
+        //mProgressBar.setVisibility(View.VISIBLE);
+        /*mProgressBar.setVisibility(View.GONE);*/
+        mProgressBar.setScaleY(.2f);
+        mProgressBar.setScaleX(.2f);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -65,10 +89,21 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            Singleton.getInstance().setUser(Constants.Empty);
         }
+        Log.d(getString(R.string.log_arrow) + TAG + " User", Singleton.getInstance().getUser());
     }
 
     private void selectItemFromMenu(NavigationView nv, int itemId) {
+        /*Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if(extras.getString("userFromLogin") != null) {
+                Bundle bundle=new Bundle();
+                bundle.putString("userFromLogin", extras.getString("userFromLogin"));
+                fragment.setArguments(bundle);
+            }
+        }*/
+
         //Seleccionar por defecto el item indicado del menu
         nv.getMenu().getItem(itemId).setChecked(true);
         //Mostrar la vista del primer item seleccionado del menu
@@ -106,10 +141,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         String title = getString(R.string.app_name);
 
-        switch(id) {
+        switch (id) {
             case R.id.nav_clients:
                 fragment = new ClientsFragment();
-                title  = getString(R.string.category_clients);
+                title = getString(R.string.category_clients);
                 break;
             /*case R.id.nav_products:
                 fragment = new ProductsFragment();
@@ -129,7 +164,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             default:
                 fragment = new ClientsFragment();
-                title  = "Clientes - Default";
+                title = "Clientes - Default";
                 break;
         }
 
@@ -140,6 +175,14 @@ public class MainActivity extends AppCompatActivity
                 ft.replace(R.id.content_frame, fragment);
                 ft.commit();
             }
+            /*
+            * if (fragment != null) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.setAuserFromLogin
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+            }
+            * */
         } catch (Exception e) {
             e.printStackTrace();
         }
