@@ -10,15 +10,45 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:background="@color/celeste_barra_inferior"
             android:orientation="horizontal">
-            <Spinner
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:id="@+id/spinner" />
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="0dp"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Rubro:"
+                    android:id="@+id/textView1" />
+                <Spinner
+                    android:layout_width="130dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/spinnerRubro"/>
+                <Button
+                    android:id="@+id/btnLoginIngresar"
+                    android:background="@color/verde"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/blanco"
+                    android:textSize="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="REFRESCAR"/>
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,7 +65,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:background="@color/celeste_barra_inferior"
             android:orientation="horizontal">
             <TextView

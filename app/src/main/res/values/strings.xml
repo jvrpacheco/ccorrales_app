@@ -24,4 +24,9 @@
     //Messages
     <string name="msg_enter_user">Por favor ingrese el usuario!</string>
 
+    <string-array name="array_rubros">
+        <item>Vidrio</item>
+        <item>Aluminio</item>
+    </string-array>
+
 </resources>

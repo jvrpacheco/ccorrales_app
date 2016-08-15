@@ -72,8 +72,6 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick(R.id.btnLoginIngresar)
     public void onClick() {
 
-
-
         user = etLoginUser.getText().toString().trim();
         String password = etLoginClave.getText().toString();
 
@@ -94,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (response != null) {
                         Log.d(getString(R.string.log_arrow_response), response.body().getCodUsu());
 
-                        if(response.body().getCodUsu().equals(Constants.allowToEnterToApp)) {
+                        if(response.body().getCodUsu().equals(Constants.allowEnterToApp)) {
 
                             Singleton.getInstance().setUser(user);
                             Log.d(getString(R.string.log_arrow) + TAG + " User admitido", Singleton.getInstance().getUser());

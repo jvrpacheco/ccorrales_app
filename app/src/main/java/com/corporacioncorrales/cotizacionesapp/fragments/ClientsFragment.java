@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +41,7 @@ public class ClientsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private String TAG = getClass().getCanonicalName();
     private List<ClientsResponse> clientsList;
     private ArrayList<ClientsResponse> clientsArrayList;
     private ClientsAdapter clientsAdapter;
@@ -47,14 +50,14 @@ public class ClientsFragment extends Fragment {
 
     @BindView(R.id.tvTotalClientes)
     TextView tvTotalClientes;
-    @BindView(R.id.spinner)
-    Spinner spinner;
+    @BindView(R.id.spinnerRubro)
+    Spinner spRubro;
     @BindView(R.id.recyclerViewClients)
     RecyclerView recyclerViewClients;
 
     private Dialog mainActivityDialog;
     private ProgressBar mainProgressBar;
-
+    private String rubroSelected;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -82,6 +85,8 @@ public class ClientsFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }*/
 
+        rubroSelected = Constants.rubro_vidrio;
+
         /*Dialog mOverlayDialog = new Dialog(getActivity(), android.R.style.Theme_Holo); //display an invisible overlay dialog to prevent user interaction and pressing back
         mOverlayDialog.setCancelable(false);
         mOverlayDialog.show();*/
@@ -102,14 +107,43 @@ public class ClientsFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         //user = getArguments().getString("userFromLogin");
-
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initSpinnerRubro();
         initViews();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(getActivity().getString(R.string.log_arrow) + TAG, "onResume");
+    }
+
+    private void initSpinnerRubro() {
+        ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_rubros, android.R.layout.simple_list_item_1);
+        spRubro.setAdapter(adapterRubroType);
+
+        spRubro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = parent.getItemAtPosition(position).toString();
+                if(item.equals(Constants.rubro_vidrio_label)) {
+                    rubroSelected = Constants.rubro_vidrio;
+                } else if(item.equals(Constants.rubro_aluminio_label)) {
+                    rubroSelected = Constants.rubro_aluminio;
+                }
+                Common.showToastMessage(getActivity(), rubroSelected + "!");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void initViews() {
@@ -124,19 +158,45 @@ public class ClientsFragment extends Fragment {
         StaggeredGridLayoutManager mStaggeredGridManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
         recyclerViewClients.setLayoutManager(mStaggeredGridManager);
 
-        //getData("jsalazar", "00");
         if(!Singleton.getInstance().getUser().isEmpty())
-            getData(Singleton.getInstance().getUser(), "00");
+            getData(Singleton.getInstance().getUser(), rubroSelected);   //getData("jsalazar", "00");   rubroSelected
+    }
+
+    private void initSpinnerRubro_() {
+
+        String businessType[] = { "Vidrio", "Aluminio" };
+
+        //ArrayAdapter adapterRubroType = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, businessType);
+        //ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_rubros, R.layout.custom_spinner_item);
+        //spRubro.setAdapter(adapterRubroType);
+
+        ArrayAdapter<String> adapterRubroType = new ArrayAdapter<String>(getActivity(), R.layout.custom_spinner_item, businessType);
+        adapterRubroType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spRubro.setAdapter(adapterRubroType);
+
+        spRubro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                rubroSelected = parent.getItemAtPosition(position).toString();
+                Common.showToastMessage(getActivity(), rubroSelected + "!");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void getData(String user, String rubro) {
         mainProgressBar.setVisibility(View.VISIBLE);
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.url_server)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        ClientsApi request = retrofit.create(ClientsApi.class);
 
+        ClientsApi request = retrofit.create(ClientsApi.class);
         Call<ArrayList<ClientsResponse>> call = request.getClientsPerUser(user, rubro); //("jsalazar", "00");
 
         call.enqueue(new Callback<ArrayList<ClientsResponse>>() {
@@ -144,7 +204,6 @@ public class ClientsFragment extends Fragment {
             public void onResponse(Call<ArrayList<ClientsResponse>> call, Response<ArrayList<ClientsResponse>> response) {
 
                 if (response != null) {
-                    //Log.d(getString(R.string.log_arrow_response), response.toString());
                     clientsArrayList = response.body();
 
                     if(clientsArrayList.size()>0) {
@@ -175,18 +234,6 @@ public class ClientsFragment extends Fragment {
         });
 
     }
-
-    /*private void showProgressLoading(Boolean show, ProgressBar mProgressBar, Dialog mOverlayDialog) {
-        mOverlayDialog.setCancelable(!show);
-
-        if(show) {
-            mOverlayDialog.show();
-            mProgressBar.setVisibility(View.VISIBLE);
-        } else {
-            mOverlayDialog.dismiss();
-            mProgressBar.setVisibility(View.GONE);
-        }
-    }*/
 
     private void showProgressLoading(Boolean show, ProgressBar mProgressBar) {
         if(show) {
