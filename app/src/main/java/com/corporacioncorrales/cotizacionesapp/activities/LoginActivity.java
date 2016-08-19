@@ -2,6 +2,7 @@ package com.corporacioncorrales.cotizacionesapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -60,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 
         etLoginUser.setText("jsalazar");
         etLoginClave.setText("123");
+
     }
 
     @Override
@@ -67,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
         Singleton.getInstance().setUser(Constants.Empty);
         Log.d(getString(R.string.log_arrow) + TAG, "\"" + Singleton.getInstance().getUser() + "\"");
+        enableLoginControls(true);
     }
 
     @OnClick(R.id.btnLoginIngresar)
@@ -84,6 +87,8 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!user.isEmpty()) {
             progressBarLogin.setVisibility(View.VISIBLE);
+            enableLoginControls(false);
+
             Call<LoginResponse> call = request.getUserAccess(user);
             call.enqueue(new Callback<LoginResponse>() {
                 @Override
@@ -103,11 +108,13 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             Log.d(getString(R.string.log_arrow) + TAG + " User no admitido", Singleton.getInstance().getUser());
                             Common.showToastMessage(getApplicationContext(), user + " no admitido!");
+                            enableLoginControls(true);
                             progressBarLogin.setVisibility(View.GONE);
                         }
 
                     } else {
                         Log.d(getString(R.string.log_arrow_response), "response null");
+                        enableLoginControls(true);
                         progressBarLogin.setVisibility(View.GONE);
                     }
                 }
@@ -115,6 +122,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<LoginResponse> call, Throwable t) {
                     Log.d(getString(R.string.log_arrow_failure), t.toString());
+                    enableLoginControls(true);
                     progressBarLogin.setVisibility(View.GONE);
                 }
             });
@@ -129,6 +137,20 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("userFromLogin",user);
         startActivity(intent);
+    }
+
+    private void enableLoginControls(Boolean enable) {
+        if(enable) {
+            etLoginUser.setEnabled(true);
+            etLoginClave.setEnabled(true);
+            btnLoginIngresar.setBackgroundColor(ContextCompat.getColor(this, R.color.verde));
+            btnLoginIngresar.setEnabled(true);
+        } else {
+            etLoginUser.setEnabled(false);
+            etLoginClave.setEnabled(false);
+            btnLoginIngresar.setBackgroundColor(ContextCompat.getColor(this, R.color.gris_fondo));
+            btnLoginIngresar.setEnabled(false);
+        }
     }
 
 }

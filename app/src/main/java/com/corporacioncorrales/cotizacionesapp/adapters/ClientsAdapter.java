@@ -2,6 +2,7 @@ package com.corporacioncorrales.cotizacionesapp.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,11 @@ import android.widget.TextView;
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.model.Client;
 import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
+import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,6 +26,7 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
 
     private Context mContext;
     private ArrayList<ClientsResponse> clientsList;
+    //ArrayList<ClientsResponse> clientsList = null;
 
 
     public class ClientsViewHolder extends RecyclerView.ViewHolder{
@@ -52,7 +56,7 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
 
     @Override
     public void onBindViewHolder(ClientsViewHolder holder, int position) {
-        ClientsResponse client = clientsList.get(position);
+        final ClientsResponse client = clientsList.get(position);
 
         holder.tvRazonSocial.setText(client.getRazon_Social());
         holder.tvRUC.setText("RUC " + client.getRuc());
@@ -76,12 +80,17 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
                     .into(holder.ivClient);
         }
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Common.showToastMessage(mContext, "Ir a articulos disponibles para " + client.getRazon_Social());
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return clientsList.size();
     }
-
 
 }

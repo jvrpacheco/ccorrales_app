@@ -8,5 +8,8 @@
     <color name="negro">#000</color>
     <color name="verde">#2ed600</color>
     <color name="celeste_barra_inferior">#9FA8DA</color>
-    <color name="fondo">#E0E0E0</color>#
+    <color name="gris_fondo">#c2c2c2</color>
+    <color name="naranja">#ff8f0f</color>
+    <color name="gris_disable">#d4cfc9</color>
+    <color name="turquesa">#22a3b9</color>
 </resources>

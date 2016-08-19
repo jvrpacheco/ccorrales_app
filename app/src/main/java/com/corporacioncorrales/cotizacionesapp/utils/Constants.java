@@ -8,9 +8,9 @@ public class Constants {
     public static final String allowEnterToApp = "True";
     public static final String denyEnterToApp = "False";
 
-    public static final String url_server = "http://190.81.34.42:8080";
-    public static final String url_user_login = "/api/usuario/{user}";
-    public static final String url_clients_per_user = "/api/clientes";
+    public static final String url_server = "http://190.81.34.42:8080/";
+    public static final String url_user_login = "api/usuario/{user}";
+    public static final String url_clients_per_user = "api/clientes";
 
     public static final String rubro_vidrio_label = "Vidrio";
     public static final String rubro_vidrio = "00";

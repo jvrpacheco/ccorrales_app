@@ -8,11 +8,11 @@
     <android.support.v7.widget.CardView
         android:background="@color/celeste_barra_inferior"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="150dp"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        card_view:cardCornerRadius="5dp">
+        android:layout_marginRight="0dp"
+        card_view:cardCornerRadius="6dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                     android:id="@+id/tv_razon_social"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="2dp"
-                    android:textSize="18sp"
+                    android:textSize="11sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
@@ -48,7 +48,9 @@
                     android:id="@+id/tv_RUC"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/turquesa"
+                    android:textStyle="bold"
+                    android:textSize="10sp"
                     android:text="RUC"/>
 
             </LinearLayout>
