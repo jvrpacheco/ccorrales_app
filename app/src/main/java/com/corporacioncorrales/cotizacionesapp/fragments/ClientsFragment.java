@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -52,7 +51,7 @@ public class ClientsFragment extends Fragment {
     private ClientsAdapter clientsAdapter;
     private Dialog mOverlayDialog;
     private String user;
-    private Boolean rubroOnCreate;
+    private Boolean fromOnCreate;
 
     @BindView(R.id.tvTotalClientes)
     TextView tvTotalClientes;
@@ -94,7 +93,7 @@ public class ClientsFragment extends Fragment {
         //recyclerViewClients = (RecyclerView)getActivity().findViewById(R.id.recyclerViewClients);
 
         rubroSelected = Constants.rubro_vidrio; // valor por defecto del rubro en la primera carga de la vista
-        rubroOnCreate = true;
+        fromOnCreate = true;
 
 
         /*Dialog mOverlayDialog = new Dialog(getActivity(), android.R.style.Theme_Holo); //display an invisible overlay dialog to prevent user interaction and pressing back
@@ -115,28 +114,51 @@ public class ClientsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_clients, container, false);
         ButterKnife.bind(this, view);
-
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initSpinnerRubro();
-        enableRefreshButton(false);
-        initViews3();
-    }
 
-    @OnClick(R.id.btnRefreshClients)
-    public void onClick() {
-        Log.d(getActivity().getString(R.string.log_arrow) + TAG, "btnRefreshClients, rubroSelected: " + rubroSelected);
-        initViews3();
+        /*if(fromOnCreate) {
+            initSpinnerRubro();
+            enableRefreshButton(false);
+            initViews3();
+            fromOnCreate = false;
+        } else {
+
+        }*/
+
+        /*initSpinnerRubro();
+        enableRefreshButton(false);
+        initViews3();*/
+
+
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.d(getActivity().getString(R.string.log_arrow) + TAG, "onResume, rubroSelected: " + rubroSelected);
+
+        if(fromOnCreate) {
+            initSpinnerRubro();
+            enableRefreshButton(false);
+            initViews3();
+        } else {
+            initSpinnerRubro();
+            //enableRefreshButton(false);
+            // Rebuild recyclerViewClients from first data downloaded from server in onCreate
+            if(clientsAdapter!=null && clientsArrayList!=null && clientsArrayList.size()>0) {
+                tvTotalClientes.setText(Integer.toString(clientsArrayList.size()));
+                recyclerViewClients.setAdapter(clientsAdapter);
+                // Grid
+                StaggeredGridLayoutManager mStaggeredGridManager3 = new StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL);
+                recyclerViewClients.setLayoutManager(mStaggeredGridManager3);
+            }
+        }
     }
 
     private void initSpinnerRubro() {
@@ -147,17 +169,20 @@ public class ClientsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if(rubroOnCreate) {
+                if(fromOnCreate) {
                     enableRefreshButton(false);
-                    rubroOnCreate = false;
+                    fromOnCreate = false;
                 } else {
                     String item = parent.getItemAtPosition(position).toString();
                     if (item.equals(Constants.rubro_vidrio_label)) {
                         rubroSelected = Constants.rubro_vidrio;
+                        //onResume permite actualizar para verificar si hay nuevos datos de acuerdo al rubro
+                        enableRefreshButton(true);
                     } else if (item.equals(Constants.rubro_aluminio_label)) {
                         rubroSelected = Constants.rubro_aluminio;
+                        enableRefreshButton(true);
                     }
-                    enableRefreshButton(true);
+
                 }
                 //Common.showToastMessage(getActivity(), rubroSelected + "!");
                 Log.d(getActivity().getString(R.string.log_arrow) + TAG, "onCreate, rubroSelected: " + rubroSelected);
@@ -200,12 +225,11 @@ public class ClientsFragment extends Fragment {
                     clientsArrayList = response.body();
 
                     if (clientsArrayList.size() > 0) {
+
                         tvTotalClientes.setText(Integer.toString(clientsArrayList.size()));
+
                         clientsAdapter = new ClientsAdapter(getActivity(), clientsArrayList);
                         clientsAdapter.notifyDataSetChanged();
-
-                        //clientsAdapter.set
-
                         recyclerViewClients.setAdapter(clientsAdapter);
 
                         /*LinearLayoutManager – Displays items in a vertical or horizontal scrolling list.
@@ -265,6 +289,12 @@ public class ClientsFragment extends Fragment {
             }
         });
 
+    }
+
+    @OnClick(R.id.btnRefreshClients)
+    public void onClick() {
+        Log.d(getActivity().getString(R.string.log_arrow) + TAG, "btnRefreshClients, rubroSelected: " + rubroSelected);
+        initViews3();
     }
 
     private void enableRefreshButton(Boolean enable) {

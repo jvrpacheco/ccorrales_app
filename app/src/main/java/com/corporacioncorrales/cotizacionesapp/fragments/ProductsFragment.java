@@ -44,6 +44,7 @@ public class ProductsFragment extends Fragment {
     RecyclerView recyclerViewProductos;
 
     private ProgressBar mainProgressBar;
+    private Boolean fromOnCreate;
     private String client_id;
     private String client_razonSocial;
     private ArrayList<ProductsResponse> productsArrayList = new ArrayList<ProductsResponse>();
@@ -57,32 +58,35 @@ public class ProductsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        fromOnCreate = true;
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
 
         //solo cambiara el valor cuando viene de clientes
         Bundle args = getArguments();
         if (args != null && args.containsKey("cliente_id") && args.containsKey("cliente_razonSocial")) {
-
             //tvCliente.setText(args.getString("cliente_razonSocial")); //butterKnife load in onCreateView
             client_id = args.getString("cliente_id");
             client_razonSocial = args.getString("cliente_razonSocial");
-
-            //loadProductsPerClient(client_id);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_products, container, false);
         ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         tvCliente.setText(client_razonSocial);
-        //VALIDAR PARA QUE SOLO CARGUE EN ONCREATE Y CUANDO EL CLIENTID EXISTA
-        loadProductsPerClient(client_id);
-
-        return view;
+        if(fromOnCreate) {
+            loadProductsPerClient(client_id);
+            fromOnCreate = false;
+        }
     }
 
     private void loadProductsPerClient(String idClient) {

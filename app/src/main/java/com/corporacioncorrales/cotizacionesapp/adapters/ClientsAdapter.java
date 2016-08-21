@@ -35,6 +35,7 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
     private Context mContext;
     private ArrayList<ClientsResponse> clientsList;
     private AdapterView.OnItemClickListener listener;
+    private FragmentActivity myContext;
 
     public class ClientsViewHolder extends RecyclerView.ViewHolder{
         private TextView tvRazonSocial, tvRUC;
@@ -79,23 +80,17 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         holder.tvRazonSocial.setText(client.getRazon_Social());
         holder.tvRUC.setText("RUC " + client.getRuc());
 
+        //https://futurestud.io/blog/picasso-image-resizing-scaling-and-fit
         if(!client.getFoto().isEmpty()) {
             Picasso.with(mContext)
                     .load(client.getFoto())
                     .placeholder(R.drawable.client2)
                     .error(R.drawable.client2)
-                    //.resize(120, 60)
                     .centerInside()
-                    //.centerCrop()
                     .fit()
                     .into(holder.ivClient);
         } else {
-            //holder.ivClient.setImageResource(R.drawable.client_100x100);
-            Picasso.with(mContext)
-                    .load(R.drawable.client2)
-                    .centerInside()
-                    .fit()
-                    .into(holder.ivClient);
+            holder.ivClient.setImageResource(R.drawable.client2);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -112,17 +107,12 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         return clientsList.size();
     }
 
-    private FragmentActivity myContext;
-
     private void goToFragment(FragmentActivity mContext, ClientsResponse client) {
-
         ProductsFragment pf = new ProductsFragment();
-
         Bundle bundle = new Bundle();
         bundle.putString("cliente_id", client.getId());
         bundle.putString("cliente_razonSocial", client.getRazon_Social());
         pf.setArguments(bundle);
-
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);
         ft.addToBackStack("asds");
