@@ -1,15 +1,23 @@
 package com.corporacioncorrales.cotizacionesapp.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
+import com.corporacioncorrales.cotizacionesapp.activities.MainActivity;
+import com.corporacioncorrales.cotizacionesapp.fragments.ClientsFragment;
+import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.Client;
 import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
@@ -26,8 +34,7 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
 
     private Context mContext;
     private ArrayList<ClientsResponse> clientsList;
-    //ArrayList<ClientsResponse> clientsList = null;
-
+    private AdapterView.OnItemClickListener listener;
 
     public class ClientsViewHolder extends RecyclerView.ViewHolder{
         private TextView tvRazonSocial, tvRUC;
@@ -44,12 +51,23 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
     public ClientsAdapter(Context mContext, ArrayList<ClientsResponse> clientsList) {
         this.mContext = mContext;
         this.clientsList = clientsList;
+
+        myContext=(FragmentActivity) mContext;
     }
 
     @Override
-    public ClientsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ClientsViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.client_card_row_item, parent, false);
+
+        /*itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Triggers click upwards to the adapter on click
+                if (listener != null)
+                    listener.onItemClick(v, getItemId(parent.getId()));
+            }
+        });*/
 
         return new ClientsViewHolder(itemView);
     }
@@ -84,6 +102,7 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
             @Override
             public void onClick(View v) {
                 Common.showToastMessage(mContext, "Ir a articulos disponibles para " + client.getRazon_Social());
+                goToFragment(myContext, client);
             }
         });
     }
@@ -91,6 +110,23 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
     @Override
     public int getItemCount() {
         return clientsList.size();
+    }
+
+    private FragmentActivity myContext;
+
+    private void goToFragment(FragmentActivity mContext, ClientsResponse client) {
+
+        ProductsFragment pf = new ProductsFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("cliente_id", client.getId());
+        bundle.putString("cliente_razonSocial", client.getRazon_Social());
+        pf.setArguments(bundle);
+
+        FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content_frame, pf);
+        ft.addToBackStack("asds");
+        ft.commit();
     }
 
 }

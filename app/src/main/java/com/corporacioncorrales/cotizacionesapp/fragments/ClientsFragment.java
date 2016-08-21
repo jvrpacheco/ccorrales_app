@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -89,10 +90,6 @@ public class ClientsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }*/
 
         //recyclerViewClients = (RecyclerView)getActivity().findViewById(R.id.recyclerViewClients);
 
@@ -119,10 +116,6 @@ public class ClientsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_clients, container, false);
         ButterKnife.bind(this, view);
 
-        //btnRefreshClients.setEnabled(false);
-        //initSpinnerRubro();
-
-        //user = getArguments().getString("userFromLogin");
         return view;
     }
 
@@ -166,7 +159,6 @@ public class ClientsFragment extends Fragment {
                     }
                     enableRefreshButton(true);
                 }
-
                 //Common.showToastMessage(getActivity(), rubroSelected + "!");
                 Log.d(getActivity().getString(R.string.log_arrow) + TAG, "onCreate, rubroSelected: " + rubroSelected);
             }
@@ -202,45 +194,65 @@ public class ClientsFragment extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<ClientsResponse>> call, Response<ArrayList<ClientsResponse>> response) {
 
-                    if (response != null) {
+                if (response != null) {
 
-                        clientsArrayList.clear();
-                        clientsArrayList = response.body();
+                    clientsArrayList.clear();
+                    clientsArrayList = response.body();
 
-                        if (clientsArrayList.size() > 0) {
-                            tvTotalClientes.setText(Integer.toString(clientsArrayList.size()));
-                            clientsAdapter = new ClientsAdapter(getActivity(), clientsArrayList);
-                            clientsAdapter.notifyDataSetChanged();
-                            recyclerViewClients.setAdapter(clientsAdapter);
+                    if (clientsArrayList.size() > 0) {
+                        tvTotalClientes.setText(Integer.toString(clientsArrayList.size()));
+                        clientsAdapter = new ClientsAdapter(getActivity(), clientsArrayList);
+                        clientsAdapter.notifyDataSetChanged();
 
-                            /*LinearLayoutManager – Displays items in a vertical or horizontal scrolling list.
-                            GridLayoutManager – Displays items in a grid.
-                            StaggeredGridLayoutManager – Displays items in a staggered grid.*/
+                        //clientsAdapter.set
 
-                            // ListView
-                            //layoutManager2 = new LinearLayoutManager(getActivity());
-                            //recyclerViewClients.setLayoutManager(layoutManager2);
+                        recyclerViewClients.setAdapter(clientsAdapter);
 
-                            // Grid
-                            StaggeredGridLayoutManager mStaggeredGridManager3 = new StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL);
-                            recyclerViewClients.setLayoutManager(mStaggeredGridManager3);
+                        /*LinearLayoutManager – Displays items in a vertical or horizontal scrolling list.
+                        GridLayoutManager – Displays items in a grid.
+                        StaggeredGridLayoutManager – Displays items in a staggered grid.*/
 
-                        } else {
-                            Log.d(getString(R.string.log_arrow_response), "No se encontraron clientes para este usuario");
-                            Common.showToastMessage(getActivity(), "No se encontraron clientes para este usuario");
-                            tvTotalClientes.setText("0");
-                        }
-                        //showProgressLoading(false, mainProgressBar);
-                        enableRefreshButton(false);
-                        mainProgressBar.setVisibility(View.GONE);
+                        // ListView
+                        //layoutManager2 = new LinearLayoutManager(getActivity());
+                        //recyclerViewClients.setLayoutManager(layoutManager2);
+
+                        // Grid
+                        StaggeredGridLayoutManager mStaggeredGridManager3 = new StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL);
+                        recyclerViewClients.setLayoutManager(mStaggeredGridManager3);
+
+                        recyclerViewClients.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+                            @Override
+                            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                                return false;
+                            }
+
+                            @Override
+                            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+                            }
+
+                            @Override
+                            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+                            }
+                        });
 
                     } else {
-                        Log.d(getString(R.string.log_arrow_response), "response null");
-                        //showProgressLoading(false, mainProgressBar);
-                        //btnRefreshClients.setText(getActivity().getString(R.string.refrescar));
-                        enableRefreshButton(true);
-                        mainProgressBar.setVisibility(View.GONE);
+                        Log.d(getString(R.string.log_arrow_response), "No se encontraron clientes para este usuario");
+                        Common.showToastMessage(getActivity(), "No se encontraron clientes para este usuario");
+                        tvTotalClientes.setText("0");
                     }
+                    //showProgressLoading(false, mainProgressBar);
+                    enableRefreshButton(false);
+                    mainProgressBar.setVisibility(View.GONE);
+
+                } else {
+                    Log.d(getString(R.string.log_arrow_response), "response null");
+                    //showProgressLoading(false, mainProgressBar);
+                    //btnRefreshClients.setText(getActivity().getString(R.string.refrescar));
+                    enableRefreshButton(true);
+                    mainProgressBar.setVisibility(View.GONE);
+                }
 
             }
 
@@ -252,8 +264,6 @@ public class ClientsFragment extends Fragment {
                 mainProgressBar.setVisibility(View.GONE);
             }
         });
-
-
 
     }
 

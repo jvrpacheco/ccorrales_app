@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-            Singleton.getInstance().setUser(Constants.Empty);
+            //Singleton.getInstance().setUser(Constants.Empty);
         }
         Log.d(getString(R.string.log_arrow) + TAG + " User", Singleton.getInstance().getUser());
     }
@@ -171,18 +171,15 @@ public class MainActivity extends AppCompatActivity
         try {
             // Insert the fragment by replacing any existing fragment
             if (fragment != null) {
+                /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.add(R.id.content_frame, fragment);
+                ft.commit();*/
+
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, fragment);
+                ft.addToBackStack("asd");
                 ft.commit();
             }
-            /*
-            * if (fragment != null) {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.setAuserFromLogin
-                ft.replace(R.id.content_frame, fragment);
-                ft.commit();
-            }
-            * */
         } catch (Exception e) {
             e.printStackTrace();
         }
