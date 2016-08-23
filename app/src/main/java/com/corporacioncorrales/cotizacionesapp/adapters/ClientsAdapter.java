@@ -64,9 +64,7 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         /*itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Triggers click upwards to the adapter on click
-                if (listener != null)
-                    listener.onItemClick(v, getItemId(parent.getId()));
+
             }
         });*/
 

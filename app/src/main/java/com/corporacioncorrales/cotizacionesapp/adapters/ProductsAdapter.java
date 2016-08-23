@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,37 +26,28 @@ import java.util.List;
  */
 public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ProductsViewHolder> {
 
-    private final Context mContext;
-    private final ArrayList<ProductsResponse> productsList;
-    private ArrayList<Integer> addedList;
+    ArrayList<ProductsResponse> productsList;
+    Context mContext;
 
     public ProductsAdapter(Context mContext, ArrayList<ProductsResponse> productsList) {
         this.mContext = mContext;
         this.productsList = productsList;
-
-        addedList = new ArrayList<Integer>();
     }
 
     @Override
     public ProductsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_card_row_item, parent, false);
-        return new ProductsViewHolder(itemView);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_card_row_item, parent, false);
+        ProductsViewHolder productsViewHolder = new ProductsViewHolder(view);
+        return productsViewHolder;
     }
 
-    /*
-    * http://stackoverflow.com/questions/34570041/recyclerview-change-item-layout-on-click
-    * I recommend you to store the expanded state of item not in ViewHolder but in Adapter. Like making a map or arrayList
-    * (referencing your model Comanda or position, respectively), because viewHolder would be reused when you scroll
-    * recyclerview and so the item would be expanded not only the one you clicked on, but also the one that was reused :) – aelimill Jan 2 at 21:04
-    * */
     @Override
-    public void onBindViewHolder(final ProductsViewHolder holder, final int position) {
+    public void onBindViewHolder(final ProductsViewHolder holder, int position) {
         final ProductsResponse product = productsList.get(position);
-
         holder.tvId.setText("Id: " + product.getId());
-        holder.tvPrecio.setText("Precio: " + product.getPrecio());
         holder.tvNombre.setText(product.getNombre());
         holder.tvPrecio.setText("Precio: " + product.getPrecio());
+        holder.tvCantidad.setText("Cantidad: " + product.getCantidad());
 
         if(!product.getFoto().isEmpty()) {
             Picasso.with(mContext)
@@ -68,26 +61,14 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             holder.ivProduct.setImageResource(R.drawable.package_96_gray);
         }
 
-        //CADA VEZ QUE SE HACE SCROLL ENTRA A onBindViewHolder, VERIFICAMOS SI YA FUE ANADIDO ANTERIORMENTE
-        if(addedList.contains(position)) {
-            //Si ya fue anadido
-            holder.btnAddProduct.setText("AGREGADO");
-            holder.btnAddProduct.setBackgroundColor(ContextCompat.getColor(mContext, R.color.naranja));
-        } else {
-            holder.btnAddProduct.setText("AGREGAR");
-            holder.btnAddProduct.setBackgroundColor(ContextCompat.getColor(mContext, R.color.gris_disable));
-        }
-
-        holder.btnAddProduct.setOnClickListener(new View.OnClickListener() {
+        // Enviar a la lista de productos anadidos a la Cotizacion
+        holder.chbAddProduct.setOnCheckedChangeListener(null);
+        holder.chbAddProduct.setChecked(product.getSelected());
+        holder.chbAddProduct.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-
-
-
-                Common.showToastMessage(mContext, "anadir producto a Cotizacion!, anadidos hasta el momento: " + (addedList.size()+1));
-                holder.btnAddProduct.setText("AGREGADO");
-                holder.btnAddProduct.setBackgroundColor(ContextCompat.getColor(mContext, R.color.naranja));
-                addedList.add(position);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                product.setSelected(isChecked);
+                holder.chbAddProduct.setChecked(isChecked);
             }
         });
     }
@@ -97,16 +78,11 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         return productsList.size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        //return super.getItemViewType(position);
-        return position;
-    }
-
-    public class ProductsViewHolder extends RecyclerView.ViewHolder{
-        private TextView tvId, tvNombre, tvPrecio, tvCantidad;
-        private ImageView ivProduct;
-        private Button btnAddProduct;
+    public static class ProductsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        TextView tvId, tvNombre, tvPrecio, tvCantidad;
+        ImageView ivProduct;
+        CheckBox chbAddProduct;
+        Context ctx;
 
         public ProductsViewHolder(View view) {
             super(view);
@@ -115,7 +91,15 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             tvNombre = (TextView)view.findViewById(R.id.tv_nombre);
             tvPrecio = (TextView)view.findViewById(R.id.tv_precio);
             tvCantidad = (TextView)view.findViewById(R.id.tv_cantidad);
-            btnAddProduct = (Button)view.findViewById(R.id.btnAddProduct);
+
+            chbAddProduct = (CheckBox) view.findViewById(R.id.checkBox);
+            chbAddProduct.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
+
 }

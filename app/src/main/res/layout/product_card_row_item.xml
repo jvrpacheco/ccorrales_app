@@ -78,17 +78,13 @@
                 android:layout_height="wrap_content"
                 android:paddingRight="10dp"
                 android:paddingBottom="10dp">
-                <Button
+                <CheckBox
                     android:layout_alignParentRight="true"
-                    android:id="@+id/btnAddProduct"
-                    android:background="@color/celeste"
                     android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:textColor="@color/blanco"
-                    android:textSize="15dp"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="0dp"
-                    android:text="@string/agregar"/>
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:id="@+id/checkBox"
+                    android:layout_alignParentTop="true"/>
             </RelativeLayout>
 
 

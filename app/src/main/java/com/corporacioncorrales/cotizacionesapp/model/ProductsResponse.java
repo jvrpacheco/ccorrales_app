@@ -22,10 +22,34 @@ public class ProductsResponse {
     @Expose
     private String Precio;
 
+    @SerializedName("Pre_inferior")
+    @Expose
+    private String Pre_inferior;
+
     @SerializedName("Foto")
     @Expose
     private String Foto;
 
+    @SerializedName("Cantidad")
+    @Expose
+    private String Cantidad;
+
+    //********************************************
+    private Boolean isSelected;
+
+    public Boolean getSelected() {
+        Boolean flag;
+        if(isSelected == null) {
+            flag = false;
+        } else {
+            flag = isSelected;
+        }
+        return  flag;
+    }
+    public void setSelected(Boolean selected) {
+        isSelected = selected;
+    }
+    //********************************************
 
 
     public String getId() {
@@ -40,14 +64,23 @@ public class ProductsResponse {
         return Precio;
     }
 
+    public String getPre_inferior() {
+        return Pre_inferior;
+    }
+
     public String getFoto() {
         return Foto;
     }
 
+    public String getCantidad() {
+        return Cantidad;
+    }
+
+
     @Override
     public String toString()
     {
-        return "ClassPojo [Nombre = "+Nombre+", Id = "+Id+", Foto = "+Foto+", Precio = "+Precio+"]";
+        return "ClassPojo [Nombre = "+Nombre+", Id = "+Id+", Foto = "+Foto+" , Cantidad = "+Cantidad+" , Pre_inferior = "+Pre_inferior + ", Precio = "+Precio+"]";
     }
 
 }
