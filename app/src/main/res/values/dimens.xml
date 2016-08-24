@@ -7,4 +7,6 @@
     <dimen name="nav_header_height">180dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="paddingTop_fragment_to_actionbar">62dp</dimen>
+
+    <dimen name="textSize_header_products">12sp</dimen>
 </resources>
