@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,12 +33,15 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
     ArrayList<ProductsResponse> productsList;
     ArrayList<ProductsResponse> productsSelectedList;
+    RecyclerView rvQuotation;
+    QuotationAdapter quotationAdapter;
     Context mContext;
 
-    public ProductsAdapter(Context mContext, ArrayList<ProductsResponse> productsList) {
+    public ProductsAdapter(Context mContext, ArrayList<ProductsResponse> productsList, QuotationAdapter quotationAdapter) {
         this.mContext = mContext;
         this.productsList = productsList;
-        //productsSelectedList = new ArrayList<>();
+        this.quotationAdapter = quotationAdapter;
+        productsSelectedList = new ArrayList<>();
     }
 
     @Override
@@ -70,16 +75,21 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.showToastMessage(mContext, "Articulo > " + product.getNombre());
+                //Common.showToastMessage(mContext, "Articulo > " + product.getNombre());
 
                 if(product.getSelected()) {
                     product.setSelected(false);
                     holder.chbAddProduct.setChecked(false);
+                    productsSelectedList.remove(product);
                 } else {
                     product.setSelected(true);
                     holder.chbAddProduct.setChecked(true);
+                    productsSelectedList.add(product);
                 }
 
+                quotationAdapter.refreshQuotation(productsSelectedList);
+
+                Log.d(mContext.getResources().getString(R.string.log_arrow), String.valueOf(productsSelectedList.size()));
             }
         });
 

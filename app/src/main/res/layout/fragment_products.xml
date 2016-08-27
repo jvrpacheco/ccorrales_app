@@ -44,13 +44,13 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:background="@color/celeste_barra_inferior"
+            android:background="@color/negro"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvCliente"
                 android:textColor="@color/blanco"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -58,18 +58,23 @@
                 android:text="Products_fragment" />
 
             <LinearLayout
-                android:id="@+id/ll_header"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/gris_fondo"
                 android:layout_margin="10dp"
                 android:orientation="vertical">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@android:color/holo_orange_dark"/>
+
                 <LinearLayout
+                    android:id="@+id/ll_header"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:orientation="horizontal"
-                    android:background="@color/colorAccent">
+                    android:background="@color/azulCorrales">
                     <RelativeLayout
                         android:layout_width="40dp"
                         android:layout_height="match_parent">
@@ -79,7 +84,7 @@
                         android:layout_height="match_parent"
                         android:background="@android:color/holo_orange_dark"/>
                     <RelativeLayout
-                        android:layout_width="70dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent">
                         <TextView
                             android:id="@+id/tv2"
@@ -88,6 +93,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Codigo"
+                            android:textStyle="bold"
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
                     <View
@@ -105,6 +111,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Descripcion"
+                            android:textStyle="bold"
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
                     <View
@@ -112,7 +119,7 @@
                         android:layout_height="match_parent"
                         android:background="@android:color/holo_orange_dark"/>
                     <RelativeLayout
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent">
                         <TextView
                             android:id="@+id/tv5"
@@ -121,6 +128,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Precio"
+                            android:textStyle="bold"
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
                     <View
@@ -128,7 +136,7 @@
                         android:layout_height="match_parent"
                         android:background="@android:color/holo_orange_dark"/>
                     <RelativeLayout
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent">
                         <TextView
                             android:id="@+id/tv3"
@@ -137,6 +145,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Cantidad"
+                            android:textStyle="bold"
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
                     <View
@@ -153,6 +162,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Total"
+                            android:textStyle="bold"
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
                     <View
@@ -174,7 +184,23 @@
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@android:color/holo_orange_dark"/>
+
+                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvQuotation"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/gris_fondo">
+
+                </android.support.v7.widget.RecyclerView>
+
             </LinearLayout>
+
+
 
         </LinearLayout>
 

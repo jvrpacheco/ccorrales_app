@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.activities.MainActivity;
 import com.corporacioncorrales.cotizacionesapp.adapters.ProductsAdapter;
-import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
+import com.corporacioncorrales.cotizacionesapp.adapters.QuotationAdapter;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.networking.ProductsApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
@@ -43,6 +43,8 @@ public class ProductsFragment extends Fragment {
     TextView tvCliente;
     @BindView(R.id.recyclerViewProductos)
     RecyclerView recyclerViewProductos;
+    @BindView(R.id.rvQuotation)
+    RecyclerView rvQuotation;
 
     private ProgressBar mainProgressBar;
     private Boolean fromOnCreate;
@@ -50,6 +52,7 @@ public class ProductsFragment extends Fragment {
     private String client_razonSocial;
     private ArrayList<ProductsResponse> productsArrayList;
     private ProductsAdapter productsAdapter;
+    private QuotationAdapter quotationAdapter;
 
     public static ArrayList<ProductsResponse> productsSelectedList;
 
@@ -88,12 +91,20 @@ public class ProductsFragment extends Fragment {
         super.onResume();
 
         tvCliente.setText(client_razonSocial);
-        if(fromOnCreate) {
+        if (fromOnCreate) {
+            createQuotation();
             loadProductsPerClient(client_id);
             fromOnCreate = false;
         }
     }
 
+    private void createQuotation() {
+        rvQuotation.setHasFixedSize(true);
+        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>());
+        rvQuotation.setAdapter(quotationAdapter);
+        LinearLayoutManager sgm = new LinearLayoutManager(getActivity());
+        rvQuotation.setLayoutManager(sgm);
+    }
 
     private void loadProductsPerClient(String idClient) {
 
