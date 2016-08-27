@@ -86,46 +86,51 @@ public class LoginActivity extends AppCompatActivity {
         LoginApi request = retrofit.create(LoginApi.class);
 
         if (!user.isEmpty()) {
-            progressBarLogin.setVisibility(View.VISIBLE);
-            enableLoginControls(false);
 
-            Call<LoginResponse> call = request.getUserAccess(user);
-            call.enqueue(new Callback<LoginResponse>() {
-                @Override
-                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+            if(Common.isOnline(this)) {
+                progressBarLogin.setVisibility(View.VISIBLE);
+                enableLoginControls(false);
 
-                    if (response != null) {
-                        Log.d(getString(R.string.log_arrow_response), response.body().getCodUsu());
+                Call<LoginResponse> call = request.getUserAccess(user);
+                call.enqueue(new Callback<LoginResponse>() {
+                    @Override
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 
-                        if(response.body().getCodUsu().equals(Constants.allowEnterToApp)) {
+                        if (response != null) {
+                            Log.d(getString(R.string.log_arrow_response), response.body().getCodUsu());
 
-                            Singleton.getInstance().setUser(user);
-                            Log.d(getString(R.string.log_arrow) + TAG + " User admitido", Singleton.getInstance().getUser());
-                            Common.showToastMessage(getApplicationContext(), "Bienvenido " + user + "!");
-                            enterToApp(user);
-                            progressBarLogin.setVisibility(View.GONE);
+                            if(response.body().getCodUsu().equals(Constants.allowEnterToApp)) {
+
+                                Singleton.getInstance().setUser(user);
+                                Log.d(getString(R.string.log_arrow) + TAG + " User admitido", Singleton.getInstance().getUser());
+                                Common.showToastMessage(getApplicationContext(), "Bienvenido " + user + "!");
+                                enterToApp(user);
+                                progressBarLogin.setVisibility(View.GONE);
+
+                            } else {
+                                Log.d(getString(R.string.log_arrow) + TAG + " User no admitido", Singleton.getInstance().getUser());
+                                Common.showToastMessage(getApplicationContext(), user + " no admitido!");
+                                enableLoginControls(true);
+                                progressBarLogin.setVisibility(View.GONE);
+                            }
 
                         } else {
-                            Log.d(getString(R.string.log_arrow) + TAG + " User no admitido", Singleton.getInstance().getUser());
-                            Common.showToastMessage(getApplicationContext(), user + " no admitido!");
+                            Log.d(getString(R.string.log_arrow_response), "response null");
                             enableLoginControls(true);
                             progressBarLogin.setVisibility(View.GONE);
                         }
+                    }
 
-                    } else {
-                        Log.d(getString(R.string.log_arrow_response), "response null");
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        Log.d(getString(R.string.log_arrow_failure), t.toString());
                         enableLoginControls(true);
                         progressBarLogin.setVisibility(View.GONE);
                     }
-                }
-
-                @Override
-                public void onFailure(Call<LoginResponse> call, Throwable t) {
-                    Log.d(getString(R.string.log_arrow_failure), t.toString());
-                    enableLoginControls(true);
-                    progressBarLogin.setVisibility(View.GONE);
-                }
-            });
+                });
+            } else {
+                Common.showToastMessage(getApplicationContext(), "Por favor verifique su conexion a internet.");
+            }
 
         } else {
             Common.showToastMessage(getApplicationContext(), getString(R.string.msg_enter_user));

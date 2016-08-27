@@ -8,11 +8,8 @@
     <string name="action_settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="category_clients">Clientes</string>
-    <string name="category_products">Productos</string>
-    <string name="category_cotizaciones">Cotizaciones</string>
 
     <string name="log_arrow">--------> </string>
     <string name="log_arrow_response">--------> RESPONSE</string>
@@ -22,7 +19,6 @@
     <string name="drawer_layout_subtitle">Cotizaciones App</string>
 
     <string name="refrescar">REFRESCAR</string>
-    <string name="agregar">AGREGAR</string>
 
     //Messages
     <string name="msg_enter_user">Por favor ingrese el usuario!</string>

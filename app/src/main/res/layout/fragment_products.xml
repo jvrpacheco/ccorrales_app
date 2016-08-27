@@ -13,8 +13,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="300dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -42,7 +41,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="750dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:background="@color/celeste_barra_inferior"
             android:orientation="vertical">
@@ -58,6 +58,7 @@
                 android:text="Products_fragment" />
 
             <LinearLayout
+                android:id="@+id/ll_header"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/gris_fondo"
@@ -86,7 +87,7 @@
                             android:textSize="@dimen/textSize_header_products"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ID"
+                            android:text="Codigo"
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
                     <View
@@ -98,7 +99,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent">
                         <TextView
-                            android:id="@+id/tv4"
+                            android:id="@+id/tv8"
                             android:textColor="@color/blanco"
                             android:textSize="@dimen/textSize_header_products"
                             android:layout_width="wrap_content"

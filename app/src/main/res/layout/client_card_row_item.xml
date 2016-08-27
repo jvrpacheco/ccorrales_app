@@ -12,7 +12,8 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="0dp"
-        card_view:cardCornerRadius="6dp">
+        card_view:cardCornerRadius="6dp"
+        android:elevation="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="@color/azulCorrales"
+                    android:textColor="@color/turquesa"
                     android:singleLine="true"
                     android:text="RazonSocial"/>
 

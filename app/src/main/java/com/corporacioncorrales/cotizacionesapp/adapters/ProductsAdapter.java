@@ -1,12 +1,15 @@
 package com.corporacioncorrales.cotizacionesapp.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
-import android.content.res.Resources;
-import android.support.v4.content.ContextCompat;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -14,12 +17,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
+import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by victor on 8/20/16.
@@ -27,11 +30,13 @@ import java.util.List;
 public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ProductsViewHolder> {
 
     ArrayList<ProductsResponse> productsList;
+    ArrayList<ProductsResponse> productsSelectedList;
     Context mContext;
 
     public ProductsAdapter(Context mContext, ArrayList<ProductsResponse> productsList) {
         this.mContext = mContext;
         this.productsList = productsList;
+        //productsSelectedList = new ArrayList<>();
     }
 
     @Override
@@ -44,10 +49,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     @Override
     public void onBindViewHolder(final ProductsViewHolder holder, int position) {
         final ProductsResponse product = productsList.get(position);
-        holder.tvId.setText("Id: " + product.getId());
-        holder.tvNombre.setText(product.getNombre());
-        holder.tvPrecio.setText("Precio: " + product.getPrecio());
-        holder.tvCantidad.setText("Cantidad: " + product.getCantidad());
+        holder.tvId.setText(product.getId());
+        holder.tvCantidad.setText("Stock: " + product.getCantidad());
 
         if(!product.getFoto().isEmpty()) {
             Picasso.with(mContext)
@@ -61,16 +64,25 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             holder.ivProduct.setImageResource(R.drawable.package_96_gray);
         }
 
-        // Enviar a la lista de productos anadidos a la Cotizacion
-        holder.chbAddProduct.setOnCheckedChangeListener(null);
+        holder.chbAddProduct.setEnabled(false);
         holder.chbAddProduct.setChecked(product.getSelected());
-        holder.chbAddProduct.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                product.setSelected(isChecked);
-                holder.chbAddProduct.setChecked(isChecked);
+            public void onClick(View v) {
+                Common.showToastMessage(mContext, "Articulo > " + product.getNombre());
+
+                if(product.getSelected()) {
+                    product.setSelected(false);
+                    holder.chbAddProduct.setChecked(false);
+                } else {
+                    product.setSelected(true);
+                    holder.chbAddProduct.setChecked(true);
+                }
+
             }
         });
+
     }
 
     @Override
@@ -88,18 +100,70 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             super(view);
             ivProduct = (ImageView)view.findViewById(R.id.iv_Product);
             tvId = (TextView)view.findViewById(R.id.tv_id);
-            tvNombre = (TextView)view.findViewById(R.id.tv_nombre);
-            tvPrecio = (TextView)view.findViewById(R.id.tv_precio);
             tvCantidad = (TextView)view.findViewById(R.id.tv_cantidad);
-
             chbAddProduct = (CheckBox) view.findViewById(R.id.checkBox);
-            chbAddProduct.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
 
         }
+    }
+
+    private void showCustomizeDialog(final Context context, final ProductsResponse productSelected, final CheckBox checkBox) {
+        final Dialog dialog = new Dialog(context);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_add_product_to_quotation);
+
+        Button btnAccept1 = (Button)dialog.findViewById(R.id.btnAccept);
+        btnAccept1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                productSelected.setSelected(true);
+                checkBox.setChecked(true);
+
+                //checkBox.setChecked(productSelected.getSelected());
+
+                productsSelectedList.add(productSelected);
+                ProductsFragment.productsSelectedList.add(productSelected);
+                Log.v(mContext.getString(R.string.log_arrow) + "CHECKED", productsSelectedList.toString());
+                Common.showToastMessage(context, "Productos en Cotizacion: " + productsSelectedList.toString());
+                dialog.dismiss();
+            }
+        });
+        Button btnCloseTinDIalog = (Button)dialog.findViewById(R.id.btnCloseTinDIalog);
+        btnCloseTinDIalog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                productSelected.setSelected(false);
+                checkBox.setChecked(false);
+
+                if(productsSelectedList.contains(productSelected)) {
+                    productsSelectedList.remove(productSelected);
+                    ProductsFragment.productsSelectedList.remove(productSelected);
+                }
+
+                dialog.dismiss();
+            }
+        });
+        Button btnCancel1 = (Button)dialog.findViewById(R.id.btnClose);
+        btnCancel1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                productSelected.setSelected(false);
+                checkBox.setChecked(false);
+
+                if(productsSelectedList.contains(productSelected)) {
+                    productsSelectedList.remove(productSelected);
+                    ProductsFragment.productsSelectedList.remove(productSelected);
+                }
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
 }

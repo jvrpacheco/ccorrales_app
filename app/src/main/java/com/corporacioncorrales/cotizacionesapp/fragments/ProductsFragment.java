@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,8 +48,10 @@ public class ProductsFragment extends Fragment {
     private Boolean fromOnCreate;
     private String client_id;
     private String client_razonSocial;
-    private ArrayList<ProductsResponse> productsArrayList = new ArrayList<ProductsResponse>();
+    private ArrayList<ProductsResponse> productsArrayList;
     private ProductsAdapter productsAdapter;
+
+    public static ArrayList<ProductsResponse> productsSelectedList;
 
     public ProductsFragment() {
         // Required empty public constructor
@@ -60,6 +63,8 @@ public class ProductsFragment extends Fragment {
 
         fromOnCreate = true;
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
+        productsArrayList = new ArrayList<>();
+        productsSelectedList = new ArrayList<>();
 
         //solo cambiara el valor cuando viene de clientes
         Bundle args = getArguments();
@@ -89,6 +94,7 @@ public class ProductsFragment extends Fragment {
         }
     }
 
+
     private void loadProductsPerClient(String idClient) {
 
         recyclerViewProductos.setHasFixedSize(true);
@@ -113,11 +119,10 @@ public class ProductsFragment extends Fragment {
                     if(productsArrayList.size()>0) {
 
                         productsAdapter = new ProductsAdapter(getActivity(), productsArrayList);
-                        //productsAdapter.notifyDataSetChanged();
                         recyclerViewProductos.setAdapter(productsAdapter);
 
-                        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-                        recyclerViewProductos.setLayoutManager(llm);
+                        StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                        recyclerViewProductos.setLayoutManager(sgm);
 
                     } else {
                         Log.d(getString(R.string.log_arrow_response), "No se encontraron productos para este cliente");
@@ -139,5 +144,6 @@ public class ProductsFragment extends Fragment {
         });
 
     }
+
 
 }
