@@ -1,19 +1,16 @@
 package com.corporacioncorrales.cotizacionesapp.adapters;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
+import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -24,14 +21,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     Context mContext;
     ArrayList<ProductsResponse> productsList;
-    ArrayList<ProductsResponse> newProductsList;
-    //ProductsAdapter productsAdapter;
 
-
-    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList/*, ProductsAdapter productsAdapter*/) {
+    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList) {
         this.mContext = mContext;
         this.productsList = productsList;
-        //this.productsAdapter = productsAdapter;
     }
 
     @Override
@@ -49,20 +42,13 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.tvPrice.setText(product.getPrecio());
         holder.tvQuantity.setText(product.getCantidad());
 
-        //newProductsList = productsList;
-
         holder.ivRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*newProductsList = productsList;
-                newProductsList.remove(product);
-                refreshQuotation(newProductsList);*/
+
                 product.setSelected(false);
                 removeItem(product);
-                //product.setSelected(false);
-
-                //productsAdapter.refreshItem(product, false);
-                //ProductsAdapter
+                ProductsFragment.productsAdapter.refreshItem(product, false);  // update the left list!
             }
         });
 
@@ -97,13 +83,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         public void onClick(View v) {
 
         }
-    }
-
-    //
-    public void refreshQuotation(ArrayList<ProductsResponse> list) {
-        this.productsList.clear();
-        this.productsList.addAll(list);
-        notifyDataSetChanged();
     }
 
     public void removeItem(ProductsResponse product) {

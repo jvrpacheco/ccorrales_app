@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +24,6 @@ import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by victor on 8/20/16.
@@ -34,10 +32,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
     ArrayList<ProductsResponse> productsList;
     ArrayList<ProductsResponse> productsSelectedList;
-    RecyclerView rvQuotation;
     QuotationAdapter quotationAdapter;
     Context mContext;
-    CheckBox chb;
 
     public ProductsAdapter(Context mContext, ArrayList<ProductsResponse> productsList, QuotationAdapter quotationAdapter) {
         this.mContext = mContext;
@@ -54,7 +50,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     }
 
     @Override
-    public void onBindViewHolder(final ProductsViewHolder holder, int position) {
+    public void onBindViewHolder(final ProductsViewHolder holder, final int position) {
         final ProductsResponse product = productsList.get(position);
         holder.tvId.setText(product.getId());
         holder.tvCantidad.setText("Stock: " + product.getCantidad());
@@ -71,7 +67,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             holder.ivProduct.setImageResource(R.drawable.package_96_gray);
         }
 
-        //chb = holder.chbAddProduct;
         holder.chbAddProduct.setEnabled(false);
         holder.chbAddProduct.setChecked(product.getSelected());
 
@@ -86,7 +81,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                     productsSelectedList.remove(product);
 
                     quotationAdapter.removeItem(product);
-
                 } else {
                     product.setSelected(true);
                     holder.chbAddProduct.setChecked(true);
@@ -94,9 +88,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
                     quotationAdapter.addItem(0, product);
                 }
-
-                //quotationAdapter.refreshQuotation(productsSelectedList);
-                //quotationAdapter.addItem(productsSelectedList.size()-1, product);
 
                 Log.d(mContext.getResources().getString(R.string.log_arrow), String.valueOf(productsSelectedList.size()));
             }
@@ -109,8 +100,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         return productsList.size();
     }
 
+
     public static class ProductsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView tvId, tvNombre, tvPrecio, tvCantidad;
+        TextView tvId, tvCantidad;
         ImageView ivProduct;
         CheckBox chbAddProduct;
         Context ctx;
@@ -130,67 +122,16 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     }
 
     public void refreshItem(ProductsResponse product, Boolean willCheck) {
-        //refrescar producto de la lista
-        //quitar check de producto
-        //chb.setChecked(willCheck);
-        int index = Arrays.asList(productsList).indexOf(product);
-        notifyItemChanged(index);
-    }
 
-    private void showCustomizeDialog(final Context context, final ProductsResponse productSelected, final CheckBox checkBox) {
-        final Dialog dialog = new Dialog(context);
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_add_product_to_quotation);
+        int index = -1;
+        if(productsList.contains(product)) {
+            index = productsList.indexOf(product);
 
-        Button btnAccept1 = (Button)dialog.findViewById(R.id.btnAccept);
-        btnAccept1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                productSelected.setSelected(true);
-                checkBox.setChecked(true);
-
-                //checkBox.setChecked(productSelected.getSelected());
-
-                productsSelectedList.add(productSelected);
-                ProductsFragment.productsSelectedList.add(productSelected);
-                Log.v(mContext.getString(R.string.log_arrow) + "CHECKED", productsSelectedList.toString());
-                Common.showToastMessage(context, "Productos en Cotizacion: " + productsSelectedList.toString());
-                dialog.dismiss();
+            if(index != -1) {
+                //notifyItemChanged(index, product); //when remove from right the last element, this dissapear from left list
+                notifyDataSetChanged();
             }
-        });
-        Button btnCloseTinDIalog = (Button)dialog.findViewById(R.id.btnCloseTinDIalog);
-        btnCloseTinDIalog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                productSelected.setSelected(false);
-                checkBox.setChecked(false);
-
-                if(productsSelectedList.contains(productSelected)) {
-                    productsSelectedList.remove(productSelected);
-                    ProductsFragment.productsSelectedList.remove(productSelected);
-                }
-
-                dialog.dismiss();
-            }
-        });
-        Button btnCancel1 = (Button)dialog.findViewById(R.id.btnClose);
-        btnCancel1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                productSelected.setSelected(false);
-                checkBox.setChecked(false);
-
-                if(productsSelectedList.contains(productSelected)) {
-                    productsSelectedList.remove(productSelected);
-                    ProductsFragment.productsSelectedList.remove(productSelected);
-                }
-
-                dialog.dismiss();
-            }
-        });
-
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
+        }
     }
 
 }
