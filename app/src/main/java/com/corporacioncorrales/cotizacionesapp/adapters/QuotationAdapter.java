@@ -22,14 +22,16 @@ import java.util.ArrayList;
  */
 public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.QuotationViewHolder> {
 
+    Context mContext;
     ArrayList<ProductsResponse> productsList;
     ArrayList<ProductsResponse> newProductsList;
-    Context mContext;
+    //ProductsAdapter productsAdapter;
 
-    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList) {
+
+    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList/*, ProductsAdapter productsAdapter*/) {
         this.mContext = mContext;
         this.productsList = productsList;
-        //this.newProductsList = productsList;
+        //this.productsAdapter = productsAdapter;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     }
 
     @Override
-    public void onBindViewHolder(final QuotationViewHolder holder, int position) {
+    public void onBindViewHolder(final QuotationViewHolder holder, final int position) {
         final ProductsResponse product = productsList.get(position);
         holder.tvId.setText(product.getId());
         holder.tvDescription.setText(product.getNombre());
@@ -55,6 +57,12 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 /*newProductsList = productsList;
                 newProductsList.remove(product);
                 refreshQuotation(newProductsList);*/
+                product.setSelected(false);
+                removeItem(product);
+                //product.setSelected(false);
+
+                //productsAdapter.refreshItem(product, false);
+                //ProductsAdapter
             }
         });
 
@@ -91,9 +99,21 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         }
     }
 
+    //
     public void refreshQuotation(ArrayList<ProductsResponse> list) {
         this.productsList.clear();
         this.productsList.addAll(list);
         notifyDataSetChanged();
+    }
+
+    public void removeItem(ProductsResponse product) {
+        int currPosition = productsList.indexOf(product);
+        productsList.remove(currPosition);
+        notifyItemRemoved(currPosition);
+    }
+
+    public void addItem(int position, ProductsResponse product) {
+        productsList.add(position, product);
+        notifyItemInserted(position);
     }
 }

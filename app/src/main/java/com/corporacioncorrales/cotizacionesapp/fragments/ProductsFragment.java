@@ -94,13 +94,16 @@ public class ProductsFragment extends Fragment {
         if (fromOnCreate) {
             createQuotation();
             loadProductsPerClient(client_id);
+
+            //createQuotation();
+
             fromOnCreate = false;
         }
     }
 
     private void createQuotation() {
         rvQuotation.setHasFixedSize(true);
-        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>());
+        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>()/*, productsAdapter*/);
         rvQuotation.setAdapter(quotationAdapter);
         LinearLayoutManager sgm = new LinearLayoutManager(getActivity());
         rvQuotation.setLayoutManager(sgm);
@@ -129,11 +132,13 @@ public class ProductsFragment extends Fragment {
 
                     if(productsArrayList.size()>0) {
 
-                        productsAdapter = new ProductsAdapter(getActivity(), productsArrayList);
+                        productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter);
                         recyclerViewProductos.setAdapter(productsAdapter);
 
                         StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                         recyclerViewProductos.setLayoutManager(sgm);
+
+                        //createQuotation();
 
                     } else {
                         Log.d(getString(R.string.log_arrow_response), "No se encontraron productos para este cliente");

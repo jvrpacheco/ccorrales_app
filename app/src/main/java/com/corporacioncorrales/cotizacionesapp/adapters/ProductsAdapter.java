@@ -25,6 +25,7 @@ import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by victor on 8/20/16.
@@ -36,6 +37,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     RecyclerView rvQuotation;
     QuotationAdapter quotationAdapter;
     Context mContext;
+    CheckBox chb;
 
     public ProductsAdapter(Context mContext, ArrayList<ProductsResponse> productsList, QuotationAdapter quotationAdapter) {
         this.mContext = mContext;
@@ -69,6 +71,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             holder.ivProduct.setImageResource(R.drawable.package_96_gray);
         }
 
+        //chb = holder.chbAddProduct;
         holder.chbAddProduct.setEnabled(false);
         holder.chbAddProduct.setChecked(product.getSelected());
 
@@ -81,13 +84,19 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                     product.setSelected(false);
                     holder.chbAddProduct.setChecked(false);
                     productsSelectedList.remove(product);
+
+                    quotationAdapter.removeItem(product);
+
                 } else {
                     product.setSelected(true);
                     holder.chbAddProduct.setChecked(true);
                     productsSelectedList.add(product);
+
+                    quotationAdapter.addItem(0, product);
                 }
 
-                quotationAdapter.refreshQuotation(productsSelectedList);
+                //quotationAdapter.refreshQuotation(productsSelectedList);
+                //quotationAdapter.addItem(productsSelectedList.size()-1, product);
 
                 Log.d(mContext.getResources().getString(R.string.log_arrow), String.valueOf(productsSelectedList.size()));
             }
@@ -118,6 +127,14 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         public void onClick(View v) {
 
         }
+    }
+
+    public void refreshItem(ProductsResponse product, Boolean willCheck) {
+        //refrescar producto de la lista
+        //quitar check de producto
+        //chb.setChecked(willCheck);
+        int index = Arrays.asList(productsList).indexOf(product);
+        notifyItemChanged(index);
     }
 
     private void showCustomizeDialog(final Context context, final ProductsResponse productSelected, final CheckBox checkBox) {
