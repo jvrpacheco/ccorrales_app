@@ -67,8 +67,11 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             holder.ivProduct.setImageResource(R.drawable.package_96_gray);
         }
 
-        holder.chbAddProduct.setEnabled(false);
-        holder.chbAddProduct.setChecked(product.getSelected());
+        if(product.getSelected()) {
+            holder.ivCheck.setVisibility(View.VISIBLE);
+        } else {
+            holder.ivCheck.setVisibility(View.GONE);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,15 +80,11 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
                 if(product.getSelected()) {
                     product.setSelected(false);
-                    holder.chbAddProduct.setChecked(false);
-                    productsSelectedList.remove(product);
-
+                    holder.ivCheck.setVisibility(View.GONE);
                     quotationAdapter.removeItem(product);
                 } else {
                     product.setSelected(true);
-                    holder.chbAddProduct.setChecked(true);
-                    productsSelectedList.add(product);
-
+                    holder.ivCheck.setVisibility(View.VISIBLE);
                     quotationAdapter.addItem(0, product);
                 }
 
@@ -103,8 +102,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
     public static class ProductsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView tvId, tvCantidad;
-        ImageView ivProduct;
-        CheckBox chbAddProduct;
+        ImageView ivProduct, ivCheck;
+        //CheckBox chbAddProduct;
         Context ctx;
 
         public ProductsViewHolder(View view) {
@@ -112,7 +111,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             ivProduct = (ImageView)view.findViewById(R.id.iv_Product);
             tvId = (TextView)view.findViewById(R.id.tv_id);
             tvCantidad = (TextView)view.findViewById(R.id.tv_cantidad);
-            chbAddProduct = (CheckBox) view.findViewById(R.id.checkBox);
+            //chbAddProduct = (CheckBox) view.findViewById(R.id.checkBox);
+            ivCheck = (ImageView) view.findViewById(R.id.ivCheck);
         }
 
         @Override

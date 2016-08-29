@@ -7,7 +7,7 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/ccorrales_logo"/>
+            android:src="@drawable/image1"/>
     </item>
 
 </layer-list>
