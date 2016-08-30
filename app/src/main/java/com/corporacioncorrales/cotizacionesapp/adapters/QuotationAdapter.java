@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
+import com.corporacioncorrales.cotizacionesapp.utils.Common;
 
 import java.util.ArrayList;
 
@@ -52,6 +53,13 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
         });
 
+        holder.ivChangePrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Common.showToastMessage(mContext, "Precio minimo:" + product.getPre_inferior());
+            }
+        });
+
         holder.ivArrival.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,7 +75,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     public static class QuotationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView tvId, tvDescription, tvPrice, tvQuantity;
-        ImageView ivRemove, ivArrival;
+        ImageView ivRemove, ivArrival, ivChangePrice;
 
         public QuotationViewHolder(View view) {
             super(view);
@@ -77,6 +85,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             tvQuantity = (TextView)view.findViewById(R.id.tvQuantity);
             ivRemove = (ImageView) view.findViewById(R.id.ivRemove);
             ivArrival = (ImageView) view.findViewById(R.id.ivArrival);
+            ivChangePrice = (ImageView) view.findViewById(R.id.ivChangePrice);
         }
 
         @Override
