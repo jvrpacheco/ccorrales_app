@@ -1,10 +1,20 @@
 package com.corporacioncorrales.cotizacionesapp.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,6 +22,7 @@ import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
+import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 
 import java.util.ArrayList;
 
@@ -56,7 +67,14 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.ivChangePrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.showToastMessage(mContext, "Precio minimo:" + product.getPre_inferior());
+
+                if(!product.getPrecio().isEmpty() && !product.getPre_inferior().isEmpty()) {
+                    //Common.showToastMessage(mContext, "Precio minimo:" + product.getPre_inferior());
+                    showChangePriceDialog(mContext, product.getPrecio(), product.getPre_inferior());
+                } else {
+                    Common.showToastMessage(mContext, "No existe precio para este producto");
+                }
+
             }
         });
 
@@ -103,5 +121,78 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     public void addItem(int position, ProductsResponse product) {
         productsList.add(position, product);
         notifyItemInserted(position);
+    }
+
+    private void showChangePriceDialog(final Context context, final String price, final String priceMinLimit) {
+
+        final Dialog dialog = new Dialog(mContext);
+        String precioIngresado = "";
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_quotation_change_price);
+
+        final TextView tvPrecio = (TextView)dialog.findViewById(R.id.tvPrecio);
+        tvPrecio.setText(price);
+
+        TextView tvPrecioLimiteInferior = (TextView)dialog.findViewById(R.id.tvPrecioLimInferior);
+        tvPrecioLimiteInferior.setText(priceMinLimit);
+
+        final TextView tvPrecioIngresado = (TextView)dialog.findViewById(R.id.tvPrecioIngresado);
+        tvPrecioIngresado.setText(price);
+
+        final TextView tvCompareResult = (TextView)dialog.findViewById(R.id.tvCompareResult);
+        tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
+
+        EditText edtPrice = (EditText)dialog.findViewById(R.id.edtPrice);
+        edtPrice.setText(price);
+        edtPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                Log.v("beforeTextChanged ---->", s.toString());
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.v("onTextChanged ---->", s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.v("afterTextChanged ---->", s.toString());
+                String priceInserted = s.toString();
+
+                if(!priceInserted.isEmpty() && !priceInserted.equals(".")) {
+
+                    tvPrecioIngresado.setText(priceInserted);
+                    //el precio ingresado es... respecto al precio minimo
+                    String resultComparePrices = Common.comparePrices(Double.valueOf(priceInserted), Double.valueOf(priceMinLimit));
+
+                    if(resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
+                        tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
+                        tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
+                    } else if(resultComparePrices.equals(Constants.comparar_esMenor)) {
+                        tvCompareResult.setText(context.getResources().getString(R.string.precio_fuera_del_rango));
+                        tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
+                    }
+
+                } else {
+                    tvPrecioIngresado.setText("---");
+                    tvCompareResult.setText(context.getResources().getString(R.string.precio_ingresado_vacio));
+                    tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
+                }
+
+            }
+        });
+
+        Button btnCloseDIalog = (Button)dialog.findViewById(R.id.btnClose);
+        btnCloseDIalog.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -21,4 +22,25 @@ public class Common {
         return (netInfo != null && netInfo.isConnectedOrConnecting());
     }
 
+    // el primero es... respecto al segundo
+    public static String comparePrices(Double d1, Double d2) {
+
+        String result;
+        int retval = Double.compare(d1, d2);
+
+        if(retval > 0) {
+            Log.d(Constants.log_arrow, "d1 is greater than d2");
+            result = Constants.comparar_esMayor;
+        }
+        else if(retval < 0) {
+            Log.d(Constants.log_arrow, "d1 is less than d2");
+            result = Constants.comparar_esMenor;
+        }
+        else {
+            Log.d(Constants.log_arrow, "d1 is equal to d2");
+            result = Constants.comparar_esIgual;
+        }
+
+        return result;
+    }
 }

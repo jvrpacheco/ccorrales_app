@@ -11,10 +11,6 @@
 
     <string name="category_clients">Clientes</string>
 
-    <string name="log_arrow">--------> </string>
-    <string name="log_arrow_response">--------> RESPONSE</string>
-    <string name="log_arrow_failure">--------> FAILURE</string>
-
     <string name="drawer_layout_title">Corporación Corrales</string>
     <string name="drawer_layout_subtitle">Cotizaciones App</string>
 
@@ -23,6 +19,10 @@
     //Messages
     <string name="msg_enter_user">Por favor ingrese el usuario!</string>
 
+    //dialog Precio
+    <string name="precio_dentro_del_rango">Precio dentro del rango permitido.</string>
+    <string name="precio_fuera_del_rango">Precio por debajo del limite permitido.</string>
+    <string name="precio_ingresado_vacio">Por favor ingrese el precio.</string>
 
     <string-array name="array_rubros">
         <item>Vidrio</item>
