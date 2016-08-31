@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Singleton.getInstance().setUser(Constants.Empty);
-        Log.d(getString(R.string.log_arrow) + TAG, "\"" + Singleton.getInstance().getUser() + "\"");
+        Log.d(Constants.log_arrow + TAG, "\"" + Singleton.getInstance().getUser() + "\"");
         enableLoginControls(true);
     }
 
@@ -97,25 +97,25 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 
                         if (response != null) {
-                            Log.d(getString(R.string.log_arrow_response), response.body().getCodUsu());
+                            Log.d(Constants.log_arrow_response, response.body().getCodUsu());
 
                             if(response.body().getCodUsu().equals(Constants.allowEnterToApp)) {
 
                                 Singleton.getInstance().setUser(user);
-                                Log.d(getString(R.string.log_arrow) + TAG + " User admitido", Singleton.getInstance().getUser());
+                                Log.d(Constants.log_arrow + TAG + " User admitid", Singleton.getInstance().getUser());
                                 Common.showToastMessage(getApplicationContext(), "Bienvenido " + user + "!");
                                 enterToApp(user);
                                 progressBarLogin.setVisibility(View.GONE);
 
                             } else {
-                                Log.d(getString(R.string.log_arrow) + TAG + " User no admitido", Singleton.getInstance().getUser());
+                                Log.d(Constants.log_arrow + TAG + " User no admi", Singleton.getInstance().getUser());
                                 Common.showToastMessage(getApplicationContext(), user + " no admitido!");
                                 enableLoginControls(true);
                                 progressBarLogin.setVisibility(View.GONE);
                             }
 
                         } else {
-                            Log.d(getString(R.string.log_arrow_response), "response null");
+                            Log.d(Constants.log_arrow_response, "response null");
                             enableLoginControls(true);
                             progressBarLogin.setVisibility(View.GONE);
                         }
@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<LoginResponse> call, Throwable t) {
-                        Log.d(getString(R.string.log_arrow_failure), t.toString());
+                        Log.d(Constants.log_arrow_failure, t.toString());
                         enableLoginControls(true);
                         progressBarLogin.setVisibility(View.GONE);
                     }

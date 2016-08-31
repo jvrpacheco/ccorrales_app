@@ -21,8 +21,13 @@
                 android:id="@+id/sv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+
                 app:queryHint="Buscar"
-                android:background="@color/celeste"
+                android:background="@color/celeste_barra_inferior"
                 app:showAsAction="collapseActionView|ifRoom">
             </android.support.v7.widget.SearchView>
 
@@ -32,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="0dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
@@ -66,7 +71,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="1dp"
                     android:background="@android:color/holo_orange_dark"/>
 
                 <LinearLayout
@@ -74,17 +79,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:orientation="horizontal"
-                    android:background="@color/negro">
+                    android:background="@color/colorPrimaryDark">
                     <RelativeLayout
-                        android:layout_width="40dp"
+                        android:layout_width="30dp"
                         android:layout_height="match_parent">
                     </RelativeLayout>
                     <View
-                        android:layout_width="2dp"
+                        android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:background="@android:color/holo_orange_dark"/>
                     <RelativeLayout
-                        android:layout_width="100dp"
+                        android:layout_width="80dp"
                         android:layout_height="match_parent">
                         <TextView
                             android:id="@+id/tv2"
@@ -97,7 +102,7 @@
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
                     <View
-                        android:layout_width="2dp"
+                        android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:background="@android:color/holo_orange_dark"/>
                     <RelativeLayout
@@ -115,11 +120,11 @@
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
                     <View
-                        android:layout_width="2dp"
+                        android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:background="@android:color/holo_orange_dark"/>
                     <RelativeLayout
-                        android:layout_width="120dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent">
                         <TextView
                             android:id="@+id/tv5"
@@ -132,11 +137,28 @@
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
                     <View
-                        android:layout_width="2dp"
+                        android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:background="@android:color/holo_orange_dark"/>
                     <RelativeLayout
                         android:layout_width="100dp"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/tv9"
+                            android:textColor="@color/blanco"
+                            android:textSize="@dimen/textSize_header_products"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Precio Nuevo"
+                            android:textStyle="bold"
+                            android:layout_centerInParent="true"/>
+                    </RelativeLayout>
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/holo_orange_dark"/>
+                    <RelativeLayout
+                        android:layout_width="70dp"
                         android:layout_height="match_parent">
                         <TextView
                             android:id="@+id/tv3"
@@ -144,12 +166,12 @@
                             android:textSize="@dimen/textSize_header_products"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cantidad"
+                            android:text="Stock"
                             android:textStyle="bold"
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
                     <View
-                        android:layout_width="2dp"
+                        android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:background="@android:color/holo_orange_dark"/>
                     <RelativeLayout
@@ -166,11 +188,11 @@
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
                     <View
-                        android:layout_width="2dp"
+                        android:layout_width="1dp"
                         android:layout_height="match_parent"
                         android:background="@android:color/holo_orange_dark"/>
                     <RelativeLayout
-                        android:layout_width="40dp"
+                        android:layout_width="30dp"
                         android:layout_height="match_parent">
                         <TextView
                             android:id="@+id/tv7"
@@ -186,7 +208,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="2dp"
+                    android:layout_height="1dp"
                     android:background="@android:color/holo_orange_dark"/>
 
                  <android.support.v7.widget.RecyclerView

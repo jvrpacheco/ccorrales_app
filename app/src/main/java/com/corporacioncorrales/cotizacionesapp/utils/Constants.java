@@ -27,5 +27,5 @@ public class Constants {
     public static final String comparar_esMenor = "esMenor";
     public static final String comparar_esIgual = "esIgual";
 
-    public static final String Empty = " ";
+    public static final String Empty = "";
 }

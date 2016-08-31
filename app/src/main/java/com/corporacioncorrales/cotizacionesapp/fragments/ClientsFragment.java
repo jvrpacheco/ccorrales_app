@@ -141,7 +141,7 @@ public class ClientsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(getActivity().getString(R.string.log_arrow) + TAG, "onResume, rubroSelected: " + rubroSelected);
+        Log.d(Constants.log_arrow + TAG, "onResume, rubroSelected: " + rubroSelected);
 
         if(fromOnCreate) {
             initSpinnerRubro();
@@ -185,7 +185,7 @@ public class ClientsFragment extends Fragment {
 
                 }
                 //Common.showToastMessage(getActivity(), rubroSelected + "!");
-                Log.d(getActivity().getString(R.string.log_arrow) + TAG, "onCreate, rubroSelected: " + rubroSelected);
+                Log.d(Constants.log_arrow + TAG, "onCreate, rubroSelected: " + rubroSelected);
             }
 
             @Override
@@ -262,7 +262,7 @@ public class ClientsFragment extends Fragment {
                         });
 
                     } else {
-                        Log.d(getString(R.string.log_arrow_response), "No se encontraron clientes para este usuario");
+                        Log.d(Constants.log_arrow, "No se encontraron clientes para este usuario");
                         Common.showToastMessage(getActivity(), "No se encontraron clientes para este usuario");
                         tvTotalClientes.setText("0");
                     }
@@ -271,7 +271,7 @@ public class ClientsFragment extends Fragment {
                     mainProgressBar.setVisibility(View.GONE);
 
                 } else {
-                    Log.d(getString(R.string.log_arrow_response), "response null");
+                    Log.d(Constants.log_arrow_response, "response null");
                     //showProgressLoading(false, mainProgressBar);
                     //btnRefreshClients.setText(getActivity().getString(R.string.refrescar));
                     enableRefreshButton(true);
@@ -282,7 +282,7 @@ public class ClientsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<ClientsResponse>> call, Throwable t) {
-                Log.d(getString(R.string.log_arrow_failure), t.getLocalizedMessage());
+                Log.d(Constants.log_arrow_failure, t.getLocalizedMessage());
                 //showProgressLoading(false, mainProgressBar);
                 enableRefreshButton(true);
                 mainProgressBar.setVisibility(View.GONE);
@@ -293,7 +293,7 @@ public class ClientsFragment extends Fragment {
 
     @OnClick(R.id.btnRefreshClients)
     public void onClick() {
-        Log.d(getActivity().getString(R.string.log_arrow) + TAG, "btnRefreshClients, rubroSelected: " + rubroSelected);
+        Log.d(Constants.log_arrow + TAG, "btnRefreshClients, rubroSelected: " + rubroSelected);
         initViews3();
     }
 

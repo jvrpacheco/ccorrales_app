@@ -21,6 +21,7 @@ import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
+import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                     quotationAdapter.addItem(0, product);
                 }
 
-                Log.d(mContext.getResources().getString(R.string.log_arrow), String.valueOf(productsSelectedList.size()));
+                Log.d(Constants.log_arrow, String.valueOf(productsSelectedList.size()));
             }
         });
 
@@ -103,7 +104,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     public static class ProductsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView tvId, tvCantidad;
         ImageView ivProduct, ivCheck;
-        //CheckBox chbAddProduct;
         Context ctx;
 
         public ProductsViewHolder(View view) {
@@ -111,7 +111,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             ivProduct = (ImageView)view.findViewById(R.id.iv_Product);
             tvId = (TextView)view.findViewById(R.id.tv_id);
             tvCantidad = (TextView)view.findViewById(R.id.tv_cantidad);
-            //chbAddProduct = (CheckBox) view.findViewById(R.id.checkBox);
             ivCheck = (ImageView) view.findViewById(R.id.ivCheck);
         }
 

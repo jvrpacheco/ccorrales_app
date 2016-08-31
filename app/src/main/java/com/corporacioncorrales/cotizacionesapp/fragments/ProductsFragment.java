@@ -135,20 +135,20 @@ public class ProductsFragment extends Fragment {
                         recyclerViewProductos.setLayoutManager(sgm);
                     } else {
 
-                        Log.d(getString(R.string.log_arrow_response), "No se encontraron productos para este cliente");
+                        Log.d(Constants.log_arrow_response, "No se encontraron productos para este cliente");
                         Common.showToastMessage(getActivity(), "No se encontraron productos para este cliente");
                     }
                     mainProgressBar.setVisibility(View.GONE);
 
                 } else {
-                    Log.d(getString(R.string.log_arrow_response), "response null");
+                    Log.d(Constants.log_arrow_response, "response null");
                     mainProgressBar.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<ProductsResponse>> call, Throwable t) {
-                Log.d(getString(R.string.log_arrow_failure), t.getMessage());
+                Log.d(Constants.log_arrow_failure, t.getMessage());
                 mainProgressBar.setVisibility(View.GONE);
             }
         });

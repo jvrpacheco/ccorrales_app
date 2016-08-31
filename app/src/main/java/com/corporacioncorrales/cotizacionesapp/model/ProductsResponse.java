@@ -1,5 +1,6 @@
 package com.corporacioncorrales.cotizacionesapp.model;
 
+import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -35,6 +36,7 @@ public class ProductsResponse {
     private String Cantidad;
 
     //********************************************
+
     private Boolean isSelected;
 
     public Boolean getSelected() {
@@ -49,6 +51,43 @@ public class ProductsResponse {
     public void setSelected(Boolean selected) {
         isSelected = selected;
     }
+
+    //********************************************
+
+    private String nuevoPrecio;
+
+    public String getNuevoPrecio() {
+        String newPrice;
+        if (nuevoPrecio == null) {
+            newPrice = Constants.Empty;
+        } else {
+            newPrice = nuevoPrecio;
+        }
+        return newPrice;
+    }
+
+    public void setNuevoPrecio(String nuevoPrecio) {
+        this.nuevoPrecio = nuevoPrecio;
+    }
+
+    //********************************************
+
+    private Boolean esPrecioMenorAlLimite;
+
+    public Boolean getEsPrecioMenorAlLimite() {
+        Boolean flag;
+        if(esPrecioMenorAlLimite == null) {
+            flag = false;
+        } else {
+            flag = esPrecioMenorAlLimite;
+        }
+        return flag;
+    }
+
+    public void setEsPrecioMenorAlLimite(Boolean esPrecioMenorAlLimite) {
+        this.esPrecioMenorAlLimite = esPrecioMenorAlLimite;
+    }
+
     //********************************************
 
 

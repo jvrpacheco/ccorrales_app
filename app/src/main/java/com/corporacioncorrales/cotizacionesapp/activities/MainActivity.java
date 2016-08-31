@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
             //Singleton.getInstance().setUser(Constants.Empty);
         }
-        Log.d(getString(R.string.log_arrow) + TAG + " User", Singleton.getInstance().getUser());
+        Log.d(Constants.log_arrow + TAG + " User", Singleton.getInstance().getUser());
     }
 
     private void selectItemFromMenu(NavigationView nv, int itemId) {
