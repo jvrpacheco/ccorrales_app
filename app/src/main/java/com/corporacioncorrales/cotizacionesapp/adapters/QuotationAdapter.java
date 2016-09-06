@@ -51,19 +51,23 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final ProductsResponse product = productsList.get(position);
         holder.tvId.setText(product.getId());
         holder.tvDescription.setText(product.getNombre());
+        //holder.tvPrice.setText(String.format("%.2f", Double.valueOf(product.getPrecio())));
         holder.tvPrice.setText(product.getPrecio());
 
         if(!product.getNuevoPrecio().isEmpty()) {
             holder.tvNewPrice.setText(product.getNuevoPrecio());
+            //holder.tvNewPrice.setText(String.format("%.2f", Double.valueOf(product.getNuevoPrecio())));
         } else {
             product.setNuevoPrecio(product.getPrecio());
             holder.tvNewPrice.setText(product.getPrecio());
+            //product.setNuevoPrecio(String.format("%.2f", Double.valueOf(product.getPrecio())));
+            //holder.tvNewPrice.setText(String.format("%.2f", Double.valueOf(product.getPrecio())));
         }
 
         if(product.getEsPrecioMenorAlLimite()) {
-            holder.ivNewPrice.setImageResource(R.drawable.hand_red_52);
+            holder.ivChangePrice.setImageResource(R.drawable.hand_red_52);
         } else {
-            holder.ivNewPrice.setImageResource(R.drawable.hand_green_52);
+            holder.ivChangePrice.setImageResource(R.drawable.hand_green_52);
         }
 
         holder.tvQuantity.setText(product.getCantidad());
@@ -91,7 +95,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                             product.getPrecio(),
                             product.getPre_inferior());
                 } else {
-                    Common.showToastMessage(mContext, "No existe precio para este producto");
+                    Common.showToastMessage(mContext, "No existe precio o precio inferior para este producto");
                 }
 
             }
@@ -112,7 +116,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     public static class QuotationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView tvId, tvDescription, tvPrice, tvQuantity, tvNewPrice;
-        ImageView ivRemove, ivArrival, ivChangePrice, ivNewPrice;
+        ImageView ivRemove, ivArrival, ivChangePrice;
 
         public QuotationViewHolder(View view) {
             super(view);
@@ -124,7 +128,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             ivRemove = (ImageView) view.findViewById(R.id.ivRemove);
             ivArrival = (ImageView) view.findViewById(R.id.ivArrival);
             ivChangePrice = (ImageView) view.findViewById(R.id.ivChangePrice);
-            ivNewPrice = (ImageView) view.findViewById(R.id.ivNewPrice);
         }
 
         @Override
@@ -135,8 +138,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     public void removeItem(ProductsResponse product) {
         int currPosition = productsList.indexOf(product);
-        productsList.remove(currPosition);
-        notifyItemRemoved(currPosition);
+        if(currPosition > -1) {
+            productsList.remove(currPosition);
+            notifyItemRemoved(currPosition);
+        }
     }
 
     public void addItem(int position, ProductsResponse product) {
@@ -154,23 +159,29 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     private void showChangePriceDialog(final Context context, final ProductsResponse product, final int position, final String price, final String priceMinLimit) {
 
         final Dialog dialog = new Dialog(mContext);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_quotation_change_price);
 
-        final Button btnAcceptDIalog = (Button)dialog.findViewById(R.id.btnAccept);
-        final Button btnCloseDIalog = (Button)dialog.findViewById(R.id.btnClose);
+        final Button btnAcceptDialog = (Button)dialog.findViewById(R.id.btnAccept);
+        final Button btnCloseDialog = (Button)dialog.findViewById(R.id.btnClose);
         final TextView tvPrecio = (TextView)dialog.findViewById(R.id.tvPrecio);
         final TextView tvPrecioLimiteInferior = (TextView)dialog.findViewById(R.id.tvPrecioLimInferior);
         final TextView tvPrecioIngresado = (TextView)dialog.findViewById(R.id.tvPrecioIngresado);
         final TextView tvCompareResult = (TextView)dialog.findViewById(R.id.tvCompareResult);
-        Boolean isChanged = false;
+        final TextView tvProductDes = (TextView)dialog.findViewById(R.id.tvProductDes);
+        final EditText edtPrice = (EditText)dialog.findViewById(R.id.edtPrice);
+        final ImageView ivUpPrice = (ImageView) dialog.findViewById(R.id.ivUpPrice);
+        final ImageView ivDownPrice = (ImageView) dialog.findViewById(R.id.ivDownPrice);
 
-        tvPrecio.setText(price);
-        tvPrecioLimiteInferior.setText(priceMinLimit);
+        tvPrecio.setText(String.format("%.2f", Double.valueOf(price)));
+        tvPrecioLimiteInferior.setText(String.format("%.2f", Double.valueOf(priceMinLimit)));
         tvPrecioIngresado.setText(product.getNuevoPrecio());
+        tvProductDes.setText(product.getNombre());
+        edtPrice.setText(product.getNuevoPrecio());
+        precioIngresado = product.getNuevoPrecio();
 
         String cp = Common.comparePrices(Double.valueOf(product.getNuevoPrecio()), Double.valueOf(product.getPre_inferior()));
-
         if(cp.equals(Constants.comparar_esMayor) || cp.equals(Constants.comparar_esIgual)) {
             tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
             tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
@@ -179,8 +190,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
         }
 
-        EditText edtPrice = (EditText)dialog.findViewById(R.id.edtPrice);
-        edtPrice.setText(product.getNuevoPrecio());
         edtPrice.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -207,26 +216,48 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                         tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
                         precioIngresado = priceInserted;
                         esPrecioMenorAlLimite = false;
-                        btnAcceptDIalog.setEnabled(true);
+                        btnAcceptDialog.setEnabled(true);
                     } else if(resultComparePrices.equals(Constants.comparar_esMenor)) {
                         tvCompareResult.setText(context.getResources().getString(R.string.precio_fuera_del_rango));
                         tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
                         precioIngresado = priceInserted;
                         esPrecioMenorAlLimite = true;
-                        btnAcceptDIalog.setEnabled(true);
+                        btnAcceptDialog.setEnabled(true);
                     }
 
                 } else {
                     tvPrecioIngresado.setText("---");
                     tvCompareResult.setText(context.getResources().getString(R.string.precio_ingresado_vacio));
                     tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
-                    btnAcceptDIalog.setEnabled(false);
+                    btnAcceptDialog.setEnabled(false);
                 }
 
             }
         });
 
-        btnAcceptDIalog.setOnClickListener(new View.OnClickListener() {
+        ivUpPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!precioIngresado.isEmpty() && !precioIngresado.equals(".")) {
+                    Double newValue = Double.valueOf(precioIngresado) + 0.1;
+                    edtPrice.setText(newValue.toString());
+                }
+            }
+        });
+
+        ivDownPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!precioIngresado.isEmpty() && !precioIngresado.equals(".")) {
+                    Double newValue = Double.valueOf(precioIngresado) - 0.1;
+                    if(newValue >= 0) {
+                        edtPrice.setText(newValue.toString());
+                    }
+                }
+            }
+        });
+
+        btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -237,7 +268,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
         });
 
-        btnCloseDIalog.setOnClickListener(new View.OnClickListener() {
+        btnCloseDialog.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -248,4 +279,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
     }
+
+
 }

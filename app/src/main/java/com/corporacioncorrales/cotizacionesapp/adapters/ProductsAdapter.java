@@ -82,10 +82,19 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                 if(product.getSelected()) {
                     product.setSelected(false);
                     holder.ivCheck.setVisibility(View.GONE);
+                    productsSelectedList.remove(product);
                     quotationAdapter.removeItem(product);
                 } else {
                     product.setSelected(true);
                     holder.ivCheck.setVisibility(View.VISIBLE);
+                    //quotationAdapter.addItem(0, product);
+                    productsSelectedList.add(product);
+                    //quotationAdapter.addItem(productsSelectedList.size()-1, product);
+                    /*if(productsSelectedList.size() == 0) {
+                        quotationAdapter.addItem(0, product);
+                    } else if(productsSelectedList.size() > 0) {
+                        quotationAdapter.addItem(productsSelectedList.size()-1, product);
+                    }*/
                     quotationAdapter.addItem(0, product);
                 }
 

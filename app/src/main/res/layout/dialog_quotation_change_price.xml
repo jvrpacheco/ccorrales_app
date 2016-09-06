@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="300dp"
     android:background="@color/gris_claro"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
@@ -11,7 +11,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:background="@color/colorPrimary">
         <ImageView
             android:layout_marginLeft="10dp"
@@ -22,13 +22,13 @@
             android:layout_gravity="center"/>
         <TextView
             android:id="@+id/dialogTitle"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:textColor="@android:color/background_light"
             android:text="INDIQUE EL PRECIO"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:textStyle="bold"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
@@ -40,11 +40,11 @@
 
         <RelativeLayout
             android:layout_width="160dp"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_margin="10dp">
 
@@ -111,17 +111,29 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/tvProductDes"
+                    android:layout_marginTop="0dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/negro"
+                    android:textStyle="bold"
+                    android:singleLine="true"
+                    android:textSize="15sp"
+                    android:text="XXXXX"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="20dp"/>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_gravity="center">
                     <ImageView
-                        android:id="@+id/ivUpPrice"
+                        android:id="@+id/ivDownPrice"
                         android:src="@drawable/circled_chevron_down_96"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"/>
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"/>
                     <EditText
                         android:id="@+id/edtPrice"
                         android:padding="5dp"
@@ -136,11 +148,10 @@
                         android:inputType="numberDecimal"
                         android:background="@drawable/editext_background"/>
                     <ImageView
-                        android:id="@+id/ivDownPrice"
+                        android:id="@+id/ivUpPrice"
                         android:src="@drawable/circled_chevron_up_96"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"/>
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"/>
                 </LinearLayout>
 
                 <TextView

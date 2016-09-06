@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -54,14 +55,11 @@ public class LoginActivity extends AppCompatActivity {
         progressBarLogin.setScaleX(.2f);
         progressBarLogin.setVisibility(View.GONE);
 
-        /*progressBarLogin = (ProgressBar)findViewById(R.id.progressBarLogin);
-        progressBarLogin.setVisibility(View.VISIBLE);
-        progressBarLogin.setScaleY(.2f);
-        progressBarLogin.setScaleX(.2f);*/
-
         etLoginUser.setText("jsalazar");
         etLoginClave.setText("123");
 
+        //Common.hideKeyboard(this, etLoginUser);
+        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     @Override
@@ -70,6 +68,8 @@ public class LoginActivity extends AppCompatActivity {
         Singleton.getInstance().setUser(Constants.Empty);
         Log.d(Constants.log_arrow + TAG, "\"" + Singleton.getInstance().getUser() + "\"");
         enableLoginControls(true);
+        
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     @OnClick(R.id.btnLoginIngresar)
