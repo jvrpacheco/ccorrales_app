@@ -16,6 +16,7 @@ public class Constants {
     public static final String url_user_login = "api/usuario/{user}";
     public static final String url_clients_per_user = "api/clientes";
     public static final String url_products_per_user = "api/articulos";
+    public static final String url_send_quotation = "api/products/createproducts";
 
     public static final String rubro_vidrio_label = "Vidrio";
     public static final String rubro_vidrio = "00";
@@ -26,6 +27,10 @@ public class Constants {
     public static final String comparar_esMayor = "esMayor";
     public static final String comparar_esMenor = "esMenor";
     public static final String comparar_esIgual = "esIgual";
+
+    public static final String idClienteHeader = "idCliente";
+    public static final String idRubroHeader = "idRubro";
+    public static final String idUsuarioHeader = "idUsuario";
 
     public static final String Empty = "";
 }

@@ -59,8 +59,8 @@ public class ClientsFragment extends Fragment {
     Spinner spRubro;
     @BindView(R.id.recyclerViewClients)
     RecyclerView recyclerViewClients;
-    @BindView(R.id.btnRefreshClients)
-    Button btnRefreshClients;
+    /*@BindView(R.id.btnRefreshClients)
+    Button btnRefreshClients;*/
 
     //private RecyclerView recyclerViewClients;
 
@@ -90,22 +90,9 @@ public class ClientsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //recyclerViewClients = (RecyclerView)getActivity().findViewById(R.id.recyclerViewClients);
-
         rubroSelected = Constants.rubro_vidrio; // valor por defecto del rubro en la primera carga de la vista
         fromOnCreate = true;
-
-
-        /*Dialog mOverlayDialog = new Dialog(getActivity(), android.R.style.Theme_Holo); //display an invisible overlay dialog to prevent user interaction and pressing back
-        mOverlayDialog.setCancelable(false);
-        mOverlayDialog.show();*/
-
-        //mainActivityDialog = ((MainActivity)getActivity()).mOverlayDialog;
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
-        //mainProgressBar.setVisibility(View.VISIBLE);
-        //showProgressLoading(true, mainProgressBar, mainActivityDialog);
-        //showProgressLoading(true, mainProgressBar);
-
     }
 
     @Override
@@ -143,13 +130,13 @@ public class ClientsFragment extends Fragment {
         super.onResume();
         Log.d(Constants.log_arrow + TAG, "onResume, rubroSelected: " + rubroSelected);
 
+        initSpinnerRubro();
+
         if(fromOnCreate) {
-            initSpinnerRubro();
-            enableRefreshButton(false);
+            //initSpinnerRubro();
             initViews3();
         } else {
-            initSpinnerRubro();
-            //enableRefreshButton(false);
+            //initSpinnerRubro();
             // Rebuild recyclerViewClients from first data downloaded from server in onCreate
             if(clientsAdapter!=null && clientsArrayList!=null && clientsArrayList.size()>0) {
                 tvTotalClientes.setText(Integer.toString(clientsArrayList.size()));
@@ -170,19 +157,16 @@ public class ClientsFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 if(fromOnCreate) {
-                    enableRefreshButton(false);
                     fromOnCreate = false;
                 } else {
                     String item = parent.getItemAtPosition(position).toString();
                     if (item.equals(Constants.rubro_vidrio_label)) {
                         rubroSelected = Constants.rubro_vidrio;
                         //onResume permite actualizar para verificar si hay nuevos datos de acuerdo al rubro
-                        enableRefreshButton(true);
                     } else if (item.equals(Constants.rubro_aluminio_label)) {
                         rubroSelected = Constants.rubro_aluminio;
-                        enableRefreshButton(true);
                     }
-
+                    initViews3();
                 }
                 //Common.showToastMessage(getActivity(), rubroSelected + "!");
                 Log.d(Constants.log_arrow + TAG, "onCreate, rubroSelected: " + rubroSelected);
@@ -196,7 +180,7 @@ public class ClientsFragment extends Fragment {
     }
 
     private void initViews3() {
-        //recyclerViewClients = (RecyclerView)getActivity().findViewById(R.id.recyclerViewClients);
+
         recyclerViewClients.setHasFixedSize(true);
 
         if (!Singleton.getInstance().getUser().isEmpty())
@@ -205,7 +189,6 @@ public class ClientsFragment extends Fragment {
 
     private void getClients(String user, String rubro) {
         mainProgressBar.setVisibility(View.VISIBLE);
-        enableRefreshButton(false);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.url_server)
@@ -266,15 +249,10 @@ public class ClientsFragment extends Fragment {
                         Common.showToastMessage(getActivity(), "No se encontraron clientes para este usuario");
                         tvTotalClientes.setText("0");
                     }
-                    //showProgressLoading(false, mainProgressBar);
-                    enableRefreshButton(false);
                     mainProgressBar.setVisibility(View.GONE);
 
                 } else {
                     Log.d(Constants.log_arrow_response, "response null");
-                    //showProgressLoading(false, mainProgressBar);
-                    //btnRefreshClients.setText(getActivity().getString(R.string.refrescar));
-                    enableRefreshButton(true);
                     mainProgressBar.setVisibility(View.GONE);
                 }
 
@@ -283,30 +261,10 @@ public class ClientsFragment extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<ClientsResponse>> call, Throwable t) {
                 Log.d(Constants.log_arrow_failure, t.getLocalizedMessage());
-                //showProgressLoading(false, mainProgressBar);
-                enableRefreshButton(true);
                 mainProgressBar.setVisibility(View.GONE);
             }
         });
 
-    }
-
-    @OnClick(R.id.btnRefreshClients)
-    public void onClick() {
-        Log.d(Constants.log_arrow + TAG, "btnRefreshClients, rubroSelected: " + rubroSelected);
-        initViews3();
-    }
-
-    private void enableRefreshButton(Boolean enable) {
-        if(enable) {
-            btnRefreshClients.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.naranja));
-            btnRefreshClients.setText(getActivity().getString(R.string.refrescar) + "(1)");
-            btnRefreshClients.setEnabled(true);
-        } else {
-            btnRefreshClients.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.gris_fondo));
-            btnRefreshClients.setText(getActivity().getString(R.string.refrescar));
-            btnRefreshClients.setEnabled(false);
-        }
     }
 
     private void showProgressLoading(Boolean show, ProgressBar mProgressBar) {

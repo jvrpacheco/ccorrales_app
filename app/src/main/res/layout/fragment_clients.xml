@@ -10,49 +10,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:background="@color/celeste_barra_inferior"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_alignParentRight="true">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:paddingLeft="0dp"
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Rubro:"
-                    android:id="@+id/textView1" />
-                <Spinner
-                    android:layout_width="140dp"
-                    android:layout_height="match_parent"
-                    android:id="@+id/spinnerRubro"/>
-                <Button
-                    android:id="@+id/btnRefreshClients"
-                    android:background="@color/naranja"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/blanco"
-                    android:textSize="15dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="0dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:text="@string/refrescar"/>
-            </LinearLayout>
-
-        </RelativeLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -60,7 +17,7 @@
             android:orientation="vertical"
             android:paddingRight="5dp"
             android:paddingBottom="5dp"
-            android:background="@color/gris_fondo">
+            android:background="@color/grey300">
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerViewClients"
                 android:scrollbars="vertical"
@@ -68,32 +25,65 @@
                 android:layout_height="match_parent"/>
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@color/celeste_barra_inferior"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:background="@color/celeste200"
             android:orientation="horizontal">
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="15dp"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Total Clientes:"
-                android:id="@+id/textView2" />
-            <TextView
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_alignParentLeft="true">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="16dp"
+                    android:textStyle="normal"
+                    android:textColor="@color/negro"
+                    android:text="Total clientes:"
+                    android:id="@+id/textView0" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="16dp"
+                    android:textStyle="normal"
+                    android:textColor="@color/negro"
+                    android:text="-"
+                    android:id="@+id/tvTotalClientes" />
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="10dp"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="-"
-                android:id="@+id/tvTotalClientes" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="0dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="16dp"
+                    android:textStyle="normal"
+                    android:textColor="@color/negro"
+                    android:text="Rubro:"
+                    android:id="@+id/textView1" />
+                <Spinner
+                    android:background="@color/gris_claro"
+                    android:layout_width="140dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/spinnerRubro"/>
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </LinearLayout>
 

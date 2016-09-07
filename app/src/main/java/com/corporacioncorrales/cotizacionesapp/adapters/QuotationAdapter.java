@@ -65,8 +65,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         }
 
         if(product.getEsPrecioMenorAlLimite()) {
+            //product.setEsPrecioMenorAlLimite(true);
             holder.ivChangePrice.setImageResource(R.drawable.hand_red_52);
         } else {
+
             holder.ivChangePrice.setImageResource(R.drawable.hand_green_52);
         }
 
@@ -112,6 +114,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     @Override
     public int getItemCount() {
         return productsList.size();
+    }
+
+    public ArrayList<ProductsResponse> getQuotationProductsList() {
+        return productsList;
     }
 
     public static class QuotationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

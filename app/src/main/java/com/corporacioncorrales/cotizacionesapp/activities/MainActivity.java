@@ -43,13 +43,6 @@ public class MainActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        //mOverlayDialog = new Dialog(this, android.R.style.Theme_Holo_Dialog); //display an invisible overlay dialog to prevent user interaction and pressing back
-        /*mOverlayDialog.setCancelable(false);
-        mOverlayDialog.show();*/
-
-        //mProgressBar = (ProgressBar)findViewById(R.id.progressBar);
-        //mProgressBar.setVisibility(View.VISIBLE);
-        /*mProgressBar.setVisibility(View.GONE);*/
         mProgressBar.setScaleY(.2f);
         mProgressBar.setScaleX(.2f);
 
@@ -57,13 +50,14 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        /*fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
+        fab.setVisibility(View.GONE);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

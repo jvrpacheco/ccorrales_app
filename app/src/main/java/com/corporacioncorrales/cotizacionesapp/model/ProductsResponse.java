@@ -78,6 +78,7 @@ public class ProductsResponse {
         Boolean flag;
         if(esPrecioMenorAlLimite == null) {
             flag = false;
+            setEsPrecioMenorAlLimite(flag);
         } else {
             flag = esPrecioMenorAlLimite;
         }

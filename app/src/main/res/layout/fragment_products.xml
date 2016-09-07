@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gris_fondo"
+        android:background="@color/grey300"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -20,14 +20,13 @@
             <android.support.v7.widget.SearchView
                 android:id="@+id/sv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
-
                 app:queryHint="Buscar"
-                android:background="@color/celeste_barra_inferior"
+                android:background="@color/gris_fondo"
                 app:showAsAction="collapseActionView|ifRoom">
             </android.support.v7.widget.SearchView>
 
@@ -41,7 +40,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
-                android:background="@color/gris_fondo"/>
+                android:background="@color/grey300"/>
 
         </LinearLayout>
 
@@ -49,7 +48,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:background="@color/gris_fondo"
+            android:background="@color/grey300"
             android:orientation="vertical">
 
             <TextView
@@ -58,15 +57,17 @@
                 android:textSize="14sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
                 android:text="Products_fragment" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/gris_fondo"
-                android:layout_margin="10dp"
+                android:background="@android:color/transparent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
                 <View
@@ -77,7 +78,7 @@
                 <LinearLayout
                     android:id="@+id/ll_header"
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
+                    android:layout_height="30dp"
                     android:orientation="horizontal"
                     android:background="@color/colorPrimaryDark">
                     <RelativeLayout
@@ -211,18 +212,64 @@
                     android:layout_height="1dp"
                     android:background="@android:color/holo_orange_dark"/>
 
-                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rvQuotation"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:background="@color/gris_claro">
+                    android:background="@color/grey100">
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rvQuotation"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    </android.support.v7.widget.RecyclerView>
+                </LinearLayout>
 
-                </android.support.v7.widget.RecyclerView>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="5dp"
+                    android:background="@color/celeste200"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_alignParentLeft="true">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15dp"
+                            android:textStyle="normal"
+                            android:textColor="@color/negro"
+                            android:text="Total productos:"
+                            android:id="@+id/textView0" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15dp"
+                            android:textStyle="normal"
+                            android:textColor="@color/negro"
+                            android:text="-"
+                            android:id="@+id/tvTotalProductos" />
+                    </LinearLayout>
+                    <Button
+                        android:id="@+id/btnEnviarCotizacion"
+                        android:background="@color/verde"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:textColor="@color/blanco"
+                        android:textSize="15dp"
+                        android:layout_height="30dp"
+                        android:text="ENVIAR"
+                        android:layout_alignParentRight="true"/>
+                </RelativeLayout>
 
             </LinearLayout>
-
-
 
         </LinearLayout>
 

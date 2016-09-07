@@ -37,13 +37,13 @@
 
                 <TextView
                     android:id="@+id/tv_razon_social"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="0dp"
                     android:layout_marginBottom="2dp"
                     android:textSize="11sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textColor="@color/turquesa"
+                    android:textStyle="normal"
+                    android:textColor="@color/negro"
                     android:singleLine="true"
                     android:text="RazonSocial"/>
 
@@ -51,8 +51,8 @@
                     android:id="@+id/tv_RUC"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/turquesa"
-                    android:textStyle="bold"
+                    android:textColor="@color/negro"
+                    android:textStyle="normal"
                     android:textSize="10sp"
                     android:text="RUC"/>
 

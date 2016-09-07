@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,7 +20,9 @@ import com.corporacioncorrales.cotizacionesapp.activities.MainActivity;
 import com.corporacioncorrales.cotizacionesapp.adapters.ProductsAdapter;
 import com.corporacioncorrales.cotizacionesapp.adapters.QuotationAdapter;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
+import com.corporacioncorrales.cotizacionesapp.model.QuotationProductRequest;
 import com.corporacioncorrales.cotizacionesapp.networking.ProductsApi;
+import com.corporacioncorrales.cotizacionesapp.networking.QuotationApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 
@@ -27,6 +30,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,14 +49,17 @@ public class ProductsFragment extends Fragment {
     RecyclerView recyclerViewProductos;
     @BindView(R.id.rvQuotation)
     RecyclerView rvQuotation;
+    @BindView(R.id.btnEnviarCotizacion)
+    Button btnEnviarCotizacion;
 
     private ProgressBar mainProgressBar;
     private Boolean fromOnCreate;
     private String client_id;
     private String client_razonSocial;
     private ArrayList<ProductsResponse> productsArrayList;
-    public static  ProductsAdapter productsAdapter;
+    public static ProductsAdapter productsAdapter;
     private QuotationAdapter quotationAdapter;
+    private String idCliente;
 
     public static ArrayList<ProductsResponse> productsSelectedList;
 
@@ -76,6 +83,8 @@ public class ProductsFragment extends Fragment {
             client_id = args.getString("cliente_id");
             client_razonSocial = args.getString("cliente_razonSocial");
         }
+
+        idCliente = "124896";
     }
 
     @Override
@@ -94,6 +103,7 @@ public class ProductsFragment extends Fragment {
         if (fromOnCreate) {
             createQuotation();
             loadProductsPerClient(client_id);
+            //loadProductsPerClient(idCliente);
             fromOnCreate = false;
         }
     }
@@ -117,17 +127,17 @@ public class ProductsFragment extends Fragment {
                 .build();
 
         ProductsApi request = retrofit.create(ProductsApi.class);
-        Call<ArrayList<ProductsResponse>> call = request.getProductsPerClient("124896", "00");
+        Call<ArrayList<ProductsResponse>> call = request.getProductsPerClient(idClient, "00");
 
         call.enqueue(new Callback<ArrayList<ProductsResponse>>() {
             @Override
             public void onResponse(Call<ArrayList<ProductsResponse>> call, Response<ArrayList<ProductsResponse>> response) {
 
-                if(response != null) {
+                if (response != null) {
                     productsArrayList.clear();
                     productsArrayList = response.body();
 
-                    if(productsArrayList.size()>0) {
+                    if (productsArrayList.size() > 0) {
 
                         productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter);
                         recyclerViewProductos.setAdapter(productsAdapter);
@@ -150,10 +160,72 @@ public class ProductsFragment extends Fragment {
             public void onFailure(Call<ArrayList<ProductsResponse>> call, Throwable t) {
                 Log.d(Constants.log_arrow_failure, t.getMessage());
                 mainProgressBar.setVisibility(View.GONE);
+                Common.showToastMessage(getActivity(), t.getMessage());
             }
         });
 
     }
 
+    @OnClick(R.id.btnEnviarCotizacion)
+    public void OnClick() {
 
+        if(quotationAdapter!= null && quotationAdapter.getItemCount() > 0) {
+
+            ArrayList<ProductsResponse> productsSelected = quotationAdapter.getQuotationProductsList();
+            ArrayList<QuotationProductRequest> dataToSend = new ArrayList<>();
+
+            for(int i=0; i<productsSelected.size(); i++) {
+                ProductsResponse productSelected = productsSelected.get(i);
+                QuotationProductRequest productToSend = new QuotationProductRequest();
+                productToSend.setArticulo(productSelected.getId());
+                productToSend.setCantidad(productSelected.getCantidad());
+                productToSend.setPrecio_real(productSelected.getNuevoPrecio());
+                productToSend.setPrecio(productSelected.getPrecio());
+                dataToSend.add(productToSend);
+            }
+
+            sendQuotation(client_id, "00", "1", dataToSend);
+        } else {
+            Common.showToastMessage(getActivity(), "Por favor agregue productos a la Cotizacion");
+        }
+    }
+
+    private void sendQuotation(String idCliente, String idRubro, String idUsuario, ArrayList<QuotationProductRequest> data) {
+
+        mainProgressBar.setVisibility(View.VISIBLE);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.url_server)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        QuotationApi request = retrofit.create(QuotationApi.class);
+
+        Call<String> call = request.sendQuotation(idCliente, idRubro, idUsuario, data);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                if(response != null) {
+
+                    String rp = response.body();
+                    Log.d(Constants.log_arrow_response, rp);
+                    Common.showToastMessage(getActivity(), rp);
+                    mainProgressBar.setVisibility(View.GONE);
+                    // go to Clients view
+                    getFragmentManager().popBackStackImmediate();
+                } else {
+                    Log.d(Constants.log_arrow_response, "response null");
+                    mainProgressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d(Constants.log_arrow_failure, t.getMessage());
+                mainProgressBar.setVisibility(View.GONE);
+                Common.showToastMessage(getActivity(), t.getMessage());
+            }
+        });
+    }
 }
