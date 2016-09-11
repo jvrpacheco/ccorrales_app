@@ -64,6 +64,18 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             //holder.tvNewPrice.setText(String.format("%.2f", Double.valueOf(product.getPrecio())));
         }
 
+        /*if(!product.getCantidadSolicitada().isEmpty()) {
+            holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
+        } else {
+            if(Integer.getInteger(product.getCantidad()) > 0) {
+                product.setCantidadSolicitada("1");
+                holder.tvCantidadSolicitada.setText("1");
+            } else {
+                product.setCantidadSolicitada("0");
+                holder.tvCantidadSolicitada.setText("0");
+            }
+        }*/
+
         if(product.getEsPrecioMenorAlLimite()) {
             //product.setEsPrecioMenorAlLimite(true);
             holder.ivChangePrice.setImageResource(R.drawable.hand_red_52);
@@ -89,7 +101,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             public void onClick(View v) {
 
                 if(!product.getPrecio().isEmpty() && !product.getPre_inferior().isEmpty()) {
-                    //Common.showToastMessage(mContext, "Precio minimo:" + product.getPre_inferior());
 
                     showChangePriceDialog(mContext,
                             product,
@@ -121,7 +132,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     }
 
     public static class QuotationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView tvId, tvDescription, tvPrice, tvQuantity, tvNewPrice;
+        TextView tvId, tvDescription, tvPrice, tvQuantity, tvNewPrice, tvCantidadSolicitada;
         ImageView ivRemove, ivArrival, ivChangePrice;
 
         public QuotationViewHolder(View view) {
@@ -131,6 +142,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             tvPrice = (TextView)view.findViewById(R.id.tvPrice);
             tvNewPrice = (TextView)view.findViewById(R.id.tvNewPrice);
             tvQuantity = (TextView)view.findViewById(R.id.tvQuantity);
+            tvCantidadSolicitada = (TextView)view.findViewById(R.id.tvCantidadSolicitada);
             ivRemove = (ImageView) view.findViewById(R.id.ivRemove);
             ivArrival = (ImageView) view.findViewById(R.id.ivArrival);
             ivChangePrice = (ImageView) view.findViewById(R.id.ivChangePrice);
@@ -180,11 +192,16 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final ImageView ivUpPrice = (ImageView) dialog.findViewById(R.id.ivUpPrice);
         final ImageView ivDownPrice = (ImageView) dialog.findViewById(R.id.ivDownPrice);
 
-        tvPrecio.setText(String.format("%.2f", Double.valueOf(price)));
-        tvPrecioLimiteInferior.setText(String.format("%.2f", Double.valueOf(priceMinLimit)));
+        //tvPrecio.setText(String.format("%.2d", Double.valueOf(price)));
+        tvPrecio.setText(price);
+        //tvPrecioLimiteInferior.setText(String.format("%.2d", Double.valueOf(priceMinLimit)));
+        tvPrecioLimiteInferior.setText(priceMinLimit);
+
         tvPrecioIngresado.setText(product.getNuevoPrecio());
+        //tvPrecioIngresado.setText(String.format("%.2f", Double.valueOf(product.getNuevoPrecio())));
         tvProductDes.setText(product.getNombre());
         edtPrice.setText(product.getNuevoPrecio());
+        //edtPrice.setText(String.format("%.2f", Double.valueOf(product.getNuevoPrecio())));
         precioIngresado = product.getNuevoPrecio();
 
         String cp = Common.comparePrices(Double.valueOf(product.getNuevoPrecio()), Double.valueOf(product.getPre_inferior()));
@@ -212,7 +229,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 Log.v("afterTextChanged ---->", s.toString());
                 String priceInserted = s.toString();
 
-                if(!priceInserted.isEmpty() && !priceInserted.equals(".")) {
+                if(!priceInserted.isEmpty() && !priceInserted.equals(".") && !priceInserted.equals(",")) {
                     tvPrecioIngresado.setText(priceInserted);
                     //el precio ingresado es... respecto al precio minimo
                     String resultComparePrices = Common.comparePrices(Double.valueOf(priceInserted), Double.valueOf(priceMinLimit));
@@ -241,7 +258,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
         });
 
-        ivUpPrice.setOnClickListener(new View.OnClickListener() {
+        /*ivUpPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!precioIngresado.isEmpty() && !precioIngresado.equals(".")) {
@@ -261,7 +278,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     }
                 }
             }
-        });
+        });*/
 
         btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
 

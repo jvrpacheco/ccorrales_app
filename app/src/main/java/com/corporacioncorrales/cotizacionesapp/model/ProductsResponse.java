@@ -91,6 +91,23 @@ public class ProductsResponse {
 
     //********************************************
 
+    private String cantidadSolicitada;
+
+    public String getCantidadSolicitada() {
+        String newQuantity;
+        if(cantidadSolicitada == null) {
+            newQuantity = Constants.Empty;
+        } else {
+            newQuantity = cantidadSolicitada;
+        }
+        return cantidadSolicitada;
+    }
+
+    public void setCantidadSolicitada(String cantidadSolicitada) {
+        this.cantidadSolicitada = cantidadSolicitada;
+    }
+
+    //********************************************
 
     public String getId() {
         return Id;

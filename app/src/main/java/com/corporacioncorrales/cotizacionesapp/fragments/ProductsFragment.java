@@ -25,6 +25,7 @@ import com.corporacioncorrales.cotizacionesapp.networking.ProductsApi;
 import com.corporacioncorrales.cotizacionesapp.networking.QuotationApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
+import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
 
 import java.util.ArrayList;
 
@@ -92,6 +93,7 @@ public class ProductsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_products, container, false);
         ButterKnife.bind(this, view);
+        Common.setActionBarTitle(getActivity(), "Productos");
         return view;
     }
 
@@ -158,7 +160,7 @@ public class ProductsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<ProductsResponse>> call, Throwable t) {
-                Log.d(Constants.log_arrow_failure, t.getMessage());
+                Log.d(Constants.log_arrow_failure, t.toString());
                 mainProgressBar.setVisibility(View.GONE);
                 Common.showToastMessage(getActivity(), t.getMessage());
             }
@@ -179,14 +181,18 @@ public class ProductsFragment extends Fragment {
                 QuotationProductRequest productToSend = new QuotationProductRequest();
                 productToSend.setArticulo(productSelected.getId());
                 productToSend.setCantidad(productSelected.getCantidad());
-                productToSend.setPrecio_real(productSelected.getNuevoPrecio());
-                productToSend.setPrecio(productSelected.getPrecio());
+                productToSend.setPrecio_real(productSelected.getPrecio());
+                productToSend.setPrecio(productSelected.getNuevoPrecio());
                 dataToSend.add(productToSend);
             }
 
-            sendQuotation(client_id, "00", "1", dataToSend);
+            sendQuotation(client_id,
+                    Singleton.getInstance().getRubroSelected(),
+                    Singleton.getInstance().getUserCode(),
+                    dataToSend);
+
         } else {
-            Common.showToastMessage(getActivity(), "Por favor agregue productos a la Cotizacion");
+            Common.showToastMessage(getActivity(), "Por favor, agregue productos a la Cotizacion.");
         }
     }
 
@@ -222,7 +228,7 @@ public class ProductsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.d(Constants.log_arrow_failure, t.getMessage());
+                Log.d(Constants.log_arrow_failure, t.toString());
                 mainProgressBar.setVisibility(View.GONE);
                 Common.showToastMessage(getActivity(), t.getMessage());
             }

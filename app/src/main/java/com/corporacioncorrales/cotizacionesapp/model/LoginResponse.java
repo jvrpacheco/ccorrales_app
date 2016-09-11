@@ -12,10 +12,18 @@ public class LoginResponse {
     @Expose
     private String CodUsu;
 
+    @SerializedName("FocoUsu")
+    @Expose
+    private String FocoUsu;
+
 
 
     public String getCodUsu() {
         return CodUsu;
+    }
+
+    public String getFocoUsu() {
+        return FocoUsu;
     }
 
 }

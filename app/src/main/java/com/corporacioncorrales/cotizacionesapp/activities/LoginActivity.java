@@ -57,9 +57,6 @@ public class LoginActivity extends AppCompatActivity {
 
         etLoginUser.setText("jsalazar");
         etLoginClave.setText("123");
-
-        //Common.hideKeyboard(this, etLoginUser);
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     @Override
@@ -99,9 +96,11 @@ public class LoginActivity extends AppCompatActivity {
                         if (response != null) {
                             Log.d(Constants.log_arrow_response, response.body().getCodUsu());
 
-                            if(response.body().getCodUsu().equals(Constants.allowEnterToApp)) {
+                            if(response.body().getFocoUsu().equals(Constants.allowEnterToApp)) {
 
                                 Singleton.getInstance().setUser(user);
+                                Singleton.getInstance().setUserCode(response.body().getCodUsu());
+                                Log.d(Constants.log_arrow, response.body().getCodUsu());
                                 Log.d(Constants.log_arrow + TAG + " User admitid", Singleton.getInstance().getUser());
                                 Common.showToastMessage(getApplicationContext(), "Bienvenido " + user + "!");
                                 enterToApp(user);

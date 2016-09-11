@@ -90,6 +90,8 @@ public class ClientsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         rubroSelected = Constants.rubro_vidrio; // valor por defecto del rubro en la primera carga de la vista
         fromOnCreate = true;
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
@@ -128,6 +130,8 @@ public class ClientsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        Common.setActionBarTitle(getActivity(), "Clientes");
         Log.d(Constants.log_arrow + TAG, "onResume, rubroSelected: " + rubroSelected);
 
         initSpinnerRubro();
@@ -165,10 +169,15 @@ public class ClientsFragment extends Fragment {
                         //onResume permite actualizar para verificar si hay nuevos datos de acuerdo al rubro
                     } else if (item.equals(Constants.rubro_aluminio_label)) {
                         rubroSelected = Constants.rubro_aluminio;
+                    } else if (item.equals(Constants.rubro_accesorio_label)) {
+                        rubroSelected = Constants.rubro_accesorio;
+                    } else if (item.equals(Constants.rubro_plastico_label)) {
+                        rubroSelected = Constants.rubro_plastico;
                     }
                     initViews3();
                 }
                 //Common.showToastMessage(getActivity(), rubroSelected + "!");
+                Singleton.getInstance().setRubroSelected(rubroSelected);
                 Log.d(Constants.log_arrow + TAG, "onCreate, rubroSelected: " + rubroSelected);
             }
 
@@ -260,7 +269,7 @@ public class ClientsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<ClientsResponse>> call, Throwable t) {
-                Log.d(Constants.log_arrow_failure, t.getLocalizedMessage());
+                Log.d(Constants.log_arrow_failure, t.toString());
                 mainProgressBar.setVisibility(View.GONE);
             }
         });

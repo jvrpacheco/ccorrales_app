@@ -1,9 +1,12 @@
 package com.corporacioncorrales.cotizacionesapp.utils;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -49,5 +52,14 @@ public class Common {
         }
 
         return result;
+    }
+
+    public static void setActionBarTitle(Activity activity, String title) {
+
+        android.support.v7.app.ActionBar mActionBar=((AppCompatActivity)activity).getSupportActionBar();
+
+        if (mActionBar != null) {
+            mActionBar.setTitle(title);
+        }
     }
 }

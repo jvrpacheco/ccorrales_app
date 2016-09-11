@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ClientsFragment;
+import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
 
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity
         nv.getMenu().getItem(itemId).setChecked(true);
         //Mostrar la vista del primer item seleccionado del menu
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ClientsFragment()).commit();
-        setActionBarTitle(getString(R.string.category_clients));
+        //setActionBarTitle(getString(R.string.category_clients));
     }
 
     @Override
@@ -178,17 +179,18 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        setActionBarTitle(title);
+        //setActionBarTitle(title);
+        Common.setActionBarTitle(this, title);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private void setActionBarTitle(String title) {
+    /*private void setActionBarTitle(String title) {
         // set the toolbar title
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
-    }
+    }*/
 }

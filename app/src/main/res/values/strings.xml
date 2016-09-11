@@ -27,6 +27,8 @@
     <string-array name="array_rubros">
         <item>Vidrio</item>
         <item>Aluminio</item>
+        <item>Accesorio</item>
+        <item>Plastico</item>
     </string-array>
 
 </resources>

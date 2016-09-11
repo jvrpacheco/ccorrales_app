@@ -18,10 +18,15 @@ public class Constants {
     public static final String url_products_per_user = "api/articulos";
     public static final String url_send_quotation = "api/products/createproducts";
 
-    public static final String rubro_vidrio_label = "Vidrio";
-    public static final String rubro_vidrio = "00";
     public static final String rubro_aluminio_label = "Aluminio";
-    public static final String rubro_aluminio = "01";
+    public static final String rubro_aluminio = "00";
+    public static final String rubro_vidrio_label = "Vidrio";
+    public static final String rubro_vidrio = "01";
+    public static final String rubro_accesorio_label = "Accesorio";
+    public static final String rubro_accesorio = "03";
+    public static final String rubro_plastico_label = "Plastico";
+    public static final String rubro_plastico = "04";
+
 
     //para comparar los precios
     public static final String comparar_esMayor = "esMayor";

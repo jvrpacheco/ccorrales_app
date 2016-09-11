@@ -52,7 +52,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
     @Override
     public void onBindViewHolder(final ProductsViewHolder holder, final int position) {
+
         final ProductsResponse product = productsList.get(position);
+
         holder.tvId.setText(product.getId());
         holder.tvCantidad.setText("Stock: " + product.getCantidad());
 
@@ -77,7 +79,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Common.showToastMessage(mContext, "Articulo > " + product.getNombre());
 
                 if(product.getSelected()) {
                     product.setSelected(false);
@@ -87,18 +88,19 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                 } else {
                     product.setSelected(true);
                     holder.ivCheck.setVisibility(View.VISIBLE);
-                    //quotationAdapter.addItem(0, product);
                     productsSelectedList.add(product);
-                    //quotationAdapter.addItem(productsSelectedList.size()-1, product);
-                    /*if(productsSelectedList.size() == 0) {
-                        quotationAdapter.addItem(0, product);
-                    } else if(productsSelectedList.size() > 0) {
-                        quotationAdapter.addItem(productsSelectedList.size()-1, product);
-                    }*/
                     quotationAdapter.addItem(0, product);
                 }
 
-                Log.d(Constants.log_arrow, String.valueOf(productsSelectedList.size()));
+            Log.d(Constants.log_arrow, String.valueOf(productsSelectedList.size()));
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Common.showToastMessage(mContext, "Imagen con zoom");
+                return true; // si esta en false luego de long click ejecutara onclick
             }
         });
 

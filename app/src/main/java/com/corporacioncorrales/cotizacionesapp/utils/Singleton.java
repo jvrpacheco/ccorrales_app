@@ -7,6 +7,17 @@ public class Singleton {
 
     private static Singleton ourInstance = new Singleton();
     private String user;
+    private String userCode;
+
+    public String getRubroSelected() {
+        return rubroSelected;
+    }
+
+    public void setRubroSelected(String rubroSelected) {
+        this.rubroSelected = rubroSelected;
+    }
+
+    private String rubroSelected;
 
     public static Singleton getInstance() {
         return ourInstance;
@@ -21,6 +32,14 @@ public class Singleton {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
     }
 
 }
