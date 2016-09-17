@@ -23,12 +23,22 @@
     <string name="precio_dentro_del_rango">Precio dentro del rango permitido.</string>
     <string name="precio_fuera_del_rango">Precio por debajo del limite permitido.</string>
     <string name="precio_ingresado_vacio">Por favor ingrese el precio.</string>
+    //dialog Cantidad
+    <string name="cantidad_solicitada_permitida">Cantidad solicitida permitida.</string>
+    <string name="cantidad_solicitada_no_permitida">Cantidad no disponible.</string>
+    <string name="cantidad_solicitada_mayor_a_cero">Por favor ingrese una cantidad mayor a cero.</string>
+    <string name="cantidad_solicitada_vacia">Por favor ingrese una cantidad.</string>
 
     <string-array name="array_rubros">
         <item>Vidrio</item>
         <item>Aluminio</item>
         <item>Accesorio</item>
         <item>Plastico</item>
+    </string-array>
+
+    <string-array name="array_tipos_doc">
+        <item>Proforma</item>
+        <item>Factura</item>
     </string-array>
 
 </resources>

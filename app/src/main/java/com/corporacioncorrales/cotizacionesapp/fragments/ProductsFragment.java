@@ -11,8 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
@@ -52,7 +55,12 @@ public class ProductsFragment extends Fragment {
     RecyclerView rvQuotation;
     @BindView(R.id.btnEnviarCotizacion)
     Button btnEnviarCotizacion;
+    @BindView(R.id.tvTotalProductos)
+    TextView tvTotalProductos;
+    @BindView(R.id.spTipoDoc)
+    Spinner spTipoDoc;
 
+    private String TAG = getClass().getCanonicalName();
     private ProgressBar mainProgressBar;
     private Boolean fromOnCreate;
     private String client_id;
@@ -61,6 +69,7 @@ public class ProductsFragment extends Fragment {
     public static ProductsAdapter productsAdapter;
     private QuotationAdapter quotationAdapter;
     private String idCliente;
+    private String tipoDocSelected;
 
     public static ArrayList<ProductsResponse> productsSelectedList;
 
@@ -102,10 +111,11 @@ public class ProductsFragment extends Fragment {
         super.onResume();
 
         tvCliente.setText(client_razonSocial);
+
         if (fromOnCreate) {
+            initSpinnerDocType();
             createQuotation();
             loadProductsPerClient(client_id);
-            //loadProductsPerClient(idCliente);
             fromOnCreate = false;
         }
     }
@@ -129,7 +139,7 @@ public class ProductsFragment extends Fragment {
                 .build();
 
         ProductsApi request = retrofit.create(ProductsApi.class);
-        Call<ArrayList<ProductsResponse>> call = request.getProductsPerClient(idClient, "00");
+        Call<ArrayList<ProductsResponse>> call = request.getProductsPerClient(idClient, Singleton.getInstance().getRubroSelected());
 
         call.enqueue(new Callback<ArrayList<ProductsResponse>>() {
             @Override
@@ -171,16 +181,16 @@ public class ProductsFragment extends Fragment {
     @OnClick(R.id.btnEnviarCotizacion)
     public void OnClick() {
 
-        if(quotationAdapter!= null && quotationAdapter.getItemCount() > 0) {
+        if (quotationAdapter != null && quotationAdapter.getItemCount() > 0) {
 
             ArrayList<ProductsResponse> productsSelected = quotationAdapter.getQuotationProductsList();
             ArrayList<QuotationProductRequest> dataToSend = new ArrayList<>();
 
-            for(int i=0; i<productsSelected.size(); i++) {
+            for (int i = 0; i < productsSelected.size(); i++) {
                 ProductsResponse productSelected = productsSelected.get(i);
                 QuotationProductRequest productToSend = new QuotationProductRequest();
                 productToSend.setArticulo(productSelected.getId());
-                productToSend.setCantidad(productSelected.getCantidad());
+                productToSend.setCantidad(productSelected.getCantidadSolicitada());
                 productToSend.setPrecio_real(productSelected.getPrecio());
                 productToSend.setPrecio(productSelected.getNuevoPrecio());
                 dataToSend.add(productToSend);
@@ -212,7 +222,7 @@ public class ProductsFragment extends Fragment {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
 
-                if(response != null) {
+                if (response != null) {
 
                     String rp = response.body();
                     Log.d(Constants.log_arrow_response, rp);
@@ -234,4 +244,31 @@ public class ProductsFragment extends Fragment {
             }
         });
     }
+
+    private void initSpinnerDocType() {
+        ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_tipos_doc, android.R.layout.simple_list_item_1);
+        spTipoDoc.setAdapter(adapterRubroType);
+
+        spTipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                String item = parent.getItemAtPosition(position).toString();
+                if (item.equals(Constants.tipoDoc_proforma_label)) {
+                    tipoDocSelected = Constants.tipoDoc_proforma;
+                } else if (item.equals(Constants.tipoDoc_factura_label)) {
+                    tipoDocSelected = Constants.tipoDoc_factura;
+                }
+
+                Singleton.getInstance().setRubroSelected(tipoDocSelected);
+                Log.d(Constants.log_arrow + TAG, "tipoDocSelected: " + tipoDocSelected);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
 }

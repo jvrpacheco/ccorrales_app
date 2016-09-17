@@ -110,21 +110,6 @@ public class ClientsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        /*if(fromOnCreate) {
-            initSpinnerRubro();
-            enableRefreshButton(false);
-            initViews3();
-            fromOnCreate = false;
-        } else {
-
-        }*/
-
-        /*initSpinnerRubro();
-        enableRefreshButton(false);
-        initViews3();*/
-
-
-
     }
 
     @Override

@@ -90,9 +90,29 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@android:color/holo_orange_dark"/>
+        <RelativeLayout
+            android:layout_width="60dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tvQuantity"
+                android:textColor="@color/negro"
+                android:textSize="@dimen/textSize_header_products"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Q"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:singleLine="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_orange_dark"/>
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="90dp"
+            android:layout_width="85dp"
             android:layout_height="match_parent">
             <ImageView
                 android:id="@+id/ivChangePrice"
@@ -123,27 +143,39 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@android:color/holo_orange_dark"/>
-        <RelativeLayout
-            android:layout_width="60dp"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="70dp"
             android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/tvQuantity"
-                android:textColor="@color/negro"
-                android:textSize="@dimen/textSize_header_products"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Q"
+            <ImageView
+                android:id="@+id/ivChangeQuantity"
+                android:src="@drawable/plus_minus_48"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:singleLine="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"/>
-        </RelativeLayout>
+                android:layout_gravity="center_vertical"/>
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/tvCantidadSolicitada"
+                    android:textColor="@color/negro"
+                    android:textSize="@dimen/textSize_header_products"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Q1"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:singleLine="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+        </LinearLayout>
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@android:color/holo_orange_dark"/>
-
         <RelativeLayout
             android:layout_width="80dp"
             android:layout_height="match_parent">
@@ -154,26 +186,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Total"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:singleLine="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"/>
-        </RelativeLayout>
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/holo_orange_dark"/>
-        <RelativeLayout
-            android:layout_width="60dp"
-            android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/tvCantidadSolicitada"
-                android:textColor="@color/negro"
-                android:textSize="@dimen/textSize_header_products"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Q1"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:singleLine="true"

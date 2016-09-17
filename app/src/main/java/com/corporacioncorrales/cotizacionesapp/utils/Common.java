@@ -2,12 +2,14 @@ package com.corporacioncorrales.cotizacionesapp.utils;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -27,10 +29,16 @@ public class Common {
         return (netInfo != null && netInfo.isConnectedOrConnecting());
     }
 
-    public static void hideKeyboard(Activity activity, EditText editText) {
-        InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+    public static void hideKeyboard(Context context, EditText editText) {
+        InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
+
+    public static void hideKeyboardOnDialog(Dialog dialog) {
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+
 
     // el primero es... respecto al segundo
     public static String comparePrices(Double d1, Double d2) {

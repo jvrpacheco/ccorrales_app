@@ -5,7 +5,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -16,15 +18,26 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
+import com.corporacioncorrales.cotizacionesapp.model.PricesHistoryResponse;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
+import com.corporacioncorrales.cotizacionesapp.networking.ProductsApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
+import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by victor on 8/20/16.
@@ -33,6 +46,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     Context mContext;
     ArrayList<ProductsResponse> productsList;
+    private ProgressBar progressBar;
 
     public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList) {
         this.mContext = mContext;
@@ -51,30 +65,42 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final ProductsResponse product = productsList.get(position);
         holder.tvId.setText(product.getId());
         holder.tvDescription.setText(product.getNombre());
-        //holder.tvPrice.setText(String.format("%.2f", Double.valueOf(product.getPrecio())));
-        holder.tvPrice.setText(product.getPrecio());
 
+
+        //Precio
+        //holder.tvPrice.setText(product.getPrecio());
+        Double price = Double.parseDouble(product.getPrecio());
+        holder.tvPrice.setText(String.valueOf(price));
+
+
+        //Nuevo Precio
         if(!product.getNuevoPrecio().isEmpty()) {
-            holder.tvNewPrice.setText(product.getNuevoPrecio());
-            //holder.tvNewPrice.setText(String.format("%.2f", Double.valueOf(product.getNuevoPrecio())));
+            //holder.tvNewPrice.setText(product.getNuevoPrecio());
+            Double newPrice = Double.parseDouble(product.getNuevoPrecio());
+            holder.tvNewPrice.setText(String.valueOf(newPrice));
         } else {
             product.setNuevoPrecio(product.getPrecio());
-            holder.tvNewPrice.setText(product.getPrecio());
-            //product.setNuevoPrecio(String.format("%.2f", Double.valueOf(product.getPrecio())));
-            //holder.tvNewPrice.setText(String.format("%.2f", Double.valueOf(product.getPrecio())));
+            //holder.tvNewPrice.setText(product.getPrecio());
+            holder.tvNewPrice.setText(String.valueOf(price));
         }
 
-        /*if(!product.getCantidadSolicitada().isEmpty()) {
+        if(!product.getCantidadSolicitada().isEmpty()) {
+            if(Integer.parseInt(product.getCantidadSolicitada()) > 0) {
+                holder.ivChangeQuantity.setVisibility(View.VISIBLE);
+            } else {
+                holder.ivChangeQuantity.setVisibility(View.GONE);
+            }
             holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
         } else {
-            if(Integer.getInteger(product.getCantidad()) > 0) {
+            if(Integer.parseInt(product.getCantidad()) > 0) {
                 product.setCantidadSolicitada("1");
-                holder.tvCantidadSolicitada.setText("1");
+                holder.ivChangeQuantity.setVisibility(View.VISIBLE);
             } else {
                 product.setCantidadSolicitada("0");
-                holder.tvCantidadSolicitada.setText("0");
+                holder.ivChangeQuantity.setVisibility(View.GONE);
             }
-        }*/
+            holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
+        }
 
         if(product.getEsPrecioMenorAlLimite()) {
             //product.setEsPrecioMenorAlLimite(true);
@@ -84,7 +110,21 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             holder.ivChangePrice.setImageResource(R.drawable.hand_green_52);
         }
 
+        //Stock
         holder.tvQuantity.setText(product.getCantidad());
+
+        //Precio total
+        if(Integer.parseInt(product.getCantidad())>0) {
+            try {
+                Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
+                Double precioTotalPorProducto = Double.parseDouble(product.getNuevoPrecio()) * cantidadSolicitada;
+                holder.tvTotalPrice.setText(String.format("%.2f", precioTotalPorProducto));
+            } catch (Exception ex) {
+                Log.e(Constants.log_arrow, ex.toString());
+            }
+        } else {
+            holder.tvTotalPrice.setText("0");
+        }
 
         holder.ivRemove.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +150,17 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 } else {
                     Common.showToastMessage(mContext, "No existe precio o precio inferior para este producto");
                 }
+            }
+        });
+
+        holder.ivChangeQuantity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(!product.getCantidad().isEmpty() && Integer.parseInt(product.getCantidad())>0) {
+
+                    showChangeQuantityDialog(mContext, product, position);
+                }
 
             }
         });
@@ -132,8 +183,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     }
 
     public static class QuotationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView tvId, tvDescription, tvPrice, tvQuantity, tvNewPrice, tvCantidadSolicitada;
-        ImageView ivRemove, ivArrival, ivChangePrice;
+        TextView tvId, tvDescription, tvPrice, tvQuantity, tvNewPrice, tvCantidadSolicitada, tvTotalPrice;
+        ImageView ivRemove, ivArrival, ivChangePrice, ivChangeQuantity;
 
         public QuotationViewHolder(View view) {
             super(view);
@@ -142,10 +193,12 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             tvPrice = (TextView)view.findViewById(R.id.tvPrice);
             tvNewPrice = (TextView)view.findViewById(R.id.tvNewPrice);
             tvQuantity = (TextView)view.findViewById(R.id.tvQuantity);
+            tvTotalPrice = (TextView)view.findViewById(R.id.tvTotalPrice);
             tvCantidadSolicitada = (TextView)view.findViewById(R.id.tvCantidadSolicitada);
             ivRemove = (ImageView) view.findViewById(R.id.ivRemove);
             ivArrival = (ImageView) view.findViewById(R.id.ivArrival);
             ivChangePrice = (ImageView) view.findViewById(R.id.ivChangePrice);
+            ivChangeQuantity = (ImageView) view.findViewById(R.id.ivChangeQuantity);
         }
 
         @Override
@@ -172,14 +225,98 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         notifyDataSetChanged();
     }
 
+    private String quantityInserted = "";
+    private void showChangeQuantityDialog(final Context context, final ProductsResponse product, final int position) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_quotation_change_quantity);
+
+        final Button btnAcceptDialog = (Button)dialog.findViewById(R.id.btnAccept);
+        final Button btnCloseDialog = (Button)dialog.findViewById(R.id.btnClose);
+        final TextView tvProductDes = (TextView)dialog.findViewById(R.id.tvProductDes);
+        final EditText edtQuantity = (EditText)dialog.findViewById(R.id.edtQuantity);
+        final TextView tvStock = (TextView)dialog.findViewById(R.id.tvStock);
+        final TextView tvCompareResult = (TextView)dialog.findViewById(R.id.tvCompareResult);
+        final String stock = product.getCantidad();
+
+        tvProductDes.setText(product.getNombre());
+        quantityInserted = product.getCantidadSolicitada();
+        tvStock.setText(stock);
+        edtQuantity.setText(quantityInserted);
+        edtQuantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String qInserted = s.toString();
+
+                if(!qInserted.isEmpty()) {
+                    if(Integer.parseInt(qInserted)>0) {
+                        if(Integer.parseInt(qInserted) <= Integer.parseInt(stock)) {
+                            tvCompareResult.setText(context.getResources().getString(R.string.cantidad_solicitada_permitida));
+                            tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
+                            btnAcceptDialog.setEnabled(true);
+                            quantityInserted = qInserted;
+                        } else {
+                            tvCompareResult.setText(String.format("%s %s %s", "El maximo permitido es de", stock, "productos."));
+                            tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
+                            btnAcceptDialog.setEnabled(false);
+                            quantityInserted = qInserted;
+                        }
+
+                    } else if(qInserted.equals("0")){
+                        tvCompareResult.setText(context.getResources().getString(R.string.cantidad_solicitada_mayor_a_cero));
+                        tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
+                        btnAcceptDialog.setEnabled(false);
+                    }
+                } else {
+                    tvCompareResult.setText(context.getResources().getString(R.string.cantidad_solicitada_vacia));
+                    tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
+                    btnAcceptDialog.setEnabled(false);
+                }
+            }
+        });
+
+        btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                product.setCantidadSolicitada(quantityInserted);
+                refreshItem(position, product);
+                dialog.dismiss();
+            }
+        });
+
+        btnCloseDialog.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        Common.hideKeyboardOnDialog(dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+    }
+
     private String precioIngresado = "";
     private Boolean esPrecioMenorAlLimite;
     private void showChangePriceDialog(final Context context, final ProductsResponse product, final int position, final String price, final String priceMinLimit) {
 
-        final Dialog dialog = new Dialog(mContext);
+        final Dialog dialog = new Dialog(context);
         dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_quotation_change_price);
+        dialog.setContentView(R.layout.dialog_quotation_change_price1);
 
         final Button btnAcceptDialog = (Button)dialog.findViewById(R.id.btnAccept);
         final Button btnCloseDialog = (Button)dialog.findViewById(R.id.btnClose);
@@ -191,18 +328,27 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final EditText edtPrice = (EditText)dialog.findViewById(R.id.edtPrice);
         final ImageView ivUpPrice = (ImageView) dialog.findViewById(R.id.ivUpPrice);
         final ImageView ivDownPrice = (ImageView) dialog.findViewById(R.id.ivDownPrice);
+        final ImageView ivShowPricesHistory = (ImageView) dialog.findViewById(R.id.ivShowPricesHistory);
+        final ImageView ivHidePricesHistory = (ImageView) dialog.findViewById(R.id.ivHidePricesHistory);
+        final LinearLayout ll_pricesHistory = (LinearLayout) dialog.findViewById(R.id.ll_pricesHistory);
+        final LinearLayout ll_prices = (LinearLayout) dialog.findViewById(R.id.ll_prices);
+        final RecyclerView rvPricesHistory = (RecyclerView) dialog.findViewById(R.id.rvPricesHistory);
 
-        //tvPrecio.setText(String.format("%.2d", Double.valueOf(price)));
-        tvPrecio.setText(price);
-        //tvPrecioLimiteInferior.setText(String.format("%.2d", Double.valueOf(priceMinLimit)));
-        tvPrecioLimiteInferior.setText(priceMinLimit);
 
-        tvPrecioIngresado.setText(product.getNuevoPrecio());
-        //tvPrecioIngresado.setText(String.format("%.2f", Double.valueOf(product.getNuevoPrecio())));
+        //tvPrecio.setText(price);
+        tvPrecio.setText(String.valueOf(Double.parseDouble(price)));
+
+        //tvPrecioLimiteInferior.setText(priceMinLimit);
+        tvPrecioLimiteInferior.setText(String.valueOf(Double.parseDouble(priceMinLimit)));
+
+        //tvPrecioIngresado.setText(product.getNuevoPrecio());
+        tvPrecioIngresado.setText(String.valueOf(Double.parseDouble(product.getNuevoPrecio())));
+
         tvProductDes.setText(product.getNombre());
-        edtPrice.setText(product.getNuevoPrecio());
-        //edtPrice.setText(String.format("%.2f", Double.valueOf(product.getNuevoPrecio())));
+
         precioIngresado = product.getNuevoPrecio();
+        //edtPrice.setText(precioIngresado);
+        edtPrice.setText(String.valueOf(Double.parseDouble(precioIngresado)));
 
         String cp = Common.comparePrices(Double.valueOf(product.getNuevoPrecio()), Double.valueOf(product.getPre_inferior()));
         if(cp.equals(Constants.comparar_esMayor) || cp.equals(Constants.comparar_esIgual)) {
@@ -226,7 +372,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.v("afterTextChanged ---->", s.toString());
+                //Log.v("afterTextChanged ---->", s.toString());
                 String priceInserted = s.toString();
 
                 if(!priceInserted.isEmpty() && !priceInserted.equals(".") && !priceInserted.equals(",")) {
@@ -291,6 +437,32 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
         });
 
+        ivShowPricesHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ll_prices.setVisibility(View.GONE);
+                ll_pricesHistory.setVisibility(View.VISIBLE);
+
+                loadPricesHistory(
+                        rvPricesHistory,
+                        Singleton.getInstance().getUserCode(),
+                        product.getId());
+
+                /*loadPricesHistory(
+                        rvPricesHistory,
+                        "197119",
+                        "01VL00600");*/
+            }
+        });
+
+        ivHidePricesHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ll_prices.setVisibility(View.VISIBLE);
+                ll_pricesHistory.setVisibility(View.GONE);
+            }
+        });
+
         btnCloseDialog.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -299,9 +471,58 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
         });
 
+        Common.hideKeyboardOnDialog(dialog);
+
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
     }
 
+    private void loadPricesHistory(final RecyclerView rv, String idCliente ,String idProduct) {
+
+        rv.setHasFixedSize(true);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.url_server)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ProductsApi request = retrofit.create(ProductsApi.class);
+        Call<ArrayList<PricesHistoryResponse>> call = request.getPricesHistory(idCliente, idProduct);
+        call.enqueue(new Callback<ArrayList<PricesHistoryResponse>>() {
+            @Override
+            public void onResponse(Call<ArrayList<PricesHistoryResponse>> call, Response<ArrayList<PricesHistoryResponse>> response) {
+
+                if (response != null) {
+
+                    ArrayList<PricesHistoryResponse> pricesHistory = response.body();
+                    pricesHistory = response.body();
+
+                    if(pricesHistory.size() > 0) {
+
+                        PricesHistoryAdapter pricesHistoryAdapter = new PricesHistoryAdapter(mContext, pricesHistory);
+                        rv.setAdapter(pricesHistoryAdapter);
+                        LinearLayoutManager llm = new LinearLayoutManager(mContext);
+                        rv.setLayoutManager(llm);
+
+                    } else {
+                        Log.d(Constants.log_arrow_response, "No se encontraron precios para este producto");
+                        //Common.showToastMessage(mContext, "No se encontraron productos para este cliente");
+                    }
+
+                    //mainProgressBar.setVisibility(View.GONE);
+
+                } else {
+                    Log.d(Constants.log_arrow_response, "response null");
+                    //mainProgressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<PricesHistoryResponse>> call, Throwable t) {
+                Log.d(Constants.log_arrow_response, "response null");
+                //mainProgressBar.setVisibility(View.GONE);
+            }
+        });
+
+    }
 
 }

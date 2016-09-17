@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -15,16 +16,24 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
+import com.corporacioncorrales.cotizacionesapp.networking.ProductsApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by victor on 8/20/16.
@@ -35,6 +44,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     ArrayList<ProductsResponse> productsSelectedList;
     QuotationAdapter quotationAdapter;
     Context mContext;
+    private ProgressBar progressBar;
 
     public ProductsAdapter(Context mContext, ArrayList<ProductsResponse> productsList, QuotationAdapter quotationAdapter) {
         this.mContext = mContext;
@@ -79,7 +89,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if(product.getSelected()) {
                     product.setSelected(false);
                     holder.ivCheck.setVisibility(View.GONE);
@@ -99,8 +108,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Common.showToastMessage(mContext, "Imagen con zoom");
-                return true; // si esta en false luego de long click ejecutara onclick
+                showZoomProductImage(product);
+                return true; // si esta en false, luego de long click ejecutara onclick
             }
         });
 
@@ -142,6 +151,76 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                 notifyDataSetChanged();
             }
         }
+    }
+
+    private void showZoomProductImage(ProductsResponse product) {
+        final Dialog dialog = new Dialog(mContext);
+        //dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_product_zoom);
+
+        final ImageView ivClose = (ImageView)dialog.findViewById(R.id.ivClose);
+        final ImageView ivProductZoom = (ImageView)dialog.findViewById(R.id.ivProductZoom);
+        final TextView tvDescripcion = (TextView)dialog.findViewById(R.id.tvDescripcionDialog);
+        progressBar = (ProgressBar)dialog.findViewById(R.id.newProgressBar);
+
+        tvDescripcion.setText(product.getNombre());
+        getZoomProductImage(product.getId(), ivProductZoom);
+
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+    }
+
+    private void getZoomProductImage(String idProduct, final ImageView imageView) {
+        progressBar.setVisibility(View.VISIBLE);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.url_server)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ProductsApi request = retrofit.create(ProductsApi.class);
+        Call<ProductsResponse> call = request.getProductImageZoom(idProduct);  //product.getId()   //00000172
+
+        call.enqueue(new Callback<ProductsResponse>() {
+            @Override
+            public void onResponse(Call<ProductsResponse> call, Response<ProductsResponse> response) {
+                if(response != null) {
+                    ProductsResponse product = response.body();
+
+                    if(!product.getFoto().isEmpty()) {
+                        Picasso.with(mContext)
+                                .load(product.getFoto())
+                                .placeholder(R.drawable.package_96_gray)
+                                .error(R.drawable.package_96_gray)
+                                .centerInside()
+                                .fit()
+                                .into(imageView);
+                    } else {
+                        imageView.setImageResource(R.drawable.package_96_gray);
+                    }
+                    progressBar.setVisibility(View.GONE);
+
+                } else {
+                    Log.d(Constants.log_arrow_response, "response null");
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProductsResponse> call, Throwable t) {
+                Log.d(Constants.log_arrow_failure, t.toString());
+                progressBar.setVisibility(View.GONE);
+                Common.showToastMessage(mContext, t.getMessage());
+            }
+        });
+
     }
 
 }

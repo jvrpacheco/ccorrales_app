@@ -100,7 +100,7 @@ public class ProductsResponse {
         } else {
             newQuantity = cantidadSolicitada;
         }
-        return cantidadSolicitada;
+        return newQuantity;
     }
 
     public void setCantidadSolicitada(String cantidadSolicitada) {
