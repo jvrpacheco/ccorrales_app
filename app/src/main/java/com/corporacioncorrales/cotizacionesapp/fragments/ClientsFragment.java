@@ -4,8 +4,8 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,7 +21,9 @@ import android.widget.TextView;
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.activities.MainActivity;
 import com.corporacioncorrales.cotizacionesapp.adapters.ClientsAdapter;
+import com.corporacioncorrales.cotizacionesapp.adapters.ProductsAdapter;
 import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
+import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.networking.ClientsApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
@@ -33,7 +34,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,6 +48,7 @@ public class ClientsFragment extends Fragment {
     private String TAG = getClass().getCanonicalName();
     private List<ClientsResponse> clientsList;
     private ArrayList<ClientsResponse> clientsArrayList = new ArrayList<ClientsResponse>();
+    private ArrayList<ClientsResponse> originalClientsArrayList;
     private ClientsAdapter clientsAdapter;
     private Dialog mOverlayDialog;
     private String user;
@@ -59,6 +60,8 @@ public class ClientsFragment extends Fragment {
     Spinner spRubro;
     @BindView(R.id.recyclerViewClients)
     RecyclerView recyclerViewClients;
+    @BindView(R.id.svFilterClient)
+    SearchView svFilterClient;
     /*@BindView(R.id.btnRefreshClients)
     Button btnRefreshClients;*/
 
@@ -90,8 +93,6 @@ public class ClientsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         rubroSelected = Constants.rubro_vidrio; // valor por defecto del rubro en la primera carga de la vista
         fromOnCreate = true;
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
@@ -117,18 +118,21 @@ public class ClientsFragment extends Fragment {
         super.onResume();
 
         Common.setActionBarTitle(getActivity(), "Clientes");
+        svFilterClient.setOnQueryTextListener(clientsFilterListener);
         Log.d(Constants.log_arrow + TAG, "onResume, rubroSelected: " + rubroSelected);
 
         initSpinnerRubro();
+        clearClientsFilter();
 
-        if(fromOnCreate) {
+        if (fromOnCreate) {
             //initSpinnerRubro();
             initViews3();
         } else {
             //initSpinnerRubro();
+
             // Rebuild recyclerViewClients from first data downloaded from server in onCreate
-            if(clientsAdapter!=null && clientsArrayList!=null && clientsArrayList.size()>0) {
-                tvTotalClientes.setText(Integer.toString(clientsArrayList.size()));
+            if (clientsAdapter != null && clientsArrayList != null && clientsArrayList.size() > 0) {
+                updateTotalOfClients(clientsArrayList.size());
                 recyclerViewClients.setAdapter(clientsAdapter);
                 // Grid
                 StaggeredGridLayoutManager mStaggeredGridManager3 = new StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL);
@@ -145,7 +149,7 @@ public class ClientsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if(fromOnCreate) {
+                if (fromOnCreate) {
                     fromOnCreate = false;
                 } else {
                     String item = parent.getItemAtPosition(position).toString();
@@ -174,11 +178,11 @@ public class ClientsFragment extends Fragment {
     }
 
     private void initViews3() {
-
         recyclerViewClients.setHasFixedSize(true);
-
-        if (!Singleton.getInstance().getUser().isEmpty())
+        if (!Singleton.getInstance().getUser().isEmpty()) {
             getClients(Singleton.getInstance().getUser(), rubroSelected);   //getClients("jsalazar", "00");   rubroSelected
+            clearClientsFilter();
+        }
     }
 
     private void getClients(String user, String rubro) {
@@ -203,7 +207,10 @@ public class ClientsFragment extends Fragment {
 
                     if (clientsArrayList.size() > 0) {
 
-                        tvTotalClientes.setText(Integer.toString(clientsArrayList.size()));
+                        //guardando primera descarga de clientes
+                        originalClientsArrayList = clientsArrayList;
+
+                        updateTotalOfClients(clientsArrayList.size());
 
                         clientsAdapter = new ClientsAdapter(getActivity(), clientsArrayList);
                         clientsAdapter.notifyDataSetChanged();
@@ -261,6 +268,40 @@ public class ClientsFragment extends Fragment {
 
     }
 
+    SearchView.OnQueryTextListener clientsFilterListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String query) {
+
+            ArrayList<ClientsResponse> filteredClientsList = new ArrayList<>();
+
+            if(originalClientsArrayList!= null && originalClientsArrayList.size()>0) {
+                if(!query.isEmpty()) {
+                    for(int i=0; i<originalClientsArrayList.size(); i++) {
+                        final String text = originalClientsArrayList.get(i).getRazon_Social().toLowerCase();
+                        if(text.contains(query.toLowerCase())) {
+                            filteredClientsList.add(originalClientsArrayList.get(i));
+                        }
+                    }
+                } else {
+                    filteredClientsList = originalClientsArrayList;
+                }
+            }
+
+            updateTotalOfClients(filteredClientsList.size());
+            clientsAdapter = new ClientsAdapter(getActivity(), filteredClientsList);
+            recyclerViewClients.setAdapter(clientsAdapter);
+            StaggeredGridLayoutManager mStaggeredGridManager3 = new StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL);
+            recyclerViewClients.setLayoutManager(mStaggeredGridManager3);
+            clientsAdapter.notifyDataSetChanged();  // data set changed
+            return false;
+        }
+    };
+
     private void showProgressLoading(Boolean show, ProgressBar mProgressBar) {
         if (show) {
             mProgressBar.setVisibility(View.VISIBLE);
@@ -269,4 +310,14 @@ public class ClientsFragment extends Fragment {
         }
     }
 
+    private void updateTotalOfClients(int numberOfClients) {
+        tvTotalClientes.setText(Integer.toString(numberOfClients));
+    }
+
+    private void clearClientsFilter() {
+        if(svFilterClient!=null) {
+            svFilterClient.setQuery(Constants.Empty, false);
+            svFilterClient.clearFocus();
+        }
+    }
 }

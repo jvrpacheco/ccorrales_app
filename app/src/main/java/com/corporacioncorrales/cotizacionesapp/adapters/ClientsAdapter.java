@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -95,6 +96,7 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
             @Override
             public void onClick(View v) {
                 Common.showToastMessage(mContext, "Ir a articulos disponibles para " + client.getRazon_Social());
+                //Common.hideKeyboard(mContext, null);
                 goToFragment(myContext, client);
             }
         });

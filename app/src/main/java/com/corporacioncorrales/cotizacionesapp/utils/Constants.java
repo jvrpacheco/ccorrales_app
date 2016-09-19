@@ -16,7 +16,8 @@ public class Constants {
     public static final String url_user_login = "api/usuario/{user}";
     public static final String url_clients_per_user = "api/clientes";
     public static final String url_products_per_user = "api/articulos";
-    public static final String url_send_quotation = "api/products/createproducts";
+    //public static final String url_send_quotation = "api/products/createproducts";
+    public static final String url_send_quotation = "api/grabarproforma/createproducts";
     public static final String url_image_zoom = "api/products";
     public static final String url_prices_history = "api/preciohistorico/prehistory";
 

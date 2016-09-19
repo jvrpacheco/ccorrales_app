@@ -60,7 +60,8 @@ public class PricesHistoryAdapter extends RecyclerView.Adapter<PricesHistoryAdap
             String [] datetime = price.getFecha().split("T");
 
             holder.tvDatetimeHistory.setText(
-                    String.format("%s\n%s", datetime[0], datetime[1])
+                    //String.format("%s\n%s", datetime[0], datetime[1])
+                    datetime[0]
             );
         }
     }

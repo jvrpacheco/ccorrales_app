@@ -1,5 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="fragments.ClientsFragment"
@@ -27,17 +28,27 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"
             android:paddingRight="5dp"
             android:background="@color/celeste200"
             android:orientation="horizontal">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:layout_alignParentLeft="true">
+                <android.support.v7.widget.SearchView
+                    android:id="@+id/svFilterClient"
+                    android:layout_width="200dp"
+                    android:layout_height="match_parent"
+                    app:queryHint="Buscar"
+                    android:layout_marginLeft="5dp"
+                    android:background="@color/gris_fondo"
+                    app:showAsAction="collapseActionView|ifRoom">
+                </android.support.v7.widget.SearchView>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

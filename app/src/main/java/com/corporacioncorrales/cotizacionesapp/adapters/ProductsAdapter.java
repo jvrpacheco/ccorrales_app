@@ -68,6 +68,22 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         holder.tvId.setText(product.getId());
         holder.tvCantidad.setText("Stock: " + product.getCantidad());
 
+        //*************************
+        /*if(product.getNuevoPrecio().isEmpty() || product.getNuevoPrecio()==null) {
+            product.setNuevoPrecio(product.getPrecio());
+        }
+
+        if(product.getCantidadSolicitada().isEmpty() || product.getCantidadSolicitada()==null) {
+            if(Integer.parseInt(product.getCantidad()) > 0) {
+                product.setCantidadSolicitada("1");
+            } else {
+                product.setCantidadSolicitada("0");
+            }
+        }*/
+        //product.getCantidadSolicitada();
+        //product.getNuevoPrecio();
+        //*************************
+
         if(!product.getFoto().isEmpty()) {
             Picasso.with(mContext)
                     .load(product.getFoto())
@@ -120,6 +136,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         return productsList.size();
     }
 
+    public ArrayList<ProductsResponse> getProductsList() {
+        return productsList;
+    }
 
     public static class ProductsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView tvId, tvCantidad;

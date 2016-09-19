@@ -1,10 +1,12 @@
 package com.corporacioncorrales.cotizacionesapp.adapters;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -23,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
+import com.corporacioncorrales.cotizacionesapp.activities.LoginActivity;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.PricesHistoryResponse;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
@@ -47,10 +50,17 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     Context mContext;
     ArrayList<ProductsResponse> productsList;
     private ProgressBar progressBar;
+    private AppCompatActivity mActivity;
+    private TextView tvTotalProductos;
+    private TextView tvMontoTotal;
 
-    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList) {
+    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos, TextView tvMontoTotal) {
         this.mContext = mContext;
         this.productsList = productsList;
+
+        //this.mActivity = (AppCompatActivity)mContext;
+        this.tvTotalProductos = tvTotalProductos;
+        this.tvMontoTotal = tvMontoTotal;
     }
 
     @Override
@@ -66,6 +76,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.tvId.setText(product.getId());
         holder.tvDescription.setText(product.getNombre());
 
+        //updateTotalProducts();
 
         //Precio
         //holder.tvPrice.setText(product.getPrecio());
@@ -73,33 +84,49 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.tvPrice.setText(String.valueOf(price));
 
 
-        //Nuevo Precio
-        if(!product.getNuevoPrecio().isEmpty()) {
-            //holder.tvNewPrice.setText(product.getNuevoPrecio());
-            Double newPrice = Double.parseDouble(product.getNuevoPrecio());
-            holder.tvNewPrice.setText(String.valueOf(newPrice));
-        } else {
-            product.setNuevoPrecio(product.getPrecio());
-            //holder.tvNewPrice.setText(product.getPrecio());
-            holder.tvNewPrice.setText(String.valueOf(price));
-        }
+        //Nuevo Precio y Cantidad Solicitada
+        if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
 
-        if(!product.getCantidadSolicitada().isEmpty()) {
-            if(Integer.parseInt(product.getCantidadSolicitada()) > 0) {
-                holder.ivChangeQuantity.setVisibility(View.VISIBLE);
-            } else {
+            holder.ivChangeQuantity.setVisibility(View.GONE);
+            holder.tvCantidadSolicitada.setText("0");
+            holder.tvNewPrice.setText(product.getNuevoPrecio());
+
+        } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()==null) {
+
+            if(product.getCantidad().equals("0")) {
                 holder.ivChangeQuantity.setVisibility(View.GONE);
-            }
-            holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
-        } else {
-            if(Integer.parseInt(product.getCantidad()) > 0) {
-                product.setCantidadSolicitada("1");
-                holder.ivChangeQuantity.setVisibility(View.VISIBLE);
+                holder.tvCantidadSolicitada.setText("0");
+                holder.tvNewPrice.setText(product.getPrecio());
             } else {
-                product.setCantidadSolicitada("0");
-                holder.ivChangeQuantity.setVisibility(View.GONE);
+                holder.ivChangeQuantity.setVisibility(View.VISIBLE);
+                holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
+                holder.tvNewPrice.setText(product.getPrecio());
             }
-            holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
+
+        } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
+
+            if(product.getCantidad().equals("0")) {
+                holder.ivChangeQuantity.setVisibility(View.GONE);
+                holder.tvCantidadSolicitada.setText("0");
+                holder.tvNewPrice.setText(product.getPrecio());
+            } else {
+                holder.ivChangeQuantity.setVisibility(View.VISIBLE);
+                holder.tvCantidadSolicitada.setText("1");
+                holder.tvNewPrice.setText(product.getPrecio());
+            }
+
+        } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
+
+            if(product.getCantidadSolicitada().equals("0")) {
+                holder.ivChangeQuantity.setVisibility(View.GONE);
+                holder.tvCantidadSolicitada.setText("0");
+                holder.tvNewPrice.setText(product.getNuevoPrecio());
+            } else {
+                holder.ivChangeQuantity.setVisibility(View.VISIBLE);
+                holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
+                holder.tvNewPrice.setText(product.getNuevoPrecio());
+            }
+
         }
 
         if(product.getEsPrecioMenorAlLimite()) {
@@ -116,15 +143,42 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         //Precio total
         if(Integer.parseInt(product.getCantidad())>0) {
             try {
-                Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
-                Double precioTotalPorProducto = Double.parseDouble(product.getNuevoPrecio()) * cantidadSolicitada;
-                holder.tvTotalPrice.setText(String.format("%.2f", precioTotalPorProducto));
+                Double total = 0.00;
+                if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
+                    holder.tvCantidadSolicitada.setText("0");
+                    holder.tvNewPrice.setText(product.getNuevoPrecio());
+                    holder.tvTotalPrice.setText("0");
+
+                } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()==null) {
+                    holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
+                    holder.tvNewPrice.setText(product.getPrecio());
+
+                    total = Double.valueOf(product.getPrecio()) * Integer.valueOf(product.getCantidadSolicitada());
+                    holder.tvTotalPrice.setText(String.valueOf(total));
+
+                } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
+
+                    holder.tvCantidadSolicitada.setText("1");
+                    product.setCantidadSolicitada("1");
+                    holder.tvNewPrice.setText(product.getPrecio());
+
+                    total = Double.valueOf(product.getPrecio());
+                    holder.tvTotalPrice.setText(String.valueOf(total));
+
+                } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
+                    holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
+                    holder.tvNewPrice.setText(product.getNuevoPrecio());
+
+                    total = Double.valueOf(product.getPrecio()) * Integer.valueOf(product.getCantidadSolicitada());
+                    holder.tvTotalPrice.setText(String.valueOf(total));
+                }
             } catch (Exception ex) {
                 Log.e(Constants.log_arrow, ex.toString());
             }
         } else {
             holder.tvTotalPrice.setText("0");
         }
+
 
         holder.ivRemove.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,17 +266,20 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         if(currPosition > -1) {
             productsList.remove(currPosition);
             notifyItemRemoved(currPosition);
+            updateTotalProducts();
         }
     }
 
     public void addItem(int position, ProductsResponse product) {
         productsList.add(position, product);
         notifyItemInserted(position);
+        updateTotalProducts();
     }
 
     public void refreshItem(int position, ProductsResponse product) {
         //notifyItemChanged(position);
         notifyDataSetChanged();
+        updateTotalProducts();
     }
 
     private String quantityInserted = "";
@@ -523,6 +580,51 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
         });
 
+    }
+
+    public void updateTotalProducts() {
+
+        if(tvTotalProductos!=null) {
+            tvTotalProductos.setText(String.valueOf(getItemCount()));
+        }
+        if(tvMontoTotal!=null) {
+            if(productsList.size()>0) {
+
+                Double suma = 0.00;
+                Double precioTotalPorProducto = 0.00;
+
+                try {
+                    for(int i=0; i<productsList.size(); i++) {
+
+                        ProductsResponse product = productsList.get(i);
+
+                        if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
+                            precioTotalPorProducto = Double.parseDouble(product.getNuevoPrecio());
+
+                        } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()==null) {
+                            Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
+                            precioTotalPorProducto = Double.parseDouble(product.getPrecio()) * cantidadSolicitada;
+
+                        } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
+                            precioTotalPorProducto = Double.parseDouble(product.getPrecio());
+
+                        } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
+                            Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
+                            precioTotalPorProducto = Double.parseDouble(product.getNuevoPrecio()) * cantidadSolicitada;
+
+                        }
+                        suma = suma + precioTotalPorProducto;
+
+                    }
+                    tvMontoTotal.setText(String.format("%.2f",suma));
+                } catch (Exception ex) {
+                    Log.e(Constants.log_arrow_failure, ex.toString());
+                }
+            } else {
+                tvMontoTotal.setText("0.00");
+            }
+
+        }
     }
 
 }

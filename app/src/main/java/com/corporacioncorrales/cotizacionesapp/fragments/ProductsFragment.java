@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -59,6 +61,12 @@ public class ProductsFragment extends Fragment {
     TextView tvTotalProductos;
     @BindView(R.id.spTipoDoc)
     Spinner spTipoDoc;
+    @BindView(R.id.svFilterProduct)
+    SearchView svFilterProduct;
+    @BindView(R.id.edtGhost)
+    EditText edtGhost;
+    @BindView(R.id.tvMontoTotal)
+    TextView tvMontoTotal;
 
     private String TAG = getClass().getCanonicalName();
     private ProgressBar mainProgressBar;
@@ -66,6 +74,7 @@ public class ProductsFragment extends Fragment {
     private String client_id;
     private String client_razonSocial;
     private ArrayList<ProductsResponse> productsArrayList;
+    private ArrayList<ProductsResponse> originalProductsArrayList;
     public static ProductsAdapter productsAdapter;
     private QuotationAdapter quotationAdapter;
     private String idCliente;
@@ -94,7 +103,7 @@ public class ProductsFragment extends Fragment {
             client_razonSocial = args.getString("cliente_razonSocial");
         }
 
-        idCliente = "124896";
+        //idCliente = "124896";
     }
 
     @Override
@@ -111,6 +120,8 @@ public class ProductsFragment extends Fragment {
         super.onResume();
 
         tvCliente.setText(client_razonSocial);
+        svFilterProduct.setOnQueryTextListener(productsFilterListener);
+        Common.hideKeyboard(getActivity(), edtGhost);
 
         if (fromOnCreate) {
             initSpinnerDocType();
@@ -122,7 +133,7 @@ public class ProductsFragment extends Fragment {
 
     private void createQuotation() {
         rvQuotation.setHasFixedSize(true);
-        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>());
+        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>(), tvTotalProductos, tvMontoTotal);
         rvQuotation.setAdapter(quotationAdapter);
         LinearLayoutManager sgm = new LinearLayoutManager(getActivity());
         rvQuotation.setLayoutManager(sgm);
@@ -150,6 +161,9 @@ public class ProductsFragment extends Fragment {
                     productsArrayList = response.body();
 
                     if (productsArrayList.size() > 0) {
+
+                        //guardando primera descarga de productos
+                        originalProductsArrayList = productsArrayList;
 
                         productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter);
                         recyclerViewProductos.setAdapter(productsAdapter);
@@ -270,5 +284,40 @@ public class ProductsFragment extends Fragment {
             }
         });
     }
+
+    SearchView.OnQueryTextListener productsFilterListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String query) {
+
+            //final ArrayList<ProductsResponse> productsList = productsAdapter.getProductsList();
+            ArrayList<ProductsResponse> filteredProductsList = new ArrayList<>();
+
+            if (!query.isEmpty()) {
+                if (originalProductsArrayList != null && originalProductsArrayList.size() > 0) {
+                    for (int i = 0; i < originalProductsArrayList.size(); i++) {
+                        final String text = originalProductsArrayList.get(i).getId().toLowerCase();
+                        if (text.contains(query.toLowerCase())) {
+                            filteredProductsList.add(originalProductsArrayList.get(i));
+                        }
+                    }
+                }
+            } else {
+                filteredProductsList = originalProductsArrayList;
+            }
+
+            productsAdapter = new ProductsAdapter(getActivity(), filteredProductsList, quotationAdapter);
+            recyclerViewProductos.setAdapter(productsAdapter);
+            StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+            recyclerViewProductos.setLayoutManager(sgm);
+            productsAdapter.notifyDataSetChanged();  // data set changed
+            return false;
+        }
+    };
+
 
 }

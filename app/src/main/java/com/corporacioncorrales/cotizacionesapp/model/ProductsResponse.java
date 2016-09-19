@@ -54,21 +54,15 @@ public class ProductsResponse {
 
     //********************************************
 
-    private String nuevoPrecio;
-
     public String getNuevoPrecio() {
-        String newPrice;
-        if (nuevoPrecio == null) {
-            newPrice = Constants.Empty;
-        } else {
-            newPrice = nuevoPrecio;
-        }
-        return newPrice;
+        return nuevoPrecio;
     }
 
     public void setNuevoPrecio(String nuevoPrecio) {
         this.nuevoPrecio = nuevoPrecio;
     }
+
+    private String nuevoPrecio;
 
     //********************************************
 
@@ -91,21 +85,16 @@ public class ProductsResponse {
 
     //********************************************
 
-    private String cantidadSolicitada;
-
     public String getCantidadSolicitada() {
-        String newQuantity;
-        if(cantidadSolicitada == null) {
-            newQuantity = Constants.Empty;
-        } else {
-            newQuantity = cantidadSolicitada;
-        }
-        return newQuantity;
+        return cantidadSolicitada;
     }
 
     public void setCantidadSolicitada(String cantidadSolicitada) {
         this.cantidadSolicitada = cantidadSolicitada;
     }
+
+    private String cantidadSolicitada;
+
 
     //********************************************
 

@@ -18,7 +18,7 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.SearchView
-                android:id="@+id/sv"
+                android:id="@+id/svFilterProduct"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_marginTop="5dp"
@@ -62,7 +62,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Products_fragment"
+                    android:singleLine="true"
                     android:layout_centerVertical="true"/>
+                <EditText
+                    android:id="@+id/edtGhost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
                 <Spinner
                     android:id="@+id/spTipoDoc"
                     android:background="@color/gris_claro"
@@ -269,7 +275,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="10dp"
-                            android:textSize="15dp"
+                            android:textSize="14dp"
                             android:textStyle="normal"
                             android:textColor="@color/blanco"
                             android:text="Total productos:"
@@ -284,6 +290,26 @@
                             android:textColor="@color/blanco"
                             android:text="-"
                             android:id="@+id/tvTotalProductos" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="20dp"
+                            android:textSize="14dp"
+                            android:textStyle="normal"
+                            android:textColor="@color/blanco"
+                            android:text="Monto total:"
+                            android:id="@+id/textView1" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="10dp"
+                            android:textSize="15dp"
+                            android:textStyle="normal"
+                            android:textColor="@color/blanco"
+                            android:text="-"
+                            android:id="@+id/tvMontoTotal" />
                     </LinearLayout>
                     <Button
                         android:id="@+id/btnEnviarCotizacion"
