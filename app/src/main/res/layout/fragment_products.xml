@@ -201,7 +201,7 @@
                             android:textSize="@dimen/textSize_header_products"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Q1"
+                            android:text="Cant."
                             android:textStyle="bold"
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>

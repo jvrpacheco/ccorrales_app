@@ -585,11 +585,12 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     public void updateTotalProducts() {
 
         if(tvTotalProductos!=null) {
-            tvTotalProductos.setText(String.valueOf(getItemCount()));
+            //tvTotalProductos.setText(String.valueOf(getItemCount()));
         }
         if(tvMontoTotal!=null) {
             if(productsList.size()>0) {
 
+                int cont = 0;
                 Double suma = 0.00;
                 Double precioTotalPorProducto = 0.00;
 
@@ -598,25 +599,34 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
                         ProductsResponse product = productsList.get(i);
 
-                        if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
-                            precioTotalPorProducto = Double.parseDouble(product.getNuevoPrecio());
+                        if(Integer.valueOf(product.getCantidad())>0) {
 
-                        } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()==null) {
-                            Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
-                            precioTotalPorProducto = Double.parseDouble(product.getPrecio()) * cantidadSolicitada;
+                            if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
+                                precioTotalPorProducto = Double.parseDouble(product.getNuevoPrecio());
 
-                        } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
-                            precioTotalPorProducto = Double.parseDouble(product.getPrecio());
+                            } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()==null) {
+                                Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
+                                precioTotalPorProducto = Double.parseDouble(product.getPrecio()) * cantidadSolicitada;
 
-                        } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
-                            Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
-                            precioTotalPorProducto = Double.parseDouble(product.getNuevoPrecio()) * cantidadSolicitada;
+                            } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
+                                precioTotalPorProducto = Double.parseDouble(product.getPrecio());
+
+                            } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
+                                Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
+                                precioTotalPorProducto = Double.parseDouble(product.getNuevoPrecio()) * cantidadSolicitada;
+
+                            }
+                            cont++;
+                            suma = suma + precioTotalPorProducto;
+
+                        } else {
+
 
                         }
-                        suma = suma + precioTotalPorProducto;
-
                     }
+                    tvTotalProductos.setText(String.valueOf(cont));
                     tvMontoTotal.setText(String.format("%.2f",suma));
+
                 } catch (Exception ex) {
                     Log.e(Constants.log_arrow_failure, ex.toString());
                 }
