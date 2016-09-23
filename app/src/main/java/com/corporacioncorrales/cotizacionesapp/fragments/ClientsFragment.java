@@ -86,7 +86,7 @@ public class ClientsFragment extends Fragment {
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
-        //test 2
+        //test 3
         return fragment;
     }
 
