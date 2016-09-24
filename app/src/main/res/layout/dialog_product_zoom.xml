@@ -21,21 +21,21 @@
             android:layout_height="25dp"
             android:layout_gravity="center"/>
         <TextView
-            android:id="@+id/dialogTitle"
+            android:id="@+id/tvZoomDialogTitle"
             android:paddingTop="0dp"
             android:paddingBottom="0dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/background_light"
-            android:text="IMAGEN DE PRODUCTO"
-            android:textSize="12sp"
+            android:text="ID"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:layout_centerInParent="true"/>
         <ImageView
             android:id="@+id/ivClose"
             android:src="@drawable/cancel_48"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"/>

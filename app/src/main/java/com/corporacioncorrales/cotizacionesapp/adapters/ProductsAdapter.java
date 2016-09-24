@@ -179,8 +179,10 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         final ImageView ivClose = (ImageView)dialog.findViewById(R.id.ivClose);
         final ImageView ivProductZoom = (ImageView)dialog.findViewById(R.id.ivProductZoom);
         final TextView tvDescripcion = (TextView)dialog.findViewById(R.id.tvDescripcionDialog);
+        final TextView tvZoomDialogTitle = (TextView)dialog.findViewById(R.id.tvZoomDialogTitle);
         progressBar = (ProgressBar)dialog.findViewById(R.id.newProgressBar);
 
+        tvZoomDialogTitle.setText(product.getId());
         tvDescripcion.setText(product.getNombre());
         getZoomProductImage(product.getId(), ivProductZoom);
 

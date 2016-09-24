@@ -8,6 +8,20 @@ public class Singleton {
     private static Singleton ourInstance = new Singleton();
     private String user;
     private String userCode;
+    private String rubroSelected;
+    private String lineaDeCreditoCliente;
+
+
+    private Singleton() {
+    }
+
+    public String getLineaDeCreditoCliente() {
+        return lineaDeCreditoCliente;
+    }
+
+    public void setLineaDeCreditoCliente(String lineaDeCreditoCliente) {
+        this.lineaDeCreditoCliente = lineaDeCreditoCliente;
+    }
 
     public String getRubroSelected() {
         return rubroSelected;
@@ -17,13 +31,8 @@ public class Singleton {
         this.rubroSelected = rubroSelected;
     }
 
-    private String rubroSelected;
-
     public static Singleton getInstance() {
         return ourInstance;
-    }
-
-    private Singleton() {
     }
 
     public String getUser() {

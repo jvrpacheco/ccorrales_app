@@ -69,6 +69,8 @@ public class ProductsFragment extends Fragment {
     TextView tvMontoTotal;
     @BindView(R.id.tvLineaDeCreditoCliente)
     TextView tvLineaDeCreditoCliente;
+    @BindView(R.id.tvSuperaLinea)
+    TextView tvSuperaLinea;
 
     private String TAG = getClass().getCanonicalName();
     private ProgressBar mainProgressBar;
@@ -109,6 +111,7 @@ public class ProductsFragment extends Fragment {
             client_id = args.getString("cliente_id");
             client_razonSocial = args.getString("cliente_razonSocial");
             cliente_lineaDeCredito = args.getString("cliente_lineaDeCredito");
+            Singleton.getInstance().setLineaDeCreditoCliente(cliente_lineaDeCredito);
         }
 
         //idCliente = "124896";
@@ -143,7 +146,7 @@ public class ProductsFragment extends Fragment {
 
     private void createQuotation() {
         rvQuotation.setHasFixedSize(true);
-        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>(), tvTotalProductos, tvMontoTotal);
+        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>(), tvTotalProductos, tvMontoTotal, tvSuperaLinea);
         rvQuotation.setAdapter(quotationAdapter);
         LinearLayoutManager sgm = new LinearLayoutManager(getActivity());
         rvQuotation.setLayoutManager(sgm);
@@ -208,7 +211,6 @@ public class ProductsFragment extends Fragment {
         if (quotationAdapter != null && quotationAdapter.getItemCount() > 0) {
 
             ArrayList<ProductsResponse> productsSelected = quotationAdapter.getQuotationProductsList();
-
             ArrayList<QuotationProductRequest> dataToSend = new ArrayList<>();
 
             for (int i = 0; i < productsSelected.size(); i++) {
@@ -337,7 +339,7 @@ public class ProductsFragment extends Fragment {
 
         try {
             Double difference = Double.valueOf(creditLine) - Double.valueOf(montoTotal);
-            if(difference<0) {
+            if (difference < 0) {
                 upToCreditLine = true;
             }
         } catch (Exception ex) {

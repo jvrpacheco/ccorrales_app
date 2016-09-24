@@ -50,4 +50,7 @@ public class Constants {
 
     public static final String montoTotalMayorALineaDeCredito = "1";
     public static final String montoTotalMenorOIgualALineaDeCredito = "0";
+
+    public static final String dentroDeLineaDeCredito = "Dentro de la Linea de Credito";
+    public static final String superaLineaDeCredito = "Supera Linea de Credito";
 }

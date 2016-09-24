@@ -53,17 +53,19 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     private AppCompatActivity mActivity;
     private TextView tvTotalProductos;
     private TextView tvMontoTotal;
+    private TextView tvSuperaLinea;
     private String quantityInserted = "";
     private String precioIngresado = "";
     private Boolean esPrecioMenorAlLimite;
 
-    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos, TextView tvMontoTotal) {
+    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos, TextView tvMontoTotal, TextView tvSuperaLinea) {
         this.mContext = mContext;
         this.productsList = productsList;
 
         //this.mActivity = (AppCompatActivity)mContext;
         this.tvTotalProductos = tvTotalProductos;
         this.tvMontoTotal = tvMontoTotal;
+        this.tvSuperaLinea = tvSuperaLinea;
     }
 
     @Override
@@ -623,6 +625,14 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     tvTotalProductos.setText(String.valueOf(cont));
                     tvMontoTotal.setText(String.format("%.2f",suma));
 
+                    if(isUpToCreditLine(suma, Singleton.getInstance().getLineaDeCreditoCliente())) {
+                        tvSuperaLinea.setText(Constants.superaLineaDeCredito);
+                        tvSuperaLinea.setTextColor(ContextCompat.getColor(mContext, R.color.rojo));
+                    } else {
+                        tvSuperaLinea.setText(Constants.dentroDeLineaDeCredito);
+                        tvSuperaLinea.setTextColor(ContextCompat.getColor(mContext, R.color.verde));
+                    }
+
                 } catch (Exception ex) {
                     Log.e(Constants.log_arrow_failure, ex.toString());
                 }
@@ -631,6 +641,19 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
 
         }
+    }
+
+    private Boolean isUpToCreditLine(Double montoTotal, String creditLine) {
+        Boolean upToCreditLine = false;
+        try {
+            Double difference = Double.valueOf(creditLine) - montoTotal;
+            if (difference < 0) {
+                upToCreditLine = true;
+            }
+        } catch (Exception ex) {
+            Log.e(Constants.log_arrow, ex.toString());
+        }
+        return upToCreditLine;
     }
 
 }
