@@ -51,7 +51,7 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:text="Precio limite inferior:"
+                    android:text="Precio tope:"
                     android:textColor="@color/negro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
