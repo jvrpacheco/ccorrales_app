@@ -112,6 +112,7 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         Bundle bundle = new Bundle();
         bundle.putString("cliente_id", client.getId());
         bundle.putString("cliente_razonSocial", client.getRazon_Social());
+        bundle.putString("cliente_lineaDeCredito", client.getLinea());
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);

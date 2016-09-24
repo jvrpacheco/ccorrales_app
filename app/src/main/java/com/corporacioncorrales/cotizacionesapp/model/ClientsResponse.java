@@ -26,7 +26,27 @@ public class ClientsResponse {
     @Expose
     private String Foto;
 
+    @SerializedName("Linea")
+    @Expose
+    private String Linea;
 
+
+
+    public String getLinea() {
+
+        try{
+            Double lineaCredito = Double.parseDouble(Linea);
+            Linea = String.format("%.2f",lineaCredito);
+        } catch (Exception ex) {
+
+        }
+
+        return Linea;
+    }
+
+    public void setLinea(String linea) {
+        Linea = linea;
+    }
 
     public String getId() {
         return Id;

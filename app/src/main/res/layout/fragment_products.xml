@@ -53,22 +53,66 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="42dp"
                 android:padding="5dp">
-                <TextView
-                    android:id="@+id/tvCliente"
-                    android:textColor="@color/negro"
-                    android:textSize="14sp"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Products_fragment"
-                    android:singleLine="true"
-                    android:layout_centerVertical="true"/>
-                <EditText
-                    android:id="@+id/edtGhost"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"/>
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:textColor="@color/negro"
+                            android:textSize="13sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:text="Cliente: "
+                            android:singleLine="true"
+                            android:layout_centerVertical="true"/>
+                        <TextView
+                            android:id="@+id/tvCliente"
+                            android:textColor="@color/negro"
+                            android:textSize="13sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            android:singleLine="true"
+                            android:layout_centerVertical="true"/>
+                        <EditText
+                            android:id="@+id/edtGhost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:textColor="@color/negro"
+                            android:textSize="13sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Linea de Credito: "
+                            android:textStyle="bold"
+                            android:singleLine="true"
+                            android:layout_centerVertical="true"/>
+                        <TextView
+                            android:id="@+id/tvLineaDeCreditoCliente"
+                            android:textColor="@color/negro"
+                            android:textSize="13sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-"
+                            android:singleLine="true"
+                            android:layout_centerVertical="true"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
                 <Spinner
                     android:id="@+id/spTipoDoc"
                     android:background="@color/gris_claro"

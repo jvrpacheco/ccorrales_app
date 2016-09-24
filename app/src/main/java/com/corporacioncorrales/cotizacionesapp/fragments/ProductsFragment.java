@@ -67,12 +67,15 @@ public class ProductsFragment extends Fragment {
     EditText edtGhost;
     @BindView(R.id.tvMontoTotal)
     TextView tvMontoTotal;
+    @BindView(R.id.tvLineaDeCreditoCliente)
+    TextView tvLineaDeCreditoCliente;
 
     private String TAG = getClass().getCanonicalName();
     private ProgressBar mainProgressBar;
     private Boolean fromOnCreate;
     private String client_id;
     private String client_razonSocial;
+    private String cliente_lineaDeCredito;
     private ArrayList<ProductsResponse> productsArrayList;
     private ArrayList<ProductsResponse> originalProductsArrayList;
     public static ProductsAdapter productsAdapter;
@@ -97,10 +100,15 @@ public class ProductsFragment extends Fragment {
 
         //solo cambiara el valor cuando viene de clientes
         Bundle args = getArguments();
-        if (args != null && args.containsKey("cliente_id") && args.containsKey("cliente_razonSocial")) {
+        if (args != null
+                && args.containsKey("cliente_id")
+                && args.containsKey("cliente_razonSocial")
+                && args.containsKey("cliente_lineaDeCredito")) {
+
             //tvCliente.setText(args.getString("cliente_razonSocial")); //butterKnife load in onCreateView
             client_id = args.getString("cliente_id");
             client_razonSocial = args.getString("cliente_razonSocial");
+            cliente_lineaDeCredito = args.getString("cliente_lineaDeCredito");
         }
 
         //idCliente = "124896";
@@ -120,7 +128,9 @@ public class ProductsFragment extends Fragment {
         super.onResume();
 
         tvCliente.setText(client_razonSocial);
+        tvLineaDeCreditoCliente.setText(cliente_lineaDeCredito);
         svFilterProduct.setOnQueryTextListener(productsFilterListener);
+
         Common.hideKeyboard(getActivity(), edtGhost);
 
         if (fromOnCreate) {
