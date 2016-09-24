@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:layout_width="230dp"
     android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/ll_header"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@color/grey300">
@@ -17,8 +17,7 @@
             android:background="@color/negro"/>
 
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="0.4"
+            android:layout_width="55dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2sp"
             android:layout_marginBottom="2sp">
@@ -42,8 +41,7 @@
             android:background="@color/negro"/>
 
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="0.6"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2sp"
             android:layout_marginBottom="2sp">
@@ -53,7 +51,31 @@
                 android:textSize="11sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fecha y Hora"
+                android:text="Fecha"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/negro"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2sp"
+            android:layout_marginBottom="2sp">
+            <TextView
+                android:id="@+id/tvFacturaHistory"
+                android:textColor="@color/negro"
+                android:textSize="11sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Factura"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:layout_centerVertical="true"

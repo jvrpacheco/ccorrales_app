@@ -54,6 +54,7 @@ public class PricesHistoryAdapter extends RecyclerView.Adapter<PricesHistoryAdap
     public void onBindViewHolder(final ProductsViewHolder holder, final int position) {
 
         final PricesHistoryResponse price = pricesHistoryList.get(position);
+
         holder.tvPriceHistory.setText(price.getPrecio());
 
         if(price.getFecha().contains("T")) {
@@ -64,6 +65,8 @@ public class PricesHistoryAdapter extends RecyclerView.Adapter<PricesHistoryAdap
                     datetime[0]
             );
         }
+
+        holder.tvFacturaHistory.setText(price.getFactura());
     }
 
     @Override
@@ -72,12 +75,13 @@ public class PricesHistoryAdapter extends RecyclerView.Adapter<PricesHistoryAdap
     }
 
     public static class ProductsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView tvPriceHistory, tvDatetimeHistory;
+        TextView tvPriceHistory, tvDatetimeHistory, tvFacturaHistory;
 
         public ProductsViewHolder(View view) {
             super(view);
             tvPriceHistory = (TextView)view.findViewById(R.id.tvPriceHistory);
             tvDatetimeHistory = (TextView)view.findViewById(R.id.tvDatetimeHistory);
+            tvFacturaHistory = (TextView)view.findViewById(R.id.tvFacturaHistory);
         }
 
         @Override

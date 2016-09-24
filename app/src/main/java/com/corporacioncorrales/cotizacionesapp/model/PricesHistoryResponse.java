@@ -16,6 +16,10 @@ public class PricesHistoryResponse {
     @Expose
     private String precio;
 
+    @SerializedName("factura")
+    @Expose
+    private String factura;
+
 
     public String getFecha() {
         return fecha;
@@ -33,4 +37,11 @@ public class PricesHistoryResponse {
         this.precio = precio;
     }
 
+    public String getFactura() {
+        return factura;
+    }
+
+    public void setFactura(String factura) {
+        this.factura = factura;
+    }
 }

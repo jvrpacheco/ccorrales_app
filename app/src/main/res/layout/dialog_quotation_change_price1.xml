@@ -39,7 +39,7 @@
         android:orientation="horizontal">
 
         <RelativeLayout
-            android:layout_width="180dp"
+            android:layout_width="250dp"
             android:layout_height="match_parent">
 
             <LinearLayout
@@ -82,8 +82,7 @@
                         android:background="@color/negro"/>
 
                     <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="0.4"
+                        android:layout_width="55dp"
                         android:layout_height="wrap_content"
                         android:paddingTop="2sp"
                         android:paddingBottom="2sp"
@@ -104,8 +103,7 @@
                         android:background="@color/blanco"/>
 
                     <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="0.6"
+                        android:layout_width="75dp"
                         android:layout_height="wrap_content"
                         android:paddingTop="2sp"
                         android:paddingBottom="2sp"
@@ -115,7 +113,28 @@
                             android:textSize="11sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Fecha y Hora"
+                            android:text="Fecha"
+                            android:layout_centerInParent="true"/>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/blanco"/>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="2sp"
+                        android:paddingBottom="2sp"
+                        android:background="@color/negro">
+                        <TextView
+                            android:textColor="@color/blanco"
+                            android:textSize="11sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Factura"
                             android:layout_centerInParent="true"/>
                     </RelativeLayout>
 
