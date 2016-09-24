@@ -69,19 +69,17 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         holder.tvCantidad.setText("Stock: " + product.getCantidad());
 
         //*************************
-        /*if(product.getNuevoPrecio().isEmpty() || product.getNuevoPrecio()==null) {
+        if(product.getNuevoPrecio()==null) {
             product.setNuevoPrecio(product.getPrecio());
         }
 
-        if(product.getCantidadSolicitada().isEmpty() || product.getCantidadSolicitada()==null) {
+        if(product.getCantidadSolicitada()==null) {
             if(Integer.parseInt(product.getCantidad()) > 0) {
                 product.setCantidadSolicitada("1");
             } else {
                 product.setCantidadSolicitada("0");
             }
-        }*/
-        //product.getCantidadSolicitada();
-        //product.getNuevoPrecio();
+        }
         //*************************
 
         if(!product.getFoto().isEmpty()) {
