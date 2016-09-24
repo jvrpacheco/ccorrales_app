@@ -635,12 +635,14 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     tvTotalProductos.setText(String.valueOf(cont));
                     tvMontoTotal.setText(String.format("%.2f",suma));
 
-                    if(isUpToCreditLine(suma, Singleton.getInstance().getLineaDeCreditoCliente())) {
-                        tvSuperaLinea.setText(Constants.superaLineaDeCredito);
-                        tvSuperaLinea.setTextColor(ContextCompat.getColor(mContext, R.color.rojo));
-                    } else {
-                        tvSuperaLinea.setText(Constants.dentroDeLineaDeCredito);
-                        tvSuperaLinea.setTextColor(ContextCompat.getColor(mContext, R.color.verde));
+                    if(!Singleton.getInstance().getLineaDeCreditoCliente().isEmpty()) {
+                        if(isUpToCreditLine(suma, Singleton.getInstance().getLineaDeCreditoCliente())) {
+                            tvSuperaLinea.setText(Constants.superaLineaDeCredito);
+                            tvSuperaLinea.setTextColor(ContextCompat.getColor(mContext, R.color.rojo));
+                        } else {
+                            tvSuperaLinea.setText(Constants.dentroDeLineaDeCredito);
+                            tvSuperaLinea.setTextColor(ContextCompat.getColor(mContext, R.color.verde));
+                        }
                     }
 
                 } catch (Exception ex) {
