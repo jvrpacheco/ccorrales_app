@@ -53,6 +53,9 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     private AppCompatActivity mActivity;
     private TextView tvTotalProductos;
     private TextView tvMontoTotal;
+    private String quantityInserted = "";
+    private String precioIngresado = "";
+    private Boolean esPrecioMenorAlLimite;
 
     public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos, TextView tvMontoTotal) {
         this.mContext = mContext;
@@ -76,13 +79,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.tvId.setText(product.getId());
         holder.tvDescription.setText(product.getNombre());
 
-        //updateTotalProducts();
-
         //Precio
         //holder.tvPrice.setText(product.getPrecio());
         Double price = Double.parseDouble(product.getPrecio());
         holder.tvPrice.setText(String.valueOf(price));
-
 
         //Nuevo Precio y Cantidad Solicitada
         if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
@@ -169,7 +169,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
                     holder.tvNewPrice.setText(product.getNuevoPrecio());
 
-                    total = Double.valueOf(product.getPrecio()) * Integer.valueOf(product.getCantidadSolicitada());
+                    total = Double.valueOf(product.getNuevoPrecio()) * Integer.valueOf(product.getCantidadSolicitada());
                     holder.tvTotalPrice.setText(String.valueOf(total));
                 }
             } catch (Exception ex) {
@@ -178,7 +178,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         } else {
             holder.tvTotalPrice.setText("0");
         }
-
 
         holder.ivRemove.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -282,7 +281,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         updateTotalProducts();
     }
 
-    private String quantityInserted = "";
     private void showChangeQuantityDialog(final Context context, final ProductsResponse product, final int position) {
         final Dialog dialog = new Dialog(context);
         dialog.setCanceledOnTouchOutside(false);
@@ -366,8 +364,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         dialog.show();
     }
 
-    private String precioIngresado = "";
-    private Boolean esPrecioMenorAlLimite;
     private void showChangePriceDialog(final Context context, final ProductsResponse product, final int position, final String price, final String priceMinLimit) {
 
         final Dialog dialog = new Dialog(context);
@@ -582,7 +578,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     }
 
-    public void updateTotalProducts() {
+    private void updateTotalProducts() {
 
         if(tvTotalProductos!=null) {
             //tvTotalProductos.setText(String.valueOf(getItemCount()));
