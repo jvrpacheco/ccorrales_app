@@ -132,10 +132,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         }
 
         if(product.getEsPrecioMenorAlLimite()) {
-            //product.setEsPrecioMenorAlLimite(true);
             holder.ivChangePrice.setImageResource(R.drawable.hand_red_52);
         } else {
-
             holder.ivChangePrice.setImageResource(R.drawable.hand_green_52);
         }
 
@@ -268,6 +266,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             productsList.remove(currPosition);
             notifyItemRemoved(currPosition);
             updateTotalProducts();
+            resetProduct(product);
         }
     }
 
@@ -281,6 +280,17 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         //notifyItemChanged(position);
         notifyDataSetChanged();
         updateTotalProducts();
+    }
+
+    private void resetProduct(ProductsResponse product) {
+        product.setNuevoPrecio(product.getPrecio());
+        product.setEsPrecioMenorAlLimite(false);
+        if(Integer.valueOf(product.getCantidad()) > 0) {
+            product.setCantidadSolicitada("1");
+        } else {
+            product.setCantidadSolicitada("0");
+        }
+
     }
 
     private void showChangeQuantityDialog(final Context context, final ProductsResponse product, final int position) {
