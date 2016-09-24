@@ -5,6 +5,8 @@ package com.corporacioncorrales.cotizacionesapp.utils;
  */
 public class Constants {
 
+    public static final String Empty = "";
+
     public static final String allowEnterToApp = "True";
     public static final String denyEnterToApp = "False";
 
@@ -43,7 +45,9 @@ public class Constants {
     public static final String idClienteHeader = "idCliente";
     public static final String idRubroHeader = "idRubro";
     public static final String idUsuarioHeader = "idUsuario";
+    public static final String idSobregiroHeader = "Sobregiro";
     public static final String idArticuloHeader = "idArticulo";
 
-    public static final String Empty = "";
+    public static final String montoTotalMayorALineaDeCredito = "1";
+    public static final String montoTotalMenorOIgualALineaDeCredito = "0";
 }

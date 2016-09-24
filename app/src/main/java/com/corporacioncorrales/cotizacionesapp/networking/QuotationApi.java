@@ -23,6 +23,7 @@ public interface QuotationApi {
             @Header(Constants.idClienteHeader) String idCliente,
             @Header(Constants.idRubroHeader) String idRubro,
             @Header(Constants.idUsuarioHeader) String idUsuario,
+            @Header(Constants.idSobregiroHeader) String sobregiro,
             @Body ArrayList<QuotationProductRequest> data
     );
 

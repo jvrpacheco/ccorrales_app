@@ -208,6 +208,7 @@ public class ProductsFragment extends Fragment {
         if (quotationAdapter != null && quotationAdapter.getItemCount() > 0) {
 
             ArrayList<ProductsResponse> productsSelected = quotationAdapter.getQuotationProductsList();
+
             ArrayList<QuotationProductRequest> dataToSend = new ArrayList<>();
 
             for (int i = 0; i < productsSelected.size(); i++) {
@@ -223,6 +224,7 @@ public class ProductsFragment extends Fragment {
             sendQuotation(client_id,
                     Singleton.getInstance().getRubroSelected(),
                     Singleton.getInstance().getUserCode(),
+                    isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_lineaDeCredito) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
                     dataToSend);
 
         } else {
@@ -230,7 +232,7 @@ public class ProductsFragment extends Fragment {
         }
     }
 
-    private void sendQuotation(String idCliente, String idRubro, String idUsuario, ArrayList<QuotationProductRequest> data) {
+    private void sendQuotation(String idCliente, String idRubro, String idUsuario, String sobregiro, ArrayList<QuotationProductRequest> data) {
 
         mainProgressBar.setVisibility(View.VISIBLE);
 
@@ -241,7 +243,7 @@ public class ProductsFragment extends Fragment {
 
         QuotationApi request = retrofit.create(QuotationApi.class);
 
-        Call<String> call = request.sendQuotation(idCliente, idRubro, idUsuario, data);
+        Call<String> call = request.sendQuotation(idCliente, idRubro, idUsuario, sobregiro, data);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -330,5 +332,19 @@ public class ProductsFragment extends Fragment {
         }
     };
 
+    private Boolean isUpToCreditLine(String montoTotal, String creditLine) {
+        Boolean upToCreditLine = false;
+
+        try {
+            Double difference = Double.valueOf(creditLine) - Double.valueOf(montoTotal);
+            if(difference<0) {
+                upToCreditLine = true;
+            }
+        } catch (Exception ex) {
+            Log.e(Constants.log_arrow, ex.toString());
+        }
+
+        return upToCreditLine;
+    }
 
 }
