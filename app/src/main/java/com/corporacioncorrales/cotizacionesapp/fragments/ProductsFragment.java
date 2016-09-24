@@ -294,14 +294,15 @@ public class ProductsFragment extends Fragment {
         @Override
         public boolean onQueryTextChange(String query) {
 
-            //final ArrayList<ProductsResponse> productsList = productsAdapter.getProductsList();
             ArrayList<ProductsResponse> filteredProductsList = new ArrayList<>();
 
             if (!query.isEmpty()) {
                 if (originalProductsArrayList != null && originalProductsArrayList.size() > 0) {
                     for (int i = 0; i < originalProductsArrayList.size(); i++) {
-                        final String text = originalProductsArrayList.get(i).getId().toLowerCase();
-                        if (text.contains(query.toLowerCase())) {
+                        final String productId = originalProductsArrayList.get(i).getId().toLowerCase();
+                        final String productName = originalProductsArrayList.get(i).getNombre().toLowerCase();
+                        // Filtro por id o por nombre de producto
+                        if (productId.contains(query.toLowerCase()) || productName.contains(query.toLowerCase())) {
                             filteredProductsList.add(originalProductsArrayList.get(i));
                         }
                     }
