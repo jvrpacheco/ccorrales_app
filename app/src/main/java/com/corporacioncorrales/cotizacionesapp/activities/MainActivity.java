@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ClientsFragment;
+import com.corporacioncorrales.cotizacionesapp.fragments.HistorialDocsFragment;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity
                 //fragmentClass = ThirdFragment.class;
                 break;*/
             case R.id.nav_manage:
-                //fragmentClass = ThirdFragment.class;
+                fragment = new HistorialDocsFragment();
                 break;
             case R.id.nav_share:
                 //fragmentClass = ThirdFragment.class;
