@@ -4,15 +4,19 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.corporacioncorrales.cotizacionesapp.R;
 
 /**
  * Created by victor on 8/10/16.
@@ -38,8 +42,6 @@ public class Common {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-
-
     // el primero es... respecto al segundo
     public static String comparePrices(Double d1, Double d2) {
 
@@ -60,6 +62,25 @@ public class Common {
         }
 
         return result;
+    }
+
+    public static void showAlertDialogMessage(final String message, final Context context) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getResources().getString(R.string.app_name));
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton(context.getText(R.string.accept),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+
+        AlertDialog alert = builder.create();
+        //(((FragmentActivity)context)).attatchAlertDialog(alert);
+        alert.show();
     }
 
     public static void setActionBarTitle(Activity activity, String title) {

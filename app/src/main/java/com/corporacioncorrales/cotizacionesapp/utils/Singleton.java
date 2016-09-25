@@ -10,7 +10,16 @@ public class Singleton {
     private String userCode;
     private String rubroSelected;
     private String lineaDeCreditoCliente;
+    private String tipoDocumento; //Factura/Proforma
 
+
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
+
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
 
     private Singleton() {
     }

@@ -215,19 +215,35 @@ public class ProductsFragment extends Fragment {
 
             for (int i = 0; i < productsSelected.size(); i++) {
                 ProductsResponse productSelected = productsSelected.get(i);
-                QuotationProductRequest productToSend = new QuotationProductRequest();
-                productToSend.setArticulo(productSelected.getId());
-                productToSend.setCantidad(productSelected.getCantidadSolicitada());
-                productToSend.setPrecio_real(productSelected.getPrecio());
-                productToSend.setPrecio(productSelected.getNuevoPrecio());
-                dataToSend.add(productToSend);
+                if(Singleton.getInstance().getTipoDocumento().equals(Constants.tipoDoc_factura)) {
+                    if(Integer.valueOf(productSelected.getCantidad())>0) {
+                        QuotationProductRequest productToSend = new QuotationProductRequest();
+                        productToSend.setArticulo(productSelected.getId());
+                        productToSend.setCantidad(productSelected.getCantidadSolicitada());
+                        productToSend.setPrecio_real(productSelected.getPrecio());
+                        productToSend.setPrecio(productSelected.getNuevoPrecio());
+                        dataToSend.add(productToSend);
+                    } else {
+                        Common.showAlertDialogMessage(
+                                String.format("%s %s, %s",
+                                        "Por favor retire el producto con codigo",
+                                        productSelected.getId().trim(),
+                                        "porque no cuenta con stock."),
+                                getActivity());
+                        return;
+                    }
+                } else if(Singleton.getInstance().getTipoDocumento().equals(Constants.tipoDoc_proforma)) {
+
+                }
             }
 
-            sendQuotation(client_id,
-                    Singleton.getInstance().getRubroSelected(),
-                    Singleton.getInstance().getUserCode(),
-                    isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_lineaDeCredito) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
-                    dataToSend);
+            if(dataToSend.size()>0){
+                sendQuotation(client_id,
+                        Singleton.getInstance().getRubroSelected(),
+                        Singleton.getInstance().getUserCode(),
+                        isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_lineaDeCredito) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
+                        dataToSend);
+            }
 
         } else {
             Common.showToastMessage(getActivity(), "Por favor, agregue productos a la Cotizacion.");
@@ -282,13 +298,13 @@ public class ProductsFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 String item = parent.getItemAtPosition(position).toString();
-                if (item.equals(Constants.tipoDoc_proforma_label)) {
-                    tipoDocSelected = Constants.tipoDoc_proforma;
-                } else if (item.equals(Constants.tipoDoc_factura_label)) {
+                if (item.equals(Constants.tipoDoc_factura_label)) {
                     tipoDocSelected = Constants.tipoDoc_factura;
+                } else if (item.equals(Constants.tipoDoc_proforma_label)) {
+                    tipoDocSelected = Constants.tipoDoc_proforma;
                 }
 
-                Singleton.getInstance().setRubroSelected(tipoDocSelected);
+                Singleton.getInstance().setTipoDocumento(tipoDocSelected);
                 Log.d(Constants.log_arrow + TAG, "tipoDocSelected: " + tipoDocSelected);
             }
 

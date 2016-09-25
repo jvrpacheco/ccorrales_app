@@ -6,10 +6,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-
     <string name="category_clients">Clientes</string>
+    <string name="accept">Aceptar</string>
 
     <string name="drawer_layout_title">Corporación Corrales</string>
     <string name="drawer_layout_subtitle">Cotizaciones App</string>
@@ -37,8 +35,8 @@
     </string-array>
 
     <string-array name="array_tipos_doc">
-        <item>Proforma</item>
         <item>Factura</item>
+        <item>Proforma</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

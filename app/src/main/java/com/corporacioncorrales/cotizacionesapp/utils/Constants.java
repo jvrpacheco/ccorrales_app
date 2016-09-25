@@ -32,10 +32,10 @@ public class Constants {
     public static final String rubro_plastico_label = "Plastico";
     public static final String rubro_plastico = "04";
 
-    public static final String tipoDoc_proforma_label = "Proforma";
-    public static final String tipoDoc_proforma = "00";
     public static final String tipoDoc_factura_label = "Factura";
-    public static final String tipoDoc_factura = "01";
+    public static final String tipoDoc_factura = "00";
+    public static final String tipoDoc_proforma_label = "Proforma";
+    public static final String tipoDoc_proforma = "01";
 
     //para comparar los precios
     public static final String comparar_esMayor = "esMayor";
