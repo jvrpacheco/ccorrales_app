@@ -53,4 +53,8 @@ public class Constants {
 
     public static final String dentroDeLineaDeCredito = "Dentro de la Linea de Credito";
     public static final String superaLineaDeCredito = "Supera Linea de Credito";
+
+    public static final String fragmentTagClientes = "Clientes";
+    public static final String fragmentTagProductos = "Productos";
+    public static final String fragmentTagHistorial = "Historial";
 }

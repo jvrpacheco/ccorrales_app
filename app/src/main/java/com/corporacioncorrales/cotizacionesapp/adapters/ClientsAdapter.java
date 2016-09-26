@@ -22,6 +22,7 @@ import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.Client;
 import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
+import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -116,7 +117,7 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);
-        ft.addToBackStack("asds");
+        ft.addToBackStack(Constants.fragmentTagProductos);
         ft.commit();
     }
 

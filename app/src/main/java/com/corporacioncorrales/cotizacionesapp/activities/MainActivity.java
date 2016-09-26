@@ -1,15 +1,15 @@
 package com.corporacioncorrales.cotizacionesapp.activities;
 
-import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,18 +21,27 @@ import android.widget.ProgressBar;
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ClientsFragment;
 import com.corporacioncorrales.cotizacionesapp.fragments.HistorialDocsFragment;
-import com.corporacioncorrales.cotizacionesapp.utils.Common;
+import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
+import com.corporacioncorrales.cotizacionesapp.model.QuotationProductRequest;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        /*implements NavigationView.OnNavigationItemSelectedListener*/ {
 
     private String TAG = getClass().getCanonicalName();
+    private boolean viewIsAtHome;
+    NavigationView navigationView;
+    DrawerLayout drawer;
+    Toolbar toolbar;
+    String titleClientes = "Clientes";
+    String titleHistorial = "Historial";
 
     @BindView(R.id.progressBar) public ProgressBar mProgressBar;
     //public Dialog mOverlayDialog;
@@ -48,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         mProgressBar.setScaleY(.2f);
         mProgressBar.setScaleX(.2f);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -61,7 +70,7 @@ public class MainActivity extends AppCompatActivity
         });*/
         fab.setVisibility(View.GONE);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this,
                 drawer,
@@ -71,11 +80,23 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        //select default fragment
-        selectItemFromMenu(navigationView, 0);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        setupDrawerContent(navigationView);
+        selectDrawerItem(navigationView.getMenu().getItem(0));
     }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @SuppressWarnings("StatementWithEmptyBody")
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -84,27 +105,28 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
-            //Singleton.getInstance().setUser(Constants.Empty);
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+            if(fragment instanceof ProductsFragment) {
+                showConfirmationAlertDialog(fragment,
+                        getString(R.string.app_name),
+                        "Esta a punto de abandonar su orden.",
+                        "Abandonar",
+                        "Continuar");
+            } else if(fragment instanceof ClientsFragment) {
+                showConfirmationAlertDialog(fragment,
+                        getString(R.string.app_name),
+                        "Esta a punto de cerrar sesion.",
+                        "Continuar",
+                        "Cancelar");
+            } else if(fragment instanceof HistorialDocsFragment) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, new ClientsFragment());
+                ft.commit();
+                navigationView.getMenu().getItem(0).setChecked(true);
+            }
         }
         Log.d(Constants.log_arrow + TAG + " User", Singleton.getInstance().getUser());
-    }
-
-    private void selectItemFromMenu(NavigationView nv, int itemId) {
-        /*Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            if(extras.getString("userFromLogin") != null) {
-                Bundle bundle=new Bundle();
-                bundle.putString("userFromLogin", extras.getString("userFromLogin"));
-                fragment.setArguments(bundle);
-            }
-        }*/
-
-        //Seleccionar por defecto el item indicado del menu
-        nv.getMenu().getItem(itemId).setChecked(true);
-        //Mostrar la vista del primer item seleccionado del menu
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new ClientsFragment()).commit();
-        //setActionBarTitle(getString(R.string.category_clients));
     }
 
     @Override
@@ -129,7 +151,75 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+    public void selectDrawerItem(MenuItem menuItem) {
+
+        Fragment fragment = null;
+        String fragmentTag = "";
+        String title = getString(R.string.app_name);
+
+        switch (menuItem.getItemId()) {
+            case R.id.nav_clients:
+                fragment = new ClientsFragment();
+                title  = titleClientes;
+                fragmentTag = Constants.fragmentTagClientes;
+                //viewIsAtHome = true;
+                break;
+            case R.id.nav_manage:
+                fragment = new HistorialDocsFragment();
+                title = titleHistorial;
+                fragmentTag = Constants.fragmentTagHistorial;
+                //viewIsAtHome = false;
+                break;
+        }
+
+        if (fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            /*if(title.equals(titleClientes)) {
+                ft.replace(R.id.content_frame, fragment);
+            } else {
+                ft.add(R.id.content_frame, fragment);
+            }*/
+            ft.replace(R.id.content_frame, fragment);
+            ft.addToBackStack(fragmentTag);
+            ft.commit();
+        }
+
+        menuItem.setChecked(true);
+
+
+        // set the toolbar title
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    private void showConfirmationAlertDialog(final Fragment fragment, final String title, final String message, final String textBtnOk, String textBtnCancelar) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton(textBtnOk,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        MainActivity.super.onBackPressed();
+                        if(fragment instanceof ProductsFragment) {
+                            navigationView.getMenu().getItem(0).setChecked(true);
+                        }
+                    }
+                });
+        builder.setNegativeButton(textBtnCancelar,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    /*@SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
@@ -139,18 +229,11 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_clients:
-                fragment = new ClientsFragment();
-                title = getString(R.string.category_clients);
+                Common.showToastMessage(getApplicationContext(), "1");
                 break;
-            /*case R.id.nav_products:
-                fragment = new ProductsFragment();
-                title  = getString(R.string.category_products);
-                break;
-            case R.id.nav_slideshow:
-                //fragmentClass = ThirdFragment.class;
-                break;*/
             case R.id.nav_manage:
                 fragment = new HistorialDocsFragment();
+                Common.showToastMessage(getApplicationContext(), "2");
                 break;
             case R.id.nav_share:
                 //fragmentClass = ThirdFragment.class;
@@ -167,10 +250,6 @@ public class MainActivity extends AppCompatActivity
         try {
             // Insert the fragment by replacing any existing fragment
             if (fragment != null) {
-                /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.add(R.id.content_frame, fragment);
-                ft.commit();*/
-
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, fragment);
                 ft.addToBackStack("asd");
@@ -186,7 +265,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
+    }*/
 
     /*private void setActionBarTitle(String title) {
         // set the toolbar title
