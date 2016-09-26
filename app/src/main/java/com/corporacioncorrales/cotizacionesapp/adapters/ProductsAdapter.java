@@ -74,11 +74,12 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         }
 
         if(product.getCantidadSolicitada()==null) {
-            if(Integer.parseInt(product.getCantidad()) > 0) {
+            /*if(Integer.parseInt(product.getCantidad()) > 0) {
                 product.setCantidadSolicitada("1");
             } else {
                 product.setCantidadSolicitada("0");
-            }
+            }*/
+            product.setCantidadSolicitada("0");
         }
         //*************************
 

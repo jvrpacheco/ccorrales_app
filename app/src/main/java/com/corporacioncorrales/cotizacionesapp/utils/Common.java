@@ -64,7 +64,28 @@ public class Common {
         return result;
     }
 
-    public static void showAlertDialogMessage(final String message, final Context context) {
+    public static void showAlertDialogMessage(final String title, final String message, final Context context) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(String.format("%s - %s", context.getResources().getString(R.string.app_name), title));
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton(context.getText(R.string.accept),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+
+        AlertDialog alert = builder.create();
+        //(((FragmentActivity)context)).attatchAlertDialog(alert);
+        alert.show();
+    }
+
+
+
+    public static void showAlertDialogMessage1(final String message, final Context context) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getResources().getString(R.string.app_name));

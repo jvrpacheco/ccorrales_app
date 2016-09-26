@@ -1,9 +1,12 @@
 package com.corporacioncorrales.cotizacionesapp.fragments;
 
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -83,7 +86,6 @@ public class ProductsFragment extends Fragment {
     public static ProductsAdapter productsAdapter;
     private QuotationAdapter quotationAdapter;
     private String idCliente;
-    private String tipoDocSelected;
 
     public static ArrayList<ProductsResponse> productsSelectedList;
 
@@ -212,11 +214,12 @@ public class ProductsFragment extends Fragment {
 
             ArrayList<ProductsResponse> productsSelected = quotationAdapter.getQuotationProductsList();
             ArrayList<QuotationProductRequest> dataToSend = new ArrayList<>();
+            String tipoDocumento = Singleton.getInstance().getTipoDocumento();
 
             for (int i = 0; i < productsSelected.size(); i++) {
                 ProductsResponse productSelected = productsSelected.get(i);
-                if(Singleton.getInstance().getTipoDocumento().equals(Constants.tipoDoc_factura)) {
-                    if(Integer.valueOf(productSelected.getCantidad())>0) {
+                if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                    if(Integer.valueOf(productSelected.getCantidadSolicitada())>0) {
                         QuotationProductRequest productToSend = new QuotationProductRequest();
                         productToSend.setArticulo(productSelected.getId());
                         productToSend.setCantidad(productSelected.getCantidadSolicitada());
@@ -225,6 +228,7 @@ public class ProductsFragment extends Fragment {
                         dataToSend.add(productToSend);
                     } else {
                         Common.showAlertDialogMessage(
+                                "Factura",
                                 String.format("%s %s, %s",
                                         "Por favor retire el producto con codigo",
                                         productSelected.getId().trim(),
@@ -232,21 +236,39 @@ public class ProductsFragment extends Fragment {
                                 getActivity());
                         return;
                     }
-                } else if(Singleton.getInstance().getTipoDocumento().equals(Constants.tipoDoc_proforma)) {
-
+                } else if(tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                    if(Integer.valueOf(productSelected.getCantidadSolicitada())>0) {
+                        QuotationProductRequest productToSend = new QuotationProductRequest();
+                        productToSend.setArticulo(productSelected.getId());
+                        productToSend.setCantidad(productSelected.getCantidadSolicitada());
+                        productToSend.setPrecio_real(productSelected.getPrecio());
+                        productToSend.setPrecio(productSelected.getNuevoPrecio());
+                        dataToSend.add(productToSend);
+                    } else {
+                        Common.showAlertDialogMessage(
+                                "Proforma",
+                                String.format("%s %s%s",
+                                        "Por favor ingrese la cantidad del producto con codigo",
+                                        productSelected.getId().trim(),
+                                        "."),
+                                getActivity());
+                        return;
+                    }
                 }
             }
 
             if(dataToSend.size()>0){
-                sendQuotation(client_id,
-                        Singleton.getInstance().getRubroSelected(),
-                        Singleton.getInstance().getUserCode(),
-                        isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_lineaDeCredito) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
+                showConfirmationToSendDocumentAlertDialog(getActivity().getString(R.string.app_name),
+                        String.format("%s %s %s", "Desea enviar la ", tipoDocumento.equals(Constants.tipoDoc_factura) ? "factura" : "proforma", "?"),
+                        "Enviar",
+                        "Cancelar",
                         dataToSend);
             }
 
         } else {
-            Common.showToastMessage(getActivity(), "Por favor, agregue productos a la Cotizacion.");
+            Common.showAlertDialogMessage1(
+                    String.format("Por favor, agregue algun producto."),
+                    getActivity());
         }
     }
 
@@ -299,13 +321,15 @@ public class ProductsFragment extends Fragment {
 
                 String item = parent.getItemAtPosition(position).toString();
                 if (item.equals(Constants.tipoDoc_factura_label)) {
-                    tipoDocSelected = Constants.tipoDoc_factura;
+                    Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_factura);
+                    quotationAdapter.resetProducts();
+                    quotationAdapter.refreshItems();
                 } else if (item.equals(Constants.tipoDoc_proforma_label)) {
-                    tipoDocSelected = Constants.tipoDoc_proforma;
+                    Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_proforma);
+                    quotationAdapter.resetProducts();
+                    quotationAdapter.refreshItems();
                 }
-
-                Singleton.getInstance().setTipoDocumento(tipoDocSelected);
-                Log.d(Constants.log_arrow + TAG, "tipoDocSelected: " + tipoDocSelected);
+                Log.d(Constants.log_arrow + TAG, "Singleton.getInstance().getTipoDocumento(): " + Singleton.getInstance().getTipoDocumento());
             }
 
             @Override
@@ -352,7 +376,6 @@ public class ProductsFragment extends Fragment {
 
     private Boolean isUpToCreditLine(String montoTotal, String creditLine) {
         Boolean upToCreditLine = false;
-
         try {
             Double difference = Double.valueOf(creditLine) - Double.valueOf(montoTotal);
             if (difference < 0) {
@@ -361,8 +384,36 @@ public class ProductsFragment extends Fragment {
         } catch (Exception ex) {
             Log.e(Constants.log_arrow, ex.toString());
         }
-
         return upToCreditLine;
+    }
+
+    private void showConfirmationToSendDocumentAlertDialog(final String title, final String message, final String textBtnOk, String textBtnCancelar, final ArrayList<QuotationProductRequest> dataToSend) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+
+        builder.setPositiveButton(textBtnOk,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, final int id) {
+                            sendQuotation(client_id,
+                                    Singleton.getInstance().getRubroSelected(),
+                                    Singleton.getInstance().getUserCode(),
+                                    isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_lineaDeCredito) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
+                                    dataToSend);
+                        }
+                    });
+
+        builder.setNegativeButton(textBtnCancelar,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }

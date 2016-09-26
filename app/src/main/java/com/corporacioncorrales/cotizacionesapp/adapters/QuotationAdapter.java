@@ -57,12 +57,11 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     private String quantityInserted = "";
     private String precioIngresado = "";
     private Boolean esPrecioMenorAlLimite;
+    private String tipoDocumento;
 
     public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos, TextView tvMontoTotal, TextView tvSuperaLinea) {
         this.mContext = mContext;
         this.productsList = productsList;
-
-        //this.mActivity = (AppCompatActivity)mContext;
         this.tvTotalProductos = tvTotalProductos;
         this.tvMontoTotal = tvMontoTotal;
         this.tvSuperaLinea = tvSuperaLinea;
@@ -77,7 +76,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     @Override
     public void onBindViewHolder(final QuotationViewHolder holder, final int position) {
+
+        tipoDocumento = Singleton.getInstance().getTipoDocumento();
         final ProductsResponse product = productsList.get(position);
+
         holder.tvId.setText(product.getId());
         holder.tvDescription.setText(product.getNombre());
 
@@ -107,28 +109,42 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
         } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
 
-            if(product.getCantidad().equals("0")) {
-                holder.ivChangeQuantity.setVisibility(View.GONE);
+            if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                if(product.getCantidad().equals("0")) {
+                    holder.ivChangeQuantity.setVisibility(View.GONE);
+                    holder.tvCantidadSolicitada.setText("0");
+                    holder.tvNewPrice.setText(product.getPrecio());
+                } else {
+                    holder.ivChangeQuantity.setVisibility(View.VISIBLE);
+                    holder.tvCantidadSolicitada.setText("0");
+                    holder.tvNewPrice.setText(product.getPrecio());
+                }
+            } else if(tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                holder.ivChangeQuantity.setVisibility(View.VISIBLE);
                 holder.tvCantidadSolicitada.setText("0");
                 holder.tvNewPrice.setText(product.getPrecio());
-            } else {
-                holder.ivChangeQuantity.setVisibility(View.VISIBLE);
-                holder.tvCantidadSolicitada.setText("1");
-                holder.tvNewPrice.setText(product.getPrecio());
             }
+
 
         } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
 
-            if(product.getCantidadSolicitada().equals("0")) {
-                holder.ivChangeQuantity.setVisibility(View.GONE);
-                holder.tvCantidadSolicitada.setText("0");
-                holder.tvNewPrice.setText(product.getNuevoPrecio());
-            } else {
+            if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                if(product.getCantidad().equals("0")) {
+                    holder.ivChangeQuantity.setVisibility(View.GONE);
+                    product.setCantidadSolicitada("0");
+                    holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
+                    holder.tvNewPrice.setText(product.getNuevoPrecio());
+                } else {
+                    holder.ivChangeQuantity.setVisibility(View.VISIBLE);
+                    holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
+                    holder.tvNewPrice.setText(product.getNuevoPrecio());
+                }
+            } else if(tipoDocumento.equals(Constants.tipoDoc_proforma)) {
                 holder.ivChangeQuantity.setVisibility(View.VISIBLE);
+                //product.setCantidadSolicitada("0");
                 holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
                 holder.tvNewPrice.setText(product.getNuevoPrecio());
             }
-
         }
 
         if(product.getEsPrecioMenorAlLimite()) {
@@ -141,7 +157,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.tvQuantity.setText(product.getCantidad());
 
         //Precio total
-        if(Integer.parseInt(product.getCantidad())>0) {
+        //if(Integer.parseInt(product.getCantidad())>0) {
             try {
                 Double total = 0.00;
                 if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
@@ -158,26 +174,27 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
                 } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
 
-                    holder.tvCantidadSolicitada.setText("1");
-                    product.setCantidadSolicitada("1");
+                    holder.tvCantidadSolicitada.setText("0");
+                    product.setCantidadSolicitada("0");
                     holder.tvNewPrice.setText(product.getPrecio());
 
                     total = Double.valueOf(product.getPrecio());
                     holder.tvTotalPrice.setText(String.valueOf(total));
 
                 } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
+
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
                     holder.tvNewPrice.setText(product.getNuevoPrecio());
-
                     total = Double.valueOf(product.getNuevoPrecio()) * Integer.valueOf(product.getCantidadSolicitada());
                     holder.tvTotalPrice.setText(String.valueOf(total));
                 }
+                //updateTotalProducts();
             } catch (Exception ex) {
                 Log.e(Constants.log_arrow, ex.toString());
             }
-        } else {
-            holder.tvTotalPrice.setText("0");
-        }
+        //} else {
+        //    holder.tvTotalPrice.setText("0");
+        //}
 
         holder.ivRemove.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,11 +227,13 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             @Override
             public void onClick(View v) {
 
-                if(!product.getCantidad().isEmpty() && Integer.parseInt(product.getCantidad())>0) {
-
+                if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                    if(!product.getCantidad().isEmpty() && Integer.parseInt(product.getCantidad())>0) {
+                        showChangeQuantityDialog(mContext, product, position);
+                    }
+                } else if(tipoDocumento.equals(Constants.tipoDoc_proforma)) {
                     showChangeQuantityDialog(mContext, product, position);
                 }
-
             }
         });
 
@@ -276,21 +295,22 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         updateTotalProducts();
     }
 
-    public void refreshItem(int position, ProductsResponse product) {
+    public void refreshItems() {
         //notifyItemChanged(position);
         notifyDataSetChanged();
         updateTotalProducts();
     }
 
-    private void resetProduct(ProductsResponse product) {
+    public void resetProduct(ProductsResponse product) {
         product.setNuevoPrecio(product.getPrecio());
         product.setEsPrecioMenorAlLimite(false);
-        if(Integer.valueOf(product.getCantidad()) > 0) {
-            product.setCantidadSolicitada("1");
-        } else {
-            product.setCantidadSolicitada("0");
-        }
+        product.setCantidadSolicitada("0");
+    }
 
+    public void resetProducts() {
+        for(int i=0; i<productsList.size(); i++) {
+            resetProduct(productsList.get(i));
+        }
     }
 
     private void showChangeQuantityDialog(final Context context, final ProductsResponse product, final int position) {
@@ -327,27 +347,41 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 String qInserted = s.toString();
 
                 if(!qInserted.isEmpty()) {
+
                     if(Integer.parseInt(qInserted)>0) {
-                        if(Integer.parseInt(qInserted) <= Integer.parseInt(stock)) {
+
+                        if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                            if(Integer.parseInt(qInserted) <= Integer.parseInt(stock)) {
+                                tvCompareResult.setText(context.getResources().getString(R.string.cantidad_solicitada_permitida));
+                                tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
+                                btnAcceptDialog.setEnabled(true);
+                                quantityInserted = qInserted;
+                            } else {
+                                tvCompareResult.setText(String.format("%s %s %s", "El maximo permitido es de", stock, "productos."));
+                                tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
+                                btnAcceptDialog.setEnabled(false);
+                                quantityInserted = qInserted;
+                            }
+
+                        } else if(tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                            Log.d(Constants.log_arrow, "Proforma, no importa si no hay stock. Cualquier cantidad permitida");
                             tvCompareResult.setText(context.getResources().getString(R.string.cantidad_solicitada_permitida));
                             tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
                             btnAcceptDialog.setEnabled(true);
-                            quantityInserted = qInserted;
-                        } else {
-                            tvCompareResult.setText(String.format("%s %s %s", "El maximo permitido es de", stock, "productos."));
-                            tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
-                            btnAcceptDialog.setEnabled(false);
                             quantityInserted = qInserted;
                         }
 
                     } else if(qInserted.equals("0")){
                         tvCompareResult.setText(context.getResources().getString(R.string.cantidad_solicitada_mayor_a_cero));
                         tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
+                        //tvCompareResult.setVisibility(View.VISIBLE);
                         btnAcceptDialog.setEnabled(false);
                     }
+
                 } else {
                     tvCompareResult.setText(context.getResources().getString(R.string.cantidad_solicitada_vacia));
                     tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
+                    //tvCompareResult.setVisibility(View.VISIBLE);
                     btnAcceptDialog.setEnabled(false);
                 }
             }
@@ -358,7 +392,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             @Override
             public void onClick(View v) {
                 product.setCantidadSolicitada(quantityInserted);
-                refreshItem(position, product);
+                //refreshItem(position, product);
+                refreshItems();
                 dialog.dismiss();
             }
         });
@@ -497,7 +532,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             public void onClick(View v) {
                 product.setNuevoPrecio(precioIngresado);
                 product.setEsPrecioMenorAlLimite(esPrecioMenorAlLimite);
-                refreshItem(position, product);
+                //refreshItem(position, product);
+                refreshItems();
                 dialog.dismiss();
             }
         });
@@ -512,11 +548,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                         rvPricesHistory,
                         Singleton.getInstance().getUserCode(),
                         product.getId());
-
-                /*loadPricesHistory(
-                        rvPricesHistory,
-                        "197119",
-                        "01VL00600");*/
             }
         });
 
@@ -599,38 +630,43 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             if(productsList.size()>0) {
 
                 int cont = 0;
+                int minQuantity = -1;
                 Double suma = 0.00;
                 Double precioTotalPorProducto = 0.00;
+                String tipoDoc = Singleton.getInstance().getTipoDocumento();
 
                 try {
                     for(int i=0; i<productsList.size(); i++) {
 
                         ProductsResponse product = productsList.get(i);
 
-                        if(Integer.valueOf(product.getCantidad())>0) {
+                        if(tipoDoc.equals(Constants.tipoDoc_factura)) {
+                            minQuantity = 1;
+                        } else if(tipoDoc.equals(Constants.tipoDoc_proforma)) {
+                            minQuantity = 0;
+                        }
+
+                        if(Integer.valueOf(product.getCantidad()) >= minQuantity) {
 
                             if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
                                 precioTotalPorProducto = Double.parseDouble(product.getNuevoPrecio());
-
                             } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()==null) {
                                 Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
                                 precioTotalPorProducto = Double.parseDouble(product.getPrecio()) * cantidadSolicitada;
-
                             } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
                                 precioTotalPorProducto = Double.parseDouble(product.getPrecio());
-
                             } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
                                 Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
                                 precioTotalPorProducto = Double.parseDouble(product.getNuevoPrecio()) * cantidadSolicitada;
-
                             }
-                            cont++;
+                            //cont++;
                             suma = suma + precioTotalPorProducto;
-
-                        } else {
-
-
                         }
+
+                        if(Integer.valueOf(product.getCantidadSolicitada())>0) {
+                            cont++;
+                        }
+
                     }
                     tvTotalProductos.setText(String.valueOf(cont));
                     tvMontoTotal.setText(String.format("%.2f",suma));
