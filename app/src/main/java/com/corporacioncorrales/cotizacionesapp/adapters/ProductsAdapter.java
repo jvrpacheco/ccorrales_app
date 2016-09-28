@@ -113,7 +113,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                     product.setSelected(true);
                     holder.ivCheck.setVisibility(View.VISIBLE);
                     productsSelectedList.add(product);
-                    quotationAdapter.addItem(0, product);
+                    //quotationAdapter.addItem(0, product);
+                    quotationAdapter.addItem(quotationAdapter.getItemCount(), product);
                 }
 
             Log.d(Constants.log_arrow, String.valueOf(productsSelectedList.size()));

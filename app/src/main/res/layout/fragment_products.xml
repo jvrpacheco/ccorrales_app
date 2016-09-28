@@ -203,7 +203,7 @@
                         android:layout_height="match_parent"
                         android:background="@android:color/holo_orange_dark"/>
                     <RelativeLayout
-                        android:layout_width="80dp"
+                        android:layout_width="85dp"
                         android:layout_height="match_parent">
                         <TextView
                             android:id="@+id/tv9"

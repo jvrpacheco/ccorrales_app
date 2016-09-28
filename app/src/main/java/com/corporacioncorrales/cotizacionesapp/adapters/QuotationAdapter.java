@@ -190,7 +190,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 }
                 //updateTotalProducts();
             } catch (Exception ex) {
-                Log.e(Constants.log_arrow, ex.toString());
+                Log.e(Constants.log_arrow_error, ex.toString());
             }
         //} else {
         //    holder.tvTotalPrice.setText("0");
