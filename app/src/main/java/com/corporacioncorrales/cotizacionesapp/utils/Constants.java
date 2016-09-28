@@ -11,6 +11,7 @@ public class Constants {
     public static final String denyEnterToApp = "False";
 
     public static final String log_arrow = "--------> ";
+    public static final String log_arrow_error = "--------> ERROR";
     public static final String log_arrow_response = "--------> RESPONSE";
     public static final String log_arrow_failure = "--------> FAILURE";
 
@@ -22,6 +23,7 @@ public class Constants {
     public static final String url_send_quotation = "api/grabarproforma/createproducts";
     public static final String url_image_zoom = "api/products";
     public static final String url_prices_history = "api/preciohistorico/prehistory";
+    public static final String url_documents_history = "api/consultaproforma";
 
     public static final String rubro_aluminio_label = "Aluminio";
     public static final String rubro_aluminio = "00";

@@ -1,5 +1,7 @@
 package com.corporacioncorrales.cotizacionesapp.utils;
 
+import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
+
 /**
  * Created by victor on 8/11/16.
  */
@@ -11,6 +13,7 @@ public class Singleton {
     private String rubroSelected;
     private String lineaDeCreditoCliente;
     private String tipoDocumento; //Factura/Proforma
+    private ClientsResponse clientSelected;
 
 
     public String getTipoDocumento() {
@@ -60,4 +63,11 @@ public class Singleton {
         this.userCode = userCode;
     }
 
+    public ClientsResponse getClientSelected() {
+        return clientSelected;
+    }
+
+    public void setClientSelected(ClientsResponse clientSelected) {
+        this.clientSelected = clientSelected;
+    }
 }

@@ -7,7 +7,7 @@ public class Client {
 
     //Conver json response to model: http://pojo.sodhanalibrary.com/
 
-    public int Id;
+    /*public int Id;
     public String Ruc;
     public String Razon_Social;
     public String Foto;
@@ -50,6 +50,6 @@ public class Client {
     public String toString()
     {
         return "ClassPojo [Ruc = "+Ruc+", Id = "+Id+", Foto = "+Foto+", Razon_Social = "+Razon_Social+"]";
-    }
+    }*/
 
 }

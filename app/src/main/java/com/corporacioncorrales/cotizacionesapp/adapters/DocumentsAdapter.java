@@ -1,115 +1,100 @@
 package com.corporacioncorrales.cotizacionesapp.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
-import com.corporacioncorrales.cotizacionesapp.activities.MainActivity;
-import com.corporacioncorrales.cotizacionesapp.fragments.ClientsFragment;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
-import com.corporacioncorrales.cotizacionesapp.model.Client;
 import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
+import com.corporacioncorrales.cotizacionesapp.model.DocumentsResponse;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by victor on 8/10/16.
  */
-public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsViewHolder> {
+public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.ClientsViewHolder> {
 
     private Context mContext;
-    private ArrayList<ClientsResponse> clientsList;
+    private ArrayList<DocumentsResponse> documentsList;
     private AdapterView.OnItemClickListener listener;
     private FragmentActivity myContext;
 
     public class ClientsViewHolder extends RecyclerView.ViewHolder{
-        private TextView tvRazonSocial, tvRUC;
-        private ImageView ivClient;
+        private TextView tvId, tvFecha, tvMoneda, tvTotal, tvRubro;
 
         public ClientsViewHolder(View view) {
             super(view);
-            ivClient = (ImageView)view.findViewById(R.id.ivClient);
-            tvRazonSocial = (TextView)view.findViewById(R.id.tv_razon_social);
-            tvRUC = (TextView)view.findViewById(R.id.tv_RUC);
+            tvId = (TextView)view.findViewById(R.id.tvId);
+            tvFecha = (TextView)view.findViewById(R.id.tvFecha);
+            tvMoneda = (TextView)view.findViewById(R.id.tvMoneda);
+            tvTotal = (TextView)view.findViewById(R.id.tvTotal);
+            tvRubro = (TextView)view.findViewById(R.id.tvRubro);
         }
     }
 
-    public ClientsAdapter(Context mContext, ArrayList<ClientsResponse> clientsList) {
-        this.mContext = mContext;
-        this.clientsList = clientsList;
-
-        myContext=(FragmentActivity) mContext;
+    public DocumentsAdapter(Context mContext, ArrayList<DocumentsResponse> documentsList) {
+        //this.mContext = mContext;
+        this.documentsList = documentsList;
+        this.myContext = (FragmentActivity) mContext;
     }
 
     @Override
     public ClientsViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.client_card_row_item, parent, false);
-
-        /*itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
+                .inflate(R.layout.documents_row_item, parent, false);
 
         return new ClientsViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ClientsViewHolder holder, int position) {
-        final ClientsResponse client = clientsList.get(position);
+        final DocumentsResponse document = documentsList.get(position);
 
-        holder.tvRazonSocial.setText(client.getRazon_Social());
-        holder.tvRUC.setText("RUC " + client.getRuc());
+        holder.tvId.setText(String.valueOf(document.getId()));
 
-        //https://futurestud.io/blog/picasso-image-resizing-scaling-and-fit
-        if(!client.getFoto().isEmpty()) {
-            Picasso.with(mContext)
-                    .load(client.getFoto())
-                    .placeholder(R.drawable.client2)
-                    .error(R.drawable.client2)
-                    .centerInside()
-                    .fit()
-                    .into(holder.ivClient);
-        } else {
-            holder.ivClient.setImageResource(R.drawable.client2);
+        if(document.getFecha().contains("T")) {
+            String [] datetime = document.getFecha().split("T");
+            holder.tvFecha.setText(
+                    //String.format("%s\n%s", datetime[0], datetime[1])
+                    datetime[0]
+            );
         }
+
+        holder.tvMoneda.setText(document.getMoneda());
+        holder.tvTotal.setText(String.valueOf(document.getTotal()));
+        holder.tvRubro.setText(document.getRubro().trim());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.showToastMessage(mContext, "Ir a articulos disponibles para " + client.getRazon_Social());
-                //Common.hideKeyboard(mContext, null);
-                goToProductsFragment(myContext, client);
+                Common.showToastMessage(myContext, "Ir al documento con Id. " + document.getId());
+
+                //para mostrar los productos necesitamos los clientes
+                loadProductsOfDocument(myContext, getTestClient());
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return clientsList.size();
+        return documentsList.size();
     }
 
-    private void goToProductsFragment(FragmentActivity mContext, ClientsResponse client) {
+    private void loadProductsOfDocument(FragmentActivity mContext, ClientsResponse client) {
         ProductsFragment pf = new ProductsFragment();
         Bundle bundle = new Bundle();
         bundle.putString("cliente_id", client.getId());
@@ -120,6 +105,14 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         ft.replace(R.id.content_frame, pf);
         ft.addToBackStack(Constants.fragmentTagProductos);
         ft.commit();
+    }
+
+    private ClientsResponse getTestClient() {
+        ClientsResponse client = new ClientsResponse();
+        client.setId("115257");
+        client.setRazon_Social("APOLINARIO SALVA MARGARITA");
+        client.setLinea("10000");
+        return client;
     }
 
 }
