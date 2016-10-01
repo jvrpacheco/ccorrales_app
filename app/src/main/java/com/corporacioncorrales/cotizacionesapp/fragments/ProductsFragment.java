@@ -72,8 +72,8 @@ public class ProductsFragment extends Fragment {
     TextView tvMontoTotal;
     @BindView(R.id.tvLineaDeCreditoCliente)
     TextView tvLineaDeCreditoCliente;
-    @BindView(R.id.tvSuperaLinea)
-    TextView tvSuperaLinea;
+    @BindView(R.id.tvIndicadorSaldoDisponible)
+    TextView tvIndicadorSaldoDisponible;
 
     private String TAG = getClass().getCanonicalName();
     private ProgressBar mainProgressBar;
@@ -148,7 +148,7 @@ public class ProductsFragment extends Fragment {
 
     private void createQuotation() {
         rvQuotation.setHasFixedSize(true);
-        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>(), tvTotalProductos, tvMontoTotal, tvSuperaLinea);
+        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>(), tvTotalProductos, tvMontoTotal, tvIndicadorSaldoDisponible);
         rvQuotation.setAdapter(quotationAdapter);
         LinearLayoutManager sgm = new LinearLayoutManager(getActivity());
         rvQuotation.setLayoutManager(sgm);

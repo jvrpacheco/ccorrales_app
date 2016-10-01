@@ -1,5 +1,7 @@
 package com.corporacioncorrales.cotizacionesapp.model;
 
+import android.util.Log;
+
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -55,6 +57,12 @@ public class ProductsResponse {
     //********************************************
 
     public String getNuevoPrecio() {
+        try{
+            Double lineaCredito = Double.parseDouble(nuevoPrecio);
+            nuevoPrecio = String.format(Constants.round_three_decimals, lineaCredito);
+        } catch (Exception ex) {
+            Log.e(Constants.log_arrow_error, ex.toString());
+        }
         return nuevoPrecio;
     }
 
@@ -72,7 +80,6 @@ public class ProductsResponse {
         Boolean flag;
         if(esPrecioMenorAlLimite == null) {
             flag = false;
-            //setEsPrecioMenorAlLimite(flag);
         } else {
             flag = esPrecioMenorAlLimite;
         }
@@ -107,6 +114,12 @@ public class ProductsResponse {
     }
 
     public String getPrecio() {
+        try{
+            Double precioLista = Double.parseDouble(Precio);
+            Precio = String.format(Constants.round_three_decimals, precioLista);
+        } catch (Exception ex) {
+            Log.e(Constants.log_arrow_error, ex.toString());
+        }
         return Precio;
     }
 

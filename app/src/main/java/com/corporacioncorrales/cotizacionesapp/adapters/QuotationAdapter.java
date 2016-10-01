@@ -53,18 +53,18 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     private AppCompatActivity mActivity;
     private TextView tvTotalProductos;
     private TextView tvMontoTotal;
-    private TextView tvSuperaLinea;
+    private TextView tvIndicadorSaldoDisponible;
     private String quantityInserted = "";
     private String precioIngresado = "";
     private Boolean esPrecioMenorAlLimite;
     private String tipoDocumento;
 
-    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos, TextView tvMontoTotal, TextView tvSuperaLinea) {
+    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos, TextView tvMontoTotal, TextView tvIndicadorSaldoDisponible) {
         this.mContext = mContext;
         this.productsList = productsList;
         this.tvTotalProductos = tvTotalProductos;
         this.tvMontoTotal = tvMontoTotal;
-        this.tvSuperaLinea = tvSuperaLinea;
+        this.tvIndicadorSaldoDisponible = tvIndicadorSaldoDisponible;
     }
 
     @Override
@@ -84,9 +84,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.tvDescription.setText(product.getNombre());
 
         //Precio
-        //holder.tvPrice.setText(product.getPrecio());
-        Double price = Double.parseDouble(product.getPrecio());
-        holder.tvPrice.setText(String.valueOf(price));
+        holder.tvPrice.setText(product.getPrecio());
 
         //Nuevo Precio y Cantidad Solicitada
         if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
@@ -163,32 +161,36 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
                     holder.tvCantidadSolicitada.setText("0");
                     holder.tvNewPrice.setText(product.getNuevoPrecio());
-                    holder.tvTotalPrice.setText("0");
+                    holder.tvTotalPrice.setText("0.00");
 
                 } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()==null) {
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
                     holder.tvNewPrice.setText(product.getPrecio());
-
                     total = Double.valueOf(product.getPrecio()) * Integer.valueOf(product.getCantidadSolicitada());
-                    holder.tvTotalPrice.setText(String.valueOf(total));
+                    holder.tvTotalPrice.setText(String.format(
+                            Constants.round_two_decimals,
+                            total));
 
                 } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
 
                     holder.tvCantidadSolicitada.setText("0");
                     product.setCantidadSolicitada("0");
                     holder.tvNewPrice.setText(product.getPrecio());
-
                     total = Double.valueOf(product.getPrecio());
-                    holder.tvTotalPrice.setText(String.valueOf(total));
+                    holder.tvTotalPrice.setText(String.format(
+                            Constants.round_two_decimals,
+                            total));
 
                 } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
 
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
                     holder.tvNewPrice.setText(product.getNuevoPrecio());
                     total = Double.valueOf(product.getNuevoPrecio()) * Integer.valueOf(product.getCantidadSolicitada());
-                    holder.tvTotalPrice.setText(String.valueOf(total));
+                    holder.tvTotalPrice.setText(String.format(
+                            Constants.round_two_decimals,
+                            total));
                 }
-                //updateTotalProducts();
+
             } catch (Exception ex) {
                 Log.e(Constants.log_arrow_error, ex.toString());
             }
@@ -669,15 +671,15 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
                     }
                     tvTotalProductos.setText(String.valueOf(cont));
-                    tvMontoTotal.setText(String.format("%.2f",suma));
+                    tvMontoTotal.setText(String.format(Constants.round_two_decimals, suma));
 
                     if(!Singleton.getInstance().getLineaDeCreditoCliente().isEmpty()) {
                         if(isUpToCreditLine(suma, Singleton.getInstance().getLineaDeCreditoCliente())) {
-                            tvSuperaLinea.setText(Constants.superaLineaDeCredito);
-                            tvSuperaLinea.setTextColor(ContextCompat.getColor(mContext, R.color.rojo));
+                            tvIndicadorSaldoDisponible.setText(mContext.getString(R.string.saldo_disponible_insuficiente));
+                            tvIndicadorSaldoDisponible.setTextColor(ContextCompat.getColor(mContext, R.color.rojo));
                         } else {
-                            tvSuperaLinea.setText(Constants.dentroDeLineaDeCredito);
-                            tvSuperaLinea.setTextColor(ContextCompat.getColor(mContext, R.color.verde));
+                            tvIndicadorSaldoDisponible.setText(mContext.getString(R.string.saldo_disponible_suficiente));
+                            tvIndicadorSaldoDisponible.setTextColor(ContextCompat.getColor(mContext, R.color.verde));
                         }
                     }
 

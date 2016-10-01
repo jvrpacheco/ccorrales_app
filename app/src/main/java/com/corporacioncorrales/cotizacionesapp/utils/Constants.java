@@ -59,4 +59,8 @@ public class Constants {
     public static final String fragmentTagClientes = "Clientes";
     public static final String fragmentTagProductos = "Productos";
     public static final String fragmentTagHistorial = "Historial";
+
+    public static final String round_two_decimals = "%.2f";
+    public static final String round_three_decimals = "%.3f";
+
 }

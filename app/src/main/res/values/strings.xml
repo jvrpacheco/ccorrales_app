@@ -45,4 +45,8 @@
     <!-- Historial Documentos -->
     <string name="no_se_encontraron_docs">No se encontraron clientes para este usuario</string>
 
+    <string name="saldo_disponible">Saldo disponible:</string>
+    <string name="saldo_disponible_suficiente">Saldo disponible suficiente</string>
+    <string name="saldo_disponible_insuficiente">Saldo disponible insuficiente</string>
+
 </resources>
