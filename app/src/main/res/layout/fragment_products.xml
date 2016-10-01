@@ -25,7 +25,8 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
-                app:queryHint="Buscar"
+                app:iconifiedByDefault="false"
+                app:queryHint="ID/Descripcion"
                 android:background="@color/gris_fondo"
                 app:showAsAction="collapseActionView|ifRoom">
             </android.support.v7.widget.SearchView>
@@ -369,7 +370,7 @@
                             android:id="@+id/tvIndicadorSaldoDisponible" />
                     </LinearLayout>
                     <Button
-                        android:id="@+id/btnEnviarCotizacion"
+                        android:id="@+id/btnEnviarDocumento"
                         android:background="@color/verde"
                         android:layout_width="wrap_content"
                         android:layout_marginTop="0dp"

@@ -58,8 +58,8 @@ public class ProductsFragment extends Fragment {
     RecyclerView recyclerViewProductos;
     @BindView(R.id.rvQuotation)
     RecyclerView rvQuotation;
-    @BindView(R.id.btnEnviarCotizacion)
-    Button btnEnviarCotizacion;
+    @BindView(R.id.btnEnviarDocumento)
+    Button btnEnviarDocumento;
     @BindView(R.id.tvTotalProductos)
     TextView tvTotalProductos;
     @BindView(R.id.spTipoDoc)
@@ -207,7 +207,7 @@ public class ProductsFragment extends Fragment {
 
     }
 
-    @OnClick(R.id.btnEnviarCotizacion)
+    @OnClick(R.id.btnEnviarDocumento)
     public void OnClick() {
 
         if (quotationAdapter != null && quotationAdapter.getItemCount() > 0) {
@@ -215,10 +215,30 @@ public class ProductsFragment extends Fragment {
             ArrayList<ProductsResponse> productsSelected = quotationAdapter.getQuotationProductsList();
             ArrayList<QuotationProductRequest> dataToSend = new ArrayList<>();
             String tipoDocumento = Singleton.getInstance().getTipoDocumento();
+            String labelTipoDocumento = Constants.Empty;
+            Boolean rebasaSaldoDisponible = isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_lineaDeCredito) ? true : false;
+
+            if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                labelTipoDocumento = Constants.tipoDoc_factura_label;
+            } else if(tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                labelTipoDocumento = Constants.tipoDoc_proforma_label;
+            } else if(tipoDocumento.equals(Constants.tipoDoc_preventa)) {
+                labelTipoDocumento = Constants.tipoDoc_preventa_label;
+            }
+
+            if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                if(rebasaSaldoDisponible) {
+                    Common.showAlertDialogMessage(
+                            labelTipoDocumento,
+                            String.format("%s", "El saldo disponible no es suficiente para el monto total solicitado."),
+                            getActivity());
+                    return;
+                }
+            }
 
             for (int i = 0; i < productsSelected.size(); i++) {
                 ProductsResponse productSelected = productsSelected.get(i);
-                if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                if(tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
                     if(Integer.valueOf(productSelected.getCantidad())>0) {
                         if(Integer.valueOf(productSelected.getCantidadSolicitada())>0) {
                             QuotationProductRequest productToSend = new QuotationProductRequest();
@@ -229,7 +249,7 @@ public class ProductsFragment extends Fragment {
                             dataToSend.add(productToSend);
                         } else {
                             Common.showAlertDialogMessage(
-                                    "Factura",
+                                    labelTipoDocumento,
                                     String.format("%s %s%s",
                                             "Por favor ingrese la cantidad a solicitar del producto con codigo",
                                             productSelected.getId().trim(),
@@ -239,7 +259,7 @@ public class ProductsFragment extends Fragment {
                         }
                     } else {
                         Common.showAlertDialogMessage(
-                                "Factura",
+                                labelTipoDocumento,
                                 String.format("%s %s, %s",
                                         "Por favor retire el producto con codigo",
                                         productSelected.getId().trim(),
@@ -248,7 +268,7 @@ public class ProductsFragment extends Fragment {
                         return;
                     }
 
-                } else if(tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                } else if(tipoDocumento.equals(Constants.tipoDoc_preventa)) {
                     if(Integer.valueOf(productSelected.getCantidadSolicitada())>0) {
                         QuotationProductRequest productToSend = new QuotationProductRequest();
                         productToSend.setArticulo(productSelected.getId());
@@ -258,7 +278,7 @@ public class ProductsFragment extends Fragment {
                         dataToSend.add(productToSend);
                     } else {
                         Common.showAlertDialogMessage(
-                                "Proforma",
+                                labelTipoDocumento,
                                 String.format("%s %s%s",
                                         "Por favor ingrese la cantidad a solicitar del producto con codigo",
                                         productSelected.getId().trim(),
@@ -271,7 +291,7 @@ public class ProductsFragment extends Fragment {
 
             if(dataToSend.size()>0){
                 showConfirmationToSendDocumentAlertDialog(getActivity().getString(R.string.app_name),
-                        String.format("%s %s %s", "Desea enviar la ", tipoDocumento.equals(Constants.tipoDoc_factura) ? "factura" : "proforma", "?"),
+                        String.format("%s %s %s", "Desea enviar la", labelTipoDocumento, "?"),
                         "Enviar",
                         "Cancelar",
                         dataToSend);
@@ -397,13 +417,19 @@ public class ProductsFragment extends Fragment {
                 String item = parent.getItemAtPosition(position).toString();
                 if (item.equals(Constants.tipoDoc_factura_label)) {
                     Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_factura);
-                    quotationAdapter.resetProducts();
-                    quotationAdapter.refreshItems();
+                    /*quotationAdapter.resetProducts();
+                    quotationAdapter.refreshItems();*/
                 } else if (item.equals(Constants.tipoDoc_proforma_label)) {
                     Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_proforma);
-                    quotationAdapter.resetProducts();
-                    quotationAdapter.refreshItems();
+                    /*quotationAdapter.resetProducts();
+                    quotationAdapter.refreshItems();*/
+                } else if (item.equals(Constants.tipoDoc_preventa_label)) {
+                    Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_preventa);
+                    /*quotationAdapter.resetProducts();
+                    quotationAdapter.refreshItems();*/
                 }
+                quotationAdapter.resetProducts();
+                quotationAdapter.refreshItems();
                 Log.d(Constants.log_arrow + TAG, "Singleton.getInstance().getTipoDocumento(): " + Singleton.getInstance().getTipoDocumento());
             }
 
@@ -414,10 +440,10 @@ public class ProductsFragment extends Fragment {
         });
     }
 
-    private Boolean isUpToCreditLine(String montoTotal, String creditLine) {
+    private Boolean isUpToCreditLine(String montoTotal, String saldoDisponible) {
         Boolean upToCreditLine = false;
         try {
-            Double difference = Double.valueOf(creditLine) - Double.valueOf(montoTotal);
+            Double difference = Double.valueOf(saldoDisponible) - Double.valueOf(montoTotal);
             if (difference < 0) {
                 upToCreditLine = true;
             }

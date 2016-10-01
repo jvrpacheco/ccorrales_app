@@ -37,6 +37,7 @@
     <string-array name="array_tipos_doc">
         <item>Factura</item>
         <item>Proforma</item>
+        <item>Preventa</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

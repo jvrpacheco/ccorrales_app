@@ -38,6 +38,8 @@ public class Constants {
     public static final String tipoDoc_factura = "00";
     public static final String tipoDoc_proforma_label = "Proforma";
     public static final String tipoDoc_proforma = "01";
+    public static final String tipoDoc_preventa_label = "Preventa";
+    public static final String tipoDoc_preventa = "02";
 
     //para comparar los precios
     public static final String comparar_esMayor = "esMayor";
