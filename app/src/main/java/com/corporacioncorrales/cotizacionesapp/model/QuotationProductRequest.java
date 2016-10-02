@@ -9,6 +9,16 @@ public class QuotationProductRequest {
     private String precio;
     private String precio_real;
     private String cantidad;
+    private String mas_bajo_que_limite;
+
+
+    public String getMas_bajo_que_limite() {
+        return mas_bajo_que_limite;
+    }
+
+    public void setMas_bajo_que_limite(String mas_bajo_que_limite) {
+        this.mas_bajo_que_limite = mas_bajo_que_limite;
+    }
 
     public String getArticulo() {
         return articulo;

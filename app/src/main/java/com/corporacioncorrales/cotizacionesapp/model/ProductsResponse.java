@@ -106,7 +106,7 @@ public class ProductsResponse {
     //********************************************
 
     public String getId() {
-        return Id;
+        return Id.trim();
     }
 
     public String getNombre() {

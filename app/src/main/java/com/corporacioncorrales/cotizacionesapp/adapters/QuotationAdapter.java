@@ -1,6 +1,5 @@
 package com.corporacioncorrales.cotizacionesapp.adapters;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -9,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -25,7 +23,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
-import com.corporacioncorrales.cotizacionesapp.activities.LoginActivity;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.PricesHistoryResponse;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
@@ -691,8 +688,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     tvTotalProductos.setText(String.valueOf(cont));
                     tvMontoTotal.setText(String.format(Constants.round_two_decimals, suma));
 
-                    if(!Singleton.getInstance().getLineaDeCreditoCliente().isEmpty()) {
-                        if(isUpToCreditLine(suma, Singleton.getInstance().getLineaDeCreditoCliente())) {
+                    if(!Singleton.getInstance().getSaldoDisponibleCliente().isEmpty()) {
+                        if(isUpToCreditLine(suma, Singleton.getInstance().getSaldoDisponibleCliente())) {
                             setSaldoDisponibleIndicator(false);
                         } else {
                             setSaldoDisponibleIndicator(true);

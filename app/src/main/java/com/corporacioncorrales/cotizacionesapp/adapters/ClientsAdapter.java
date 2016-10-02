@@ -110,11 +110,13 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
     }
 
     private void goToProductsFragment(FragmentActivity mContext, ClientsResponse client) {
+        Singleton.getInstance().setIdclientSelected(client.getId());
         ProductsFragment pf = new ProductsFragment();
         Bundle bundle = new Bundle();
         bundle.putString("cliente_id", client.getId());
         bundle.putString("cliente_razonSocial", client.getRazon_Social());
-        bundle.putString("cliente_lineaDeCredito", client.getLinea());
+        bundle.putString("cliente_saldoDisponible", client.getLinea());
+        bundle.putString("rubroSeleccionado", Singleton.getInstance().getRubroSelected());
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);

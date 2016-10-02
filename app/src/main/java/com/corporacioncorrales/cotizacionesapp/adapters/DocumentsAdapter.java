@@ -1,6 +1,7 @@
 package com.corporacioncorrales.cotizacionesapp.adapters;
 
 import android.content.Context;
+import android.content.pm.InstrumentationInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -34,15 +35,19 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
     private FragmentActivity myContext;
 
     public class ClientsViewHolder extends RecyclerView.ViewHolder{
-        private TextView tvId, tvFecha, tvMoneda, tvTotal, tvRubro;
+        private TextView tvSiglaTipoDoc, tvSerie, tvNumero, tvFecha, tvRazonSocial, tvMoneda, tvTotal, tvRubro, tvEstado;
 
         public ClientsViewHolder(View view) {
             super(view);
-            tvId = (TextView)view.findViewById(R.id.tvId);
+            tvSiglaTipoDoc = (TextView)view.findViewById(R.id.tvSiglaTipoDoc);
+            tvSerie = (TextView)view.findViewById(R.id.tvSerie);
+            tvNumero = (TextView)view.findViewById(R.id.tvNumero);
             tvFecha = (TextView)view.findViewById(R.id.tvFecha);
+            tvRazonSocial = (TextView)view.findViewById(R.id.tvRazonSocial);
             tvMoneda = (TextView)view.findViewById(R.id.tvMoneda);
             tvTotal = (TextView)view.findViewById(R.id.tvTotal);
             tvRubro = (TextView)view.findViewById(R.id.tvRubro);
+            tvEstado = (TextView)view.findViewById(R.id.tvEstado);
         }
     }
 
@@ -64,27 +69,38 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
     public void onBindViewHolder(ClientsViewHolder holder, int position) {
         final DocumentsResponse document = documentsList.get(position);
 
-        holder.tvId.setText(String.valueOf(document.getId()));
+        holder.tvSiglaTipoDoc.setText(document.getLabelSiglasTipoDocumento());
+        holder.tvSerie.setText(document.getNroSerieDocumento());
+        holder.tvNumero.setText(document.getNroDocumento());
+        holder.tvFecha.setText(document.getFechaEmisionDocumento().trim());
+        holder.tvRazonSocial.setText(document.getNombreCliente());
+        holder.tvMoneda.setText(document.getMonedaDocumento());
+        holder.tvTotal.setText(document.getMontoTotalDocumento());
 
-        if(document.getFecha().contains("T")) {
-            String [] datetime = document.getFecha().split("T");
-            holder.tvFecha.setText(
-                    //String.format("%s\n%s", datetime[0], datetime[1])
-                    datetime[0]
-            );
+        String idRubro = document.getIdRubroDocumento();
+        if(idRubro.equals(Constants.rubro_vidrio)) {
+            holder.tvRubro.setText(Constants.rubro_vidrio_label);
+        } else if(idRubro.equals(Constants.rubro_aluminio)) {
+            holder.tvRubro.setText(Constants.rubro_aluminio_label);
+        } else if(idRubro.equals(Constants.rubro_accesorio)) {
+            holder.tvRubro.setText(Constants.rubro_accesorio_label);
+        } else if(idRubro.equals(Constants.rubro_plastico)) {
+            holder.tvRubro.setText(Constants.rubro_plastico_label);
         }
 
-        holder.tvMoneda.setText(document.getMoneda());
-        holder.tvTotal.setText(String.valueOf(document.getTotal()));
-        holder.tvRubro.setText(document.getRubro().trim());
+        holder.tvEstado.setText(document.getEstadoDocumento());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.showToastMessage(myContext, "Ir al documento con Id. " + document.getId());
+                Common.showToastMessage(myContext, "Ir al documento con Id. " + document.getIdDocumento());
 
-                //para mostrar los productos necesitamos los clientes
-                loadProductsOfDocument(myContext, getTestClient());
+                loadProductsOfDocument(myContext,
+                        document.getIdCliente(),
+                        document.getNombreCliente(),
+                        "10500.00",
+                        document.getIdRubroDocumento(),
+                        document.getIdTipoDocumento());
             }
         });
     }
@@ -94,25 +110,19 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         return documentsList.size();
     }
 
-    private void loadProductsOfDocument(FragmentActivity mContext, ClientsResponse client) {
+    private void loadProductsOfDocument(FragmentActivity mContext, String idCliente, String razonSocial, String saldoDisponible, String rubroSeleccionado, String tipoDocumento) {
         ProductsFragment pf = new ProductsFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("cliente_id", client.getId());
-        bundle.putString("cliente_razonSocial", client.getRazon_Social());
-        bundle.putString("cliente_lineaDeCredito", client.getLinea());
+        bundle.putString("cliente_id", idCliente);
+        bundle.putString("cliente_razonSocial", razonSocial);
+        bundle.putString("cliente_saldoDisponible", saldoDisponible);
+        bundle.putString("rubroSeleccionado", rubroSeleccionado);
+        bundle.putString("tipoDocumento", tipoDocumento); //test:"2"
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);
         ft.addToBackStack(Constants.fragmentTagProductos);
         ft.commit();
-    }
-
-    private ClientsResponse getTestClient() {
-        ClientsResponse client = new ClientsResponse();
-        client.setId("115257");
-        client.setRazon_Social("APOLINARIO SALVA MARGARITA");
-        client.setLinea("10000");
-        return client;
     }
 
 }

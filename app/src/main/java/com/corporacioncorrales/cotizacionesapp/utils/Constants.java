@@ -19,11 +19,10 @@ public class Constants {
     public static final String url_user_login = "api/usuario/{user}";
     public static final String url_clients_per_user = "api/clientes";
     public static final String url_products_per_user = "api/articulos";
-    //public static final String url_send_quotation = "api/products/createproducts";
     public static final String url_send_quotation = "api/grabarproforma/createproducts";
     public static final String url_image_zoom = "api/products";
     public static final String url_prices_history = "api/preciohistorico/prehistory";
-    public static final String url_documents_history = "api/consultaproforma";
+    public static final String url_documents_history = "api/consultaproforma/historialproforma";
 
     public static final String rubro_aluminio_label = "Aluminio";
     public static final String rubro_aluminio = "00";
@@ -33,13 +32,20 @@ public class Constants {
     public static final String rubro_accesorio = "03";
     public static final String rubro_plastico_label = "Plastico";
     public static final String rubro_plastico = "04";
+    public static final String rubro_todos = "99";
 
     public static final String tipoDoc_factura_label = "Factura";
-    public static final String tipoDoc_factura = "00";
+    //public static final String tipoDoc_factura = "00";
+    public static final String tipoDoc_factura = "1";
     public static final String tipoDoc_proforma_label = "Proforma";
-    public static final String tipoDoc_proforma = "01";
+    public static final String tipoDoc_proforma = "2";
     public static final String tipoDoc_preventa_label = "Preventa";
-    public static final String tipoDoc_preventa = "02";
+    public static final String tipoDoc_preventa = "3";
+
+    public static final String estadoDoc_pendientes = "1";
+    public static final String estadoDoc_aprobados = "2";
+    public static final String estadoDoc_rechazados = "3";
+    public static final String estadoDoc_todos = "0";
 
     //para comparar los precios
     public static final String comparar_esMayor = "esMayor";
@@ -50,7 +56,12 @@ public class Constants {
     public static final String idRubroHeader = "idRubro";
     public static final String idUsuarioHeader = "idUsuario";
     public static final String idSobregiroHeader = "Sobregiro";
+    public static final String idTipoDocHeader = "TipoDoc";
     public static final String idArticuloHeader = "idArticulo";
+    public static final String idRubroDocHeader = "rubro";
+    public static final String idEstadoDocHeader = "estado_doc";
+    public static final String idFechaInicioDocHeader = "fecini";
+    public static final String idFechaFinDocHeader = "fecfin";
 
     public static final String montoTotalMayorALineaDeCredito = "1";
     public static final String montoTotalMenorOIgualALineaDeCredito = "0";

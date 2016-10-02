@@ -1,7 +1,6 @@
 package com.corporacioncorrales.cotizacionesapp.fragments;
 
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -80,7 +79,9 @@ public class ProductsFragment extends Fragment {
     private Boolean fromOnCreate;
     private String client_id;
     private String client_razonSocial;
-    private String cliente_lineaDeCredito;
+    private String cliente_saldoDisponible;
+    private String rubroSeleccionado;
+    private String tipoDocumento;
     private ArrayList<ProductsResponse> productsArrayList;
     private ArrayList<ProductsResponse> originalProductsArrayList;
     public static ProductsAdapter productsAdapter;
@@ -102,21 +103,27 @@ public class ProductsFragment extends Fragment {
         productsArrayList = new ArrayList<>();
         productsSelectedList = new ArrayList<>();
 
-        //solo cambiara el valor cuando viene de clientes
+        //get the values only here, not in onResume
         Bundle args = getArguments();
-        if (args != null
-                && args.containsKey("cliente_id")
+        if (args != null && args.containsKey("cliente_id")
                 && args.containsKey("cliente_razonSocial")
-                && args.containsKey("cliente_lineaDeCredito")) {
+                && args.containsKey("cliente_saldoDisponible")
+                && args.containsKey("rubroSeleccionado")) {
 
             //tvCliente.setText(args.getString("cliente_razonSocial")); //butterKnife load in onCreateView
             client_id = args.getString("cliente_id");
             client_razonSocial = args.getString("cliente_razonSocial");
-            cliente_lineaDeCredito = args.getString("cliente_lineaDeCredito");
-            Singleton.getInstance().setLineaDeCreditoCliente(cliente_lineaDeCredito);
+            cliente_saldoDisponible = args.getString("cliente_saldoDisponible");
+            rubroSeleccionado = args.getString("rubroSeleccionado");
+
+            //only when coming from HistorialDocsFragment
+            if(args.containsKey("tipoDocumento")) {
+                tipoDocumento = args.getString("tipoDocumento");
+            }
+
+            Singleton.getInstance().setSaldoDisponibleCliente(cliente_saldoDisponible);
         }
 
-        //idCliente = "124896";
     }
 
     @Override
@@ -133,15 +140,15 @@ public class ProductsFragment extends Fragment {
         super.onResume();
 
         tvCliente.setText(client_razonSocial);
-        tvLineaDeCreditoCliente.setText(cliente_lineaDeCredito);
+        tvLineaDeCreditoCliente.setText(cliente_saldoDisponible);
         svFilterProduct.setOnQueryTextListener(productsFilterListener);
 
         Common.hideKeyboard(getActivity(), edtGhost);
 
         if (fromOnCreate) {
-            initSpinnerDocType();
+            initSpinnerDocType(tipoDocumento);
             createQuotation();
-            loadProductsPerClient(client_id);
+            loadProductsPerClient(client_id, rubroSeleccionado);
             fromOnCreate = false;
         }
     }
@@ -154,7 +161,7 @@ public class ProductsFragment extends Fragment {
         rvQuotation.setLayoutManager(sgm);
     }
 
-    private void loadProductsPerClient(String idClient) {
+    private void loadProductsPerClient(String idClient, String rubroSeleccionado) {
 
         recyclerViewProductos.setHasFixedSize(true);
         mainProgressBar.setVisibility(View.VISIBLE);
@@ -165,7 +172,7 @@ public class ProductsFragment extends Fragment {
                 .build();
 
         ProductsApi request = retrofit.create(ProductsApi.class);
-        Call<ArrayList<ProductsResponse>> call = request.getProductsPerClient(idClient, Singleton.getInstance().getRubroSelected());
+        Call<ArrayList<ProductsResponse>> call = request.getProductsPerClient(idClient, rubroSeleccionado);   //busca productos por cliente y por rubro
 
         call.enqueue(new Callback<ArrayList<ProductsResponse>>() {
             @Override
@@ -216,7 +223,7 @@ public class ProductsFragment extends Fragment {
             ArrayList<QuotationProductRequest> dataToSend = new ArrayList<>();
             String tipoDocumento = Singleton.getInstance().getTipoDocumento();
             String labelTipoDocumento = Constants.Empty;
-            Boolean rebasaSaldoDisponible = isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_lineaDeCredito) ? true : false;
+            Boolean rebasaSaldoDisponible = isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? true : false;
 
             if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
                 labelTipoDocumento = Constants.tipoDoc_factura_label;
@@ -246,6 +253,7 @@ public class ProductsFragment extends Fragment {
                             productToSend.setCantidad(productSelected.getCantidadSolicitada());
                             productToSend.setPrecio_real(productSelected.getPrecio());
                             productToSend.setPrecio(productSelected.getNuevoPrecio());
+                            productToSend.setMas_bajo_que_limite(productSelected.getEsPrecioMenorAlLimite() ? "1" : "0");
                             dataToSend.add(productToSend);
                         } else {
                             Common.showAlertDialogMessage(
@@ -275,6 +283,7 @@ public class ProductsFragment extends Fragment {
                         productToSend.setCantidad(productSelected.getCantidadSolicitada());
                         productToSend.setPrecio_real(productSelected.getPrecio());
                         productToSend.setPrecio(productSelected.getNuevoPrecio());
+                        productToSend.setMas_bajo_que_limite(productSelected.getEsPrecioMenorAlLimite() ? "1" : "0");
                         dataToSend.add(productToSend);
                     } else {
                         Common.showAlertDialogMessage(
@@ -291,7 +300,7 @@ public class ProductsFragment extends Fragment {
 
             if(dataToSend.size()>0){
                 showConfirmationToSendDocumentAlertDialog(getActivity().getString(R.string.app_name),
-                        String.format("%s %s %s", "Desea enviar la", labelTipoDocumento, "?"),
+                        String.format("%s %s %s", "¿Desea enviar la", labelTipoDocumento, "?"),
                         "Enviar",
                         "Cancelar",
                         dataToSend);
@@ -352,7 +361,8 @@ public class ProductsFragment extends Fragment {
                             sendQuotation(client_id,
                                     Singleton.getInstance().getRubroSelected(),
                                     Singleton.getInstance().getUserCode(),
-                                    isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_lineaDeCredito) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
+                                    isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
+                                    Singleton.getInstance().getTipoDocumento(),
                                     dataToSend);
                         }
                     });
@@ -368,7 +378,7 @@ public class ProductsFragment extends Fragment {
         alert.show();
     }
 
-    private void sendQuotation(String idCliente, String idRubro, String idUsuario, String sobregiro, ArrayList<QuotationProductRequest> data) {
+    private void sendQuotation(String idCliente, String idRubro, String idUsuario, String sobregiro, String tipoDocumento, ArrayList<QuotationProductRequest> data) {
 
         mainProgressBar.setVisibility(View.VISIBLE);
 
@@ -379,7 +389,7 @@ public class ProductsFragment extends Fragment {
 
         QuotationApi request = retrofit.create(QuotationApi.class);
 
-        Call<String> call = request.sendQuotation(idCliente, idRubro, idUsuario, sobregiro, data);
+        Call<String> call = request.sendQuotation(idCliente, idRubro, idUsuario, sobregiro, tipoDocumento, data);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -406,9 +416,21 @@ public class ProductsFragment extends Fragment {
         });
     }
 
-    private void initSpinnerDocType() {
+    private void initSpinnerDocType(String initialValue) {
+
         ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_tipos_doc, android.R.layout.simple_list_item_1);
         spTipoDoc.setAdapter(adapterRubroType);
+
+        //set the spinner value only when come from Historial
+        if(initialValue!=null && !initialValue.isEmpty()) {
+            if(initialValue.equals("1")) {
+                spTipoDoc.setSelection(0);
+            } else if(initialValue.equals("2")) {
+                spTipoDoc.setSelection(1);
+            } else if(initialValue.equals("3")) {
+                spTipoDoc.setSelection(2);
+            }
+        }
 
         spTipoDoc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -417,16 +439,10 @@ public class ProductsFragment extends Fragment {
                 String item = parent.getItemAtPosition(position).toString();
                 if (item.equals(Constants.tipoDoc_factura_label)) {
                     Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_factura);
-                    /*quotationAdapter.resetProducts();
-                    quotationAdapter.refreshItems();*/
                 } else if (item.equals(Constants.tipoDoc_proforma_label)) {
                     Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_proforma);
-                    /*quotationAdapter.resetProducts();
-                    quotationAdapter.refreshItems();*/
                 } else if (item.equals(Constants.tipoDoc_preventa_label)) {
                     Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_preventa);
-                    /*quotationAdapter.resetProducts();
-                    quotationAdapter.refreshItems();*/
                 }
                 quotationAdapter.resetProducts();
                 quotationAdapter.refreshItems();

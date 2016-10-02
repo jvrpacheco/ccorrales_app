@@ -19,6 +19,7 @@ import com.corporacioncorrales.cotizacionesapp.model.DocumentsResponse;
 import com.corporacioncorrales.cotizacionesapp.networking.DocumentsApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
+import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
 
 import java.util.ArrayList;
 
@@ -50,11 +51,23 @@ public class HistorialDocsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Singleton sg = Singleton.getInstance();
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
         documentsArrayList = new ArrayList<>();
 
-        //getDocumentsHistory("01", Constants.rubro_vidrio);
-        getDocumentsHistory("224", "01");
+        getDocumentsHistory(sg.getUserCode(),
+                "0",  //sg.getIdclientSelected()
+                Constants.rubro_todos,
+                Constants.estadoDoc_todos,
+                "20160701",
+                "20161015");
+
+        /*getDocumentsHistory("5",
+                "0",
+                Constants.rubro_todos,
+                Constants.estadoDoc_todos,
+                "20160701",
+                "20160931");*/
 
         View view = inflater.inflate(R.layout.fragment_historial_docs, container, false);
         ButterKnife.bind(this, view);
@@ -62,7 +75,7 @@ public class HistorialDocsFragment extends Fragment {
     }
 
 
-    private void getDocumentsHistory(String id, String rubro) {
+    private void getDocumentsHistory(String idUsuario, String idCliente, String idRubro, String idEstadoDoc, String fechaInicio, String fechaFin) {
         mainProgressBar.setVisibility(View.VISIBLE);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -71,7 +84,12 @@ public class HistorialDocsFragment extends Fragment {
                 .build();
 
         DocumentsApi request = retrofit.create(DocumentsApi.class);
-        Call<ArrayList<DocumentsResponse>> call = request.getDocumentsHistory(id, rubro);
+        Call<ArrayList<DocumentsResponse>> call = request.getDocumentsHistory(idUsuario,
+                idCliente,
+                idRubro,
+                idEstadoDoc,
+                fechaInicio,
+                fechaFin);
 
         call.enqueue(new Callback<ArrayList<DocumentsResponse>>() {
             @Override

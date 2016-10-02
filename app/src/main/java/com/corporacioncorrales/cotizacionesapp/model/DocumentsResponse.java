@@ -1,5 +1,8 @@
 package com.corporacioncorrales.cotizacionesapp.model;
 
+import android.util.Log;
+
+import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -11,63 +14,179 @@ public class DocumentsResponse {
 
     @SerializedName("id")
     @Expose
-    private int Id;
+    private String idDocumento;
 
-    @SerializedName("Fecha")
+    @SerializedName("tipdoc")
     @Expose
-    private String Fecha;
+    private String idTipoDocumento;
 
-    @SerializedName("mon")  //moneda
+    @SerializedName("doc")
     @Expose
-    private String Moneda;
+    private String labelSiglasTipoDocumento;
+
+    @SerializedName("serie")
+    @Expose
+    private String nroSerieDocumento;
+
+    @SerializedName("numero")
+    @Expose
+    private String nroDocumento;
+
+    @SerializedName("fecha")
+    @Expose
+    private String fechaEmisionDocumento;
+
+    @SerializedName("idcliente")
+    @Expose
+    private String idCliente;
+
+    @SerializedName("nombre")
+    @Expose
+    private String nombreCliente;
+
+    @SerializedName("mon")
+    @Expose
+    private String monedaDocumento;
 
     @SerializedName("total")
     @Expose
-    private int Total;
+    private String montoTotalDocumento;
+
+    @SerializedName("idrubro")
+    @Expose
+    private String idRubroDocumento;
 
     @SerializedName("rubro")
     @Expose
-    private String Rubro;
+    private String labelRubroDocumento;
+
+    @SerializedName("estado_doc")
+    @Expose
+    private String estadoDocumento;
+
+    @SerializedName("estado")
+    @Expose
+    private String labelEstadoDocumento;
 
 
-    public int getId() {
-        return Id;
+
+    public String getIdDocumento() {
+        return idDocumento;
     }
 
-    public void setId(int id) {
-        Id = id;
+    public void setIdDocumento(String idDocumento) {
+        this.idDocumento = idDocumento;
     }
 
-    public String getFecha() {
-        return Fecha;
+    public String getIdTipoDocumento() {
+        return idTipoDocumento;
     }
 
-    public void setFecha(String fecha) {
-        Fecha = fecha;
+    public void setIdTipoDocumento(String idTipoDocumento) {
+        this.idTipoDocumento = idTipoDocumento;
     }
 
-    public String getMoneda() {
-        return Moneda;
+    public String getLabelSiglasTipoDocumento() {
+        return labelSiglasTipoDocumento;
     }
 
-    public void setMoneda(String moneda) {
-        Moneda = moneda;
+    public void setLabelSiglasTipoDocumento(String labelSiglasTipoDocumento) {
+        this.labelSiglasTipoDocumento = labelSiglasTipoDocumento;
     }
 
-    public int getTotal() {
-        return Total;
+    public String getNroSerieDocumento() {
+        return nroSerieDocumento;
     }
 
-    public void setTotal(int total) {
-        Total = total;
+    public void setNroSerieDocumento(String nroSerieDocumento) {
+        this.nroSerieDocumento = nroSerieDocumento;
     }
 
-    public String getRubro() {
-        return Rubro;
+    public String getNroDocumento() {
+        return nroDocumento;
     }
 
-    public void setRubro(String rubro) {
-        Rubro = rubro;
+    public void setNroDocumento(String nroDocumento) {
+        this.nroDocumento = nroDocumento;
     }
+
+    public String getFechaEmisionDocumento() {
+        return fechaEmisionDocumento;
+    }
+
+    public void setFechaEmisionDocumento(String fechaEmisionDocumento) {
+        this.fechaEmisionDocumento = fechaEmisionDocumento;
+    }
+
+    public String getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(String idCliente) {
+        this.idCliente = idCliente;
+    }
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+    public String getMonedaDocumento() {
+        return monedaDocumento;
+    }
+
+    public void setMonedaDocumento(String monedaDocumento) {
+        this.monedaDocumento = monedaDocumento;
+    }
+
+    public String getMontoTotalDocumento() {
+        try{
+            Double precioLista = Double.parseDouble(montoTotalDocumento);
+            montoTotalDocumento = String.format(Constants.round_two_decimals, precioLista);
+        } catch (Exception ex) {
+            Log.e(Constants.log_arrow_error, ex.toString());
+        }
+        return montoTotalDocumento;
+    }
+
+    public void setMontoTotalDocumento(String montoTotalDocumento) {
+        this.montoTotalDocumento = montoTotalDocumento;
+    }
+
+    public String getIdRubroDocumento() {
+        return idRubroDocumento;
+    }
+
+    public void setIdRubroDocumento(String idRubroDocumento) {
+        this.idRubroDocumento = idRubroDocumento;
+    }
+
+    public String getLabelRubroDocumento() {
+        return labelRubroDocumento;
+    }
+
+    public void setLabelRubroDocumento(String labelRubroDocumento) {
+        this.labelRubroDocumento = labelRubroDocumento;
+    }
+
+    public String getEstadoDocumento() {
+        return estadoDocumento;
+    }
+
+    public void setEstadoDocumento(String estadoDocumento) {
+        this.estadoDocumento = estadoDocumento;
+    }
+
+    public String getLabelEstadoDocumento() {
+        return labelEstadoDocumento;
+    }
+
+    public void setLabelEstadoDocumento(String labelEstadoDocumento) {
+        this.labelEstadoDocumento = labelEstadoDocumento;
+    }
+
 
 }

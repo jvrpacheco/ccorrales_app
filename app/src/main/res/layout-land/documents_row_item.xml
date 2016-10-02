@@ -16,15 +16,34 @@
             android:layout_height="match_parent"
             android:background="@color/gris_fondo"/>
         <RelativeLayout
-            android:layout_width="80dp"
+            android:layout_width="50dp"
             android:layout_height="match_parent">
             <TextView
-                android:id="@+id/tvId"
+                android:id="@+id/tvSiglaTipoDoc"
                 android:textColor="@color/negro"
                 android:textSize="@dimen/font_size_row_documents_history"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Id"
+                android:text="Doc"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:maxLines="1"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gris_fondo"/>
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tvSerie"
+                android:textColor="@color/negro"
+                android:textSize="@dimen/font_size_row_documents_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Serie"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:maxLines="1"
@@ -36,8 +55,27 @@
             android:layout_height="match_parent"
             android:background="@color/gris_fondo"/>
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="85dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tvNumero"
+                android:textColor="@color/negro"
+                android:textSize="@dimen/font_size_row_documents_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Numero"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:maxLines="1"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gris_fondo"/>
+        <RelativeLayout
+            android:layout_width="100dp"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvFecha"
@@ -49,8 +87,28 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:maxLines="1"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gris_fondo"/>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tvRazonSocial"
+                android:textColor="@color/negro"
+                android:textSize="@dimen/font_size_row_documents_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Razon Social"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:maxLines="1"
                 android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentLeft="true"/>
         </RelativeLayout>
         <View
             android:layout_width="1dp"
@@ -58,24 +116,22 @@
             android:background="@color/gris_fondo"/>
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="70dp"
+            android:layout_width="45dp"
             android:layout_height="match_parent">
             <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
                 <TextView
                     android:id="@+id/tvMoneda"
                     android:textColor="@color/negro"
                     android:textSize="@dimen/font_size_row_documents_history"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Moneda"
+                    android:text="Mon."
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
                     android:maxLines="1"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"/>
+                    android:layout_centerInParent="true"/>
             </RelativeLayout>
         </LinearLayout>
         <View
@@ -83,7 +139,7 @@
             android:layout_height="match_parent"
             android:background="@color/gris_fondo"/>
         <RelativeLayout
-            android:layout_width="80dp"
+            android:layout_width="85dp"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvTotal"
@@ -103,7 +159,7 @@
             android:layout_height="match_parent"
             android:background="@color/gris_fondo"/>
         <RelativeLayout
-            android:layout_width="120dp"
+            android:layout_width="80dp"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvRubro"
@@ -115,8 +171,26 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:maxLines="1"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"/>
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/gris_fondo"/>
+        <RelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tvEstado"
+                android:textColor="@color/negro"
+                android:textSize="@dimen/font_size_row_documents_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Estado"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:maxLines="1"
+                android:layout_centerInParent="true"/>
         </RelativeLayout>
         <View
             android:layout_width="1dp"

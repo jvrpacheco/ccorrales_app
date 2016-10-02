@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**
@@ -15,13 +17,14 @@ import retrofit2.http.Query;
  */
 public interface DocumentsApi {
 
-    //http://190.81.34.42:8080/api/consultaproforma?id=224&rubro=01
-    //http://190.81.34.42:8080/api/consultaproforma?id={id}&rubro={rubro}
-
-    @GET(Constants.url_documents_history)
+    @POST(Constants.url_documents_history)
     Call<ArrayList<DocumentsResponse>> getDocumentsHistory(
-            @Query("id") String id,
-            @Query("rubro") String rubro
+            @Header(Constants.idUsuarioHeader) String idUsuario,
+            @Header(Constants.idClienteHeader) String idCliente,
+            @Header(Constants.idRubroDocHeader) String idRubro,
+            @Header(Constants.idEstadoDocHeader) String idEstadoDoc,
+            @Header(Constants.idFechaInicioDocHeader) String fechaInicio,
+            @Header(Constants.idFechaFinDocHeader) String fechaFin
     );
 
 }

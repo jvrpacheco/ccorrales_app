@@ -11,9 +11,10 @@ public class Singleton {
     private String user;
     private String userCode;
     private String rubroSelected;
-    private String lineaDeCreditoCliente;
+    private String saldoDisponibleCliente;
     private String tipoDocumento; //Factura/Proforma
     private ClientsResponse clientSelected;
+    private String idclientSelected;
 
 
     public String getTipoDocumento() {
@@ -27,12 +28,12 @@ public class Singleton {
     private Singleton() {
     }
 
-    public String getLineaDeCreditoCliente() {
-        return lineaDeCreditoCliente;
+    public String getSaldoDisponibleCliente() {
+        return saldoDisponibleCliente;
     }
 
-    public void setLineaDeCreditoCliente(String lineaDeCreditoCliente) {
-        this.lineaDeCreditoCliente = lineaDeCreditoCliente;
+    public void setSaldoDisponibleCliente(String saldoDisponibleCliente) {
+        this.saldoDisponibleCliente = saldoDisponibleCliente;
     }
 
     public String getRubroSelected() {
@@ -70,4 +71,13 @@ public class Singleton {
     public void setClientSelected(ClientsResponse clientSelected) {
         this.clientSelected = clientSelected;
     }
+
+    public String getIdclientSelected() {
+        return idclientSelected;
+    }
+
+    public void setIdclientSelected(String idclientSelected) {
+        this.idclientSelected = idclientSelected;
+    }
+
 }
