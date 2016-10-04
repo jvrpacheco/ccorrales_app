@@ -213,7 +213,11 @@ public class ProductsFragment extends Fragment {
                                     }
 
                                     actualProduct.setCantidadSolicitada(productFromDocument.getCantidadSolicitada());
+
+
                                     actualProduct.setSelected(true);
+
+
                                     productsToSetInQuotation.add(actualProduct);
                                     //break;
                                 }
@@ -223,13 +227,15 @@ public class ProductsFragment extends Fragment {
 
                         //createProductsAdapter(originalProductsArrayList);
                         if(productsToSetInQuotation.size()>0) {
-
+                            //1.
                             rebuildFromQuotation(productsToSetInQuotation);
-
+                            //2.
                             productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter);
                             recyclerViewProductos.setAdapter(productsAdapter);
                             StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                             recyclerViewProductos.setLayoutManager(sgm);
+                            //3.
+                            quotationAdapter.refreshItems();
                         }
 
                     }
@@ -322,8 +328,6 @@ public class ProductsFragment extends Fragment {
 
                         if(comeFromHistorial) {
                             getProductsFromDocumentDetail(idDocumento);
-
-
 
                         } else {
                             //createProductsAdapter(productsArrayList);

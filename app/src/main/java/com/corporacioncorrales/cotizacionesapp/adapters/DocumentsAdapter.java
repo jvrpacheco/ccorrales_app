@@ -117,7 +117,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         bundle.putString("cliente_saldoDisponible", saldoDisponible);
         bundle.putString("rubroSeleccionado", rubroSeleccionado);
         bundle.putString("idDocumento", idDocumento);
-        bundle.putString("tipoDocumento", tipoDocumento); //test:"2"
+        bundle.putString("tipoDocumento", tipoDocumento);
+        //bundle.putString("tipoDocumento", "2"); //test
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);
