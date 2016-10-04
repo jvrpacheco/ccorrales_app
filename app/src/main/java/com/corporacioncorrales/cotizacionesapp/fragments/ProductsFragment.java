@@ -1,6 +1,5 @@
 package com.corporacioncorrales.cotizacionesapp.fragments;
 
-
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -52,7 +51,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ProductsFragment extends Fragment {
 
-
     @BindView(R.id.tvCliente)
     TextView tvCliente;
     @BindView(R.id.recyclerViewProductos)
@@ -90,7 +88,7 @@ public class ProductsFragment extends Fragment {
     private ArrayList<DocumentDetailResponse> productsFromDocument;
     public static ProductsAdapter productsAdapter;
     private QuotationAdapter quotationAdapter;
-    private String idCliente;
+    private boolean comeFromHistorial;
 
     public static ArrayList<ProductsResponse> productsSelectedList;
 
@@ -102,6 +100,7 @@ public class ProductsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        comeFromHistorial = false;
         fromOnCreate = true;
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
         productsArrayList = new ArrayList<>();
@@ -125,6 +124,7 @@ public class ProductsFragment extends Fragment {
             if(args.containsKey("tipoDocumento") && args.containsKey("idDocumento")) {
                 tipoDocumento = args.getString("tipoDocumento");
                 idDocumento = args.getString("idDocumento");
+                comeFromHistorial = true;
             }
 
             Singleton.getInstance().setSaldoDisponibleCliente(cliente_saldoDisponible);
@@ -151,9 +151,17 @@ public class ProductsFragment extends Fragment {
         Common.hideKeyboard(getActivity(), edtGhost);
 
         if (fromOnCreate) {
-            initSpinnerDocType(tipoDocumento);
-            createQuotation(null);
-            loadProductsPerClient(client_id, rubroSeleccionado);
+
+            if(comeFromHistorial) {
+                initSpinnerDocType(tipoDocumento);
+                //rebuildFromQuotation();
+                loadProductsPerClient(client_id, rubroSeleccionado);
+            } else {
+                initSpinnerDocType(Constants.Empty);
+                createNewQuotation();
+                loadProductsPerClient(client_id, rubroSeleccionado);
+            }
+
             fromOnCreate = false;
         }
     }
@@ -212,25 +220,16 @@ public class ProductsFragment extends Fragment {
 
                         }
 
-                        createProductsAdapter(originalProductsArrayList);
+                        //createProductsAdapter(originalProductsArrayList);
                         if(productsToSetInQuotation.size()>0) {
-                            createQuotation(productsToSetInQuotation);
-                        } else {
-                            createQuotation(null);
-                        }
 
-                        /*if(productsToSetInQuotation.size()==0) {
-                            for(int i = 0; i < originalProductsArrayList.size(); i++) {
-                                ProductsResponse product = originalProductsArrayList.get(i);
-                                product.setEsPrecioMenorAlLimite(true);
-                                product.setSelected(true);
-                            }
-                            productsAdapter = new ProductsAdapter(getActivity(), originalProductsArrayList, quotationAdapter);
+                            rebuildFromQuotation(productsToSetInQuotation);
+
+                            productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter);
                             recyclerViewProductos.setAdapter(productsAdapter);
                             StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                             recyclerViewProductos.setLayoutManager(sgm);
-                            createQuotation(originalProductsArrayList);
-                        }*/
+                        }
 
                     }
 
@@ -248,6 +247,26 @@ public class ProductsFragment extends Fragment {
                 Common.showToastMessage(getActivity(), t.getMessage());
             }
         });
+    }
+
+    private void createNewQuotation() {
+        rvQuotation.setHasFixedSize(true);
+        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>(), tvTotalProductos, tvMontoTotal, tvIndicadorSaldoDisponible);
+        rvQuotation.setAdapter(quotationAdapter);
+        LinearLayoutManager sgm = new LinearLayoutManager(getActivity());
+        rvQuotation.setLayoutManager(sgm);
+    }
+
+    private void rebuildFromQuotation(ArrayList<ProductsResponse> quotationList) {
+        rvQuotation.setHasFixedSize(true);
+        quotationAdapter = new QuotationAdapter(getActivity(), quotationList, tvTotalProductos, tvMontoTotal, tvIndicadorSaldoDisponible);
+        rvQuotation.setAdapter(quotationAdapter);
+        LinearLayoutManager sgm = new LinearLayoutManager(getActivity());
+        rvQuotation.setLayoutManager(sgm);
+    }
+
+    private void createProductsList() {
+
     }
 
     private void createQuotation(ArrayList<ProductsResponse> productsList) {
@@ -269,12 +288,25 @@ public class ProductsFragment extends Fragment {
         recyclerViewProductos.setLayoutManager(sgm);
     }
 
+    private void createProductsQuotation(ArrayList<ProductsResponse> productsList, ArrayList<ProductsResponse> quotationProducts) {
+        productsAdapter = new ProductsAdapter(getActivity(), productsList, quotationAdapter);
+        recyclerViewProductos.setAdapter(productsAdapter);
+        StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recyclerViewProductos.setLayoutManager(sgm);
+
+
+    }
+
     private void loadProductsPerClient(String idClient, String rubroSeleccionado) {
+
         recyclerViewProductos.setHasFixedSize(true);
         mainProgressBar.setVisibility(View.VISIBLE);
+
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.url_server).addConverterFactory(GsonConverterFactory.create()).build();
+
         ProductsApi request = retrofit.create(ProductsApi.class);
         Call<ArrayList<ProductsResponse>> call = request.getProductsPerClient(idClient, rubroSeleccionado);   //busca productos por cliente y por rubro
+
         call.enqueue(new Callback<ArrayList<ProductsResponse>>() {
             @Override
             public void onResponse(Call<ArrayList<ProductsResponse>> call, Response<ArrayList<ProductsResponse>> response) {
@@ -287,11 +319,19 @@ public class ProductsFragment extends Fragment {
                         //guardando primera descarga de productos
                         originalProductsArrayList = productsArrayList;
 
-                        if(idDocumento!= null && !idDocumento.isEmpty()) {  //come from Historial
+                        if(comeFromHistorial) {
                             getProductsFromDocumentDetail(idDocumento);
+
+
+
                         } else {
-                            createProductsAdapter(productsArrayList);
+                            //createProductsAdapter(productsArrayList);
+                            productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter);
+                            recyclerViewProductos.setAdapter(productsAdapter);
+                            StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                            recyclerViewProductos.setLayoutManager(sgm);
                         }
+
                     } else {
                         Log.d(Constants.log_arrow_response, "No se encontraron productos para este cliente");
                         Common.showToastMessage(getActivity(), "No se encontraron productos para este cliente");
@@ -508,14 +548,17 @@ public class ProductsFragment extends Fragment {
     private void initSpinnerDocType(String initialValue) {
         ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_tipos_doc, android.R.layout.simple_list_item_1);
         spTipoDoc.setAdapter(adapterRubroType);
-        //set the spinner value only when come from Historial
-        if(initialValue!=null && !initialValue.isEmpty()) {
-            if(initialValue.equals("1")) {
-                spTipoDoc.setSelection(0);
-            } else if(initialValue.equals("2")) {
-                spTipoDoc.setSelection(1);
-            } else if(initialValue.equals("3")) {
-                spTipoDoc.setSelection(2);
+
+        if(comeFromHistorial) {
+            //set the spinner value only when come from Historial
+            if(initialValue!=null && !initialValue.isEmpty()) {
+                if(initialValue.equals("1")) {
+                    spTipoDoc.setSelection(0);
+                } else if(initialValue.equals("2")) {
+                    spTipoDoc.setSelection(1);
+                } else if(initialValue.equals("3")) {
+                    spTipoDoc.setSelection(2);
+                }
             }
         }
 
@@ -530,8 +573,12 @@ public class ProductsFragment extends Fragment {
                 } else if (item.equals(Constants.tipoDoc_preventa_label)) {
                     Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_preventa);
                 }
-                quotationAdapter.resetProducts();
-                quotationAdapter.refreshItems();
+
+                if(fromOnCreate/*!comeFromHistorial*/) {
+                    quotationAdapter.resetProducts();
+                    quotationAdapter.refreshItems();
+                }
+
                 Log.d(Constants.log_arrow + TAG, "Singleton.getInstance().getTipoDocumento(): " + Singleton.getInstance().getTipoDocumento());
             }
 
