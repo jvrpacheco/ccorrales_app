@@ -12,14 +12,96 @@
         android:padding="10dp"
         android:background="@color/grey300">
 
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Historial de Documentos"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="@color/negro"
-            android:layout_margin="5dp"/>
+            android:layout_height="35dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Historial de Documentos"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/negro"
+                android:layout_margin="5dp"
+                android:layout_centerVertical="true"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true">
+
+                <RelativeLayout
+                    android:id="@+id/rl_btnFechaInicial"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:background="@color/turquesa_claro">
+                    <TextView
+                        android:id="@+id/tvFechaInicial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fecha Inicial"
+                        android:textSize="14sp"
+                        android:textColor="@color/negro"
+                        android:textAlignment="center"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_btnFechaFinal"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginRight="5dp"
+                    android:background="@color/turquesa_claro">
+                    <TextView
+                        android:id="@+id/tvFechaFinal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fecha Final"
+                        android:textSize="14sp"
+                        android:textColor="@color/negro"
+                        android:textAlignment="center"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+
+                <Spinner
+                    android:id="@+id/spEstadoDoc"
+                    android:background="@color/turquesa_claro"
+                    android:popupBackground="@color/turquesa_claro"
+                    android:layout_width="140dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"/>
+
+                <Spinner
+                    android:id="@+id/spRubroDoc"
+                    android:background="@color/turquesa_claro"
+                    android:popupBackground="@color/turquesa_claro"
+                    android:layout_width="135dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"/>
+
+                <Button
+                    android:id="@+id/btnFiltrarDocumentos"
+                    android:background="@color/verde"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:textColor="@color/blanco"
+                    android:textStyle="bold"
+                    android:textSize="15dp"
+                    android:layout_height="match_parent"
+                    android:text="BUSCAR"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <LinearLayout
             android:orientation="vertical"
@@ -31,7 +113,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/gris_fondo"/>
+                android:background="@color/grey100"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,9 +123,9 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/gris_fondo"/>
+                    android:background="@color/grey100"/>
                 <RelativeLayout
-                    android:layout_width="80dp"
+                    android:layout_width="@dimen/historial_header_doc_width"
                     android:layout_height="match_parent">
                     <TextView
                         android:id="@+id/tvId"
@@ -51,7 +133,7 @@
                         android:textSize="@dimen/font_size_row_documents_history"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Id"
+                        android:text="Doc."
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:maxLines="1"
@@ -62,11 +144,48 @@
                     android:layout_height="match_parent"
                     android:background="@color/grey100"/>
                 <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="@dimen/historial_serie_doc_width"
                     android:layout_height="match_parent">
                     <TextView
-                        android:id="@+id/tvFecha"
+                        android:id="@+id/label2"
+                        android:textColor="@color/negro"
+                        android:textSize="@dimen/font_size_row_documents_history"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Serie"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:maxLines="1"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/grey100"/>
+                <RelativeLayout
+                    android:layout_width="@dimen/historial_numero_doc_width"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/label3"
+                        android:textColor="@color/negro"
+                        android:textSize="@dimen/font_size_row_documents_history"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Numero"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:maxLines="1"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/grey100"/>
+                <RelativeLayout
+                    android:layout_width="@dimen/historial_fecha_doc_width"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/label4"
                         android:textColor="@color/negro"
                         android:textSize="@dimen/font_size_row_documents_history"
                         android:layout_width="wrap_content"
@@ -81,18 +200,33 @@
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/grey100"/>
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="70dp"
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="match_parent">
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/label5"
+                        android:textColor="@color/negro"
+                        android:textSize="@dimen/font_size_row_documents_history"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Razon Social"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:maxLines="1"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/grey100"/>
+                <RelativeLayout
+                    android:layout_width="@dimen/historial_moneda_doc_width"
+                    android:layout_height="match_parent">
                         <TextView
-                            android:id="@+id/tvMoneda"
+                            android:id="@+id/label6"
                             android:textColor="@color/negro"
-                            android:textSize="@dimen/font_size_row_documents_history"
+                            android:textSize="9sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Moneda"
@@ -100,17 +234,16 @@
                             android:paddingRight="5dp"
                             android:maxLines="1"
                             android:layout_centerInParent="true"/>
-                    </RelativeLayout>
-                </LinearLayout>
+                </RelativeLayout>
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/grey100"/>
                 <RelativeLayout
-                    android:layout_width="80dp"
+                    android:layout_width="@dimen/historial_monto_total_doc_width"
                     android:layout_height="match_parent">
                     <TextView
-                        android:id="@+id/tvTotal"
+                        android:id="@+id/label7"
                         android:textColor="@color/negro"
                         android:textSize="@dimen/font_size_row_documents_history"
                         android:layout_width="wrap_content"
@@ -126,10 +259,10 @@
                     android:layout_height="match_parent"
                     android:background="@color/grey100"/>
                 <RelativeLayout
-                    android:layout_width="120dp"
+                    android:layout_width="@dimen/historial_rubro_doc_width"
                     android:layout_height="match_parent">
                     <TextView
-                        android:id="@+id/tvRubro"
+                        android:id="@+id/label8"
                         android:textColor="@color/negro"
                         android:textSize="@dimen/font_size_row_documents_history"
                         android:layout_width="wrap_content"
@@ -143,13 +276,32 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="@color/gris_fondo"/>
+                    android:background="@color/grey100"/>
+                <RelativeLayout
+                    android:layout_width="@dimen/historial_estado_doc_width"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/tvRubro"
+                        android:textColor="@color/negro"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Estado"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:maxLines="1"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/grey100"/>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/gris_fondo"/>
+                android:background="@color/grey100"/>
 
             <android.support.v7.widget.RecyclerView
                 android:background="@color/grey100"

@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:background="@color/gris_fondo"/>
         <RelativeLayout
-            android:layout_width="50dp"
+            android:layout_width="@dimen/historial_header_doc_width"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvSiglaTipoDoc"
@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:background="@color/gris_fondo"/>
         <RelativeLayout
-            android:layout_width="70dp"
+            android:layout_width="@dimen/historial_serie_doc_width"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvSerie"
@@ -55,7 +55,7 @@
             android:layout_height="match_parent"
             android:background="@color/gris_fondo"/>
         <RelativeLayout
-            android:layout_width="85dp"
+            android:layout_width="@dimen/historial_numero_doc_width"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvNumero"
@@ -75,7 +75,7 @@
             android:layout_height="match_parent"
             android:background="@color/gris_fondo"/>
         <RelativeLayout
-            android:layout_width="100dp"
+            android:layout_width="@dimen/historial_fecha_doc_width"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvFecha"
@@ -116,7 +116,7 @@
             android:background="@color/gris_fondo"/>
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="45dp"
+            android:layout_width="@dimen/historial_moneda_doc_width"
             android:layout_height="match_parent">
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -139,7 +139,7 @@
             android:layout_height="match_parent"
             android:background="@color/gris_fondo"/>
         <RelativeLayout
-            android:layout_width="85dp"
+            android:layout_width="@dimen/historial_monto_total_doc_width"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvTotal"
@@ -159,7 +159,7 @@
             android:layout_height="match_parent"
             android:background="@color/gris_fondo"/>
         <RelativeLayout
-            android:layout_width="80dp"
+            android:layout_width="@dimen/historial_rubro_doc_width"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvRubro"
@@ -178,7 +178,7 @@
             android:layout_height="match_parent"
             android:background="@color/gris_fondo"/>
         <RelativeLayout
-            android:layout_width="50dp"
+            android:layout_width="@dimen/historial_estado_doc_width"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvEstado"

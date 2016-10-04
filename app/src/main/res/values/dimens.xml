@@ -9,4 +9,15 @@
     <dimen name="paddingTop_fragment_to_actionbar">62dp</dimen>
 
     <dimen name="textSize_header_products">12sp</dimen>
+
+    <dimen name="historial_header_doc_width">50dp</dimen>
+    <dimen name="historial_serie_doc_width">70dp</dimen>
+    <dimen name="historial_numero_doc_width">85dp</dimen>
+    <dimen name="historial_fecha_doc_width">100dp</dimen>
+    <!--<dimen name="historial_razon_social_doc_width">50dp</dimen>-->
+    <dimen name="historial_moneda_doc_width">45dp</dimen>
+    <dimen name="historial_monto_total_doc_width">85dp</dimen>
+    <dimen name="historial_rubro_doc_width">80dp</dimen>
+    <dimen name="historial_estado_doc_width">50dp</dimen>
+
 </resources>

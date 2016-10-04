@@ -40,6 +40,22 @@
         <item>Preventa</item>
     </string-array>
 
+    <string-array name="array_estados_doc">
+        <item>Todos</item>
+        <item>Aceptados</item>
+        <item>Pendientes</item>
+        <item>Rechazados</item>
+    </string-array>
+
+    <string-array name="array_rubros_historial">
+        <item>Todos</item>
+        <item>Vidrio</item>
+        <item>Aluminio</item>
+        <item>Accesorio</item>
+        <item>Plastico</item>
+    </string-array>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
