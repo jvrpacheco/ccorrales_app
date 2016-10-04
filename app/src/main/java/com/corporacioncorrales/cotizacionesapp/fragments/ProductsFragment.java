@@ -156,6 +156,7 @@ public class ProductsFragment extends Fragment {
                 initSpinnerDocType(tipoDocumento);
                 //rebuildFromQuotation();
                 loadProductsPerClient(client_id, rubroSeleccionado);
+
             } else {
                 initSpinnerDocType(Constants.Empty);
                 createNewQuotation();
@@ -574,7 +575,8 @@ public class ProductsFragment extends Fragment {
                     Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_preventa);
                 }
 
-                if(fromOnCreate/*!comeFromHistorial*/) {
+                //quotationAdapter is not null after load products
+                if(quotationAdapter!=null) {
                     quotationAdapter.resetProducts();
                     quotationAdapter.refreshItems();
                 }
