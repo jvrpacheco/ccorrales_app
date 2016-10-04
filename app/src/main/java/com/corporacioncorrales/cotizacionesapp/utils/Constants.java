@@ -23,6 +23,7 @@ public class Constants {
     public static final String url_image_zoom = "api/products";
     public static final String url_prices_history = "api/preciohistorico/prehistory";
     public static final String url_documents_history = "api/consultaproforma/historialproforma";
+    public static final String url_documents_history_detail = "api/consultaproformadetalle";
 
     public static final String rubro_aluminio_label = "Aluminio";
     public static final String rubro_aluminio = "00";

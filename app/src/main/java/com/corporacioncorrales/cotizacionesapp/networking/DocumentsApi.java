@@ -1,6 +1,7 @@
 package com.corporacioncorrales.cotizacionesapp.networking;
 
 import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
+import com.corporacioncorrales.cotizacionesapp.model.DocumentDetailResponse;
 import com.corporacioncorrales.cotizacionesapp.model.DocumentsResponse;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 
@@ -27,4 +28,8 @@ public interface DocumentsApi {
             @Header(Constants.idFechaFinDocHeader) String fechaFin
     );
 
+    @GET(Constants.url_documents_history_detail)
+    Call<ArrayList<DocumentDetailResponse>> getProductsFromDocumentDetail(
+            @Query("id") String id   //id del documento
+    );
 }

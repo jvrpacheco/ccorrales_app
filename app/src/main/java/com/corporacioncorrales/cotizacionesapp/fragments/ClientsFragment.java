@@ -104,6 +104,7 @@ public class ClientsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_clients, container, false);
+        Common.setActionBarTitle(getActivity(), Constants.fragmentTagClientes);
         ButterKnife.bind(this, view);
         return view;
     }

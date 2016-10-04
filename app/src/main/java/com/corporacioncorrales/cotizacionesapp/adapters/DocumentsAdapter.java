@@ -10,19 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
-import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.DocumentsResponse;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
-import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
 
 /**
  * Created by victor on 8/10/16.
@@ -55,6 +52,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         //this.mContext = mContext;
         this.documentsList = documentsList;
         this.myContext = (FragmentActivity) mContext;
+        //mainProgressBar = myContext.getApplicationContext().getApplicationContext()
     }
 
     @Override
@@ -69,7 +67,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
     public void onBindViewHolder(ClientsViewHolder holder, int position) {
         final DocumentsResponse document = documentsList.get(position);
 
-        holder.tvSiglaTipoDoc.setText(document.getLabelSiglasTipoDocumento());
+        //holder.tvSiglaTipoDoc.setText(document.getLabelSiglasTipoDocumento());
+        holder.tvSiglaTipoDoc.setText(document.getIdTipoDocumento());
         holder.tvSerie.setText(document.getNroSerieDocumento());
         holder.tvNumero.setText(document.getNroDocumento());
         holder.tvFecha.setText(document.getFechaEmisionDocumento().trim());
@@ -94,12 +93,12 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
             @Override
             public void onClick(View v) {
                 Common.showToastMessage(myContext, "Ir al documento con Id. " + document.getIdDocumento());
-
                 loadProductsOfDocument(myContext,
                         document.getIdCliente(),
                         document.getNombreCliente(),
                         "10500.00",
                         document.getIdRubroDocumento(),
+                        document.getIdDocumento(),
                         document.getIdTipoDocumento());
             }
         });
@@ -110,13 +109,14 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         return documentsList.size();
     }
 
-    private void loadProductsOfDocument(FragmentActivity mContext, String idCliente, String razonSocial, String saldoDisponible, String rubroSeleccionado, String tipoDocumento) {
+    private void loadProductsOfDocument(FragmentActivity mContext, String idCliente, String razonSocial, String saldoDisponible, String rubroSeleccionado, String idDocumento, String tipoDocumento) {
         ProductsFragment pf = new ProductsFragment();
         Bundle bundle = new Bundle();
         bundle.putString("cliente_id", idCliente);
         bundle.putString("cliente_razonSocial", razonSocial);
         bundle.putString("cliente_saldoDisponible", saldoDisponible);
         bundle.putString("rubroSeleccionado", rubroSeleccionado);
+        bundle.putString("idDocumento", idDocumento);
         bundle.putString("tipoDocumento", tipoDocumento); //test:"2"
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
@@ -124,5 +124,6 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         ft.addToBackStack(Constants.fragmentTagProductos);
         ft.commit();
     }
+
 
 }

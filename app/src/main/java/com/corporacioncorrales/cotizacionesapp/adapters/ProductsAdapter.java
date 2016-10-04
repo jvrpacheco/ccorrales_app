@@ -97,6 +97,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
         if(product.getSelected()) {
             holder.ivCheck.setVisibility(View.VISIBLE);
+            //quotationAdapter.addItem(quotationAdapter.getItemCount(), product);
         } else {
             holder.ivCheck.setVisibility(View.GONE);
         }

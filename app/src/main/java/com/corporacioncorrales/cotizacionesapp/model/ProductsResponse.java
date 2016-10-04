@@ -58,10 +58,12 @@ public class ProductsResponse {
 
     public String getNuevoPrecio() {
         try{
-            Double lineaCredito = Double.parseDouble(nuevoPrecio);
-            nuevoPrecio = String.format(Constants.round_three_decimals, lineaCredito);
+            if(nuevoPrecio!=null) {
+                Double lineaCredito = Double.parseDouble(nuevoPrecio);
+                nuevoPrecio = String.format(Constants.round_three_decimals, lineaCredito);
+            }
         } catch (Exception ex) {
-            Log.e(Constants.log_arrow_error, ex.toString());
+            Log.e(Constants.log_arrow_error, "nuevoprecio...." +  ex.toString());
         }
         return nuevoPrecio;
     }
@@ -123,8 +125,16 @@ public class ProductsResponse {
         return Precio;
     }
 
+    public void setPrecio(String precio) {
+        Precio = precio;
+    }
+
     public String getPre_inferior() {
         return Pre_inferior;
+    }
+
+    public void setPre_inferior(String pre_inferior) {
+        Pre_inferior = pre_inferior;
     }
 
     public String getFoto() {

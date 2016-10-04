@@ -51,6 +51,7 @@ public class HistorialDocsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Common.setActionBarTitle(getActivity(), Constants.fragmentTagHistorial);
         Singleton sg = Singleton.getInstance();
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
         documentsArrayList = new ArrayList<>();

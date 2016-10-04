@@ -188,9 +188,9 @@ public class MainActivity extends AppCompatActivity
 
 
         // set the toolbar title
-        if (getSupportActionBar() != null) {
+        /*if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
-        }
+        }*/
 
         drawer.closeDrawer(GravityCompat.START);
     }
