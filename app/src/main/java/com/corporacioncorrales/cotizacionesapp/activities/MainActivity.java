@@ -1,6 +1,7 @@
 package com.corporacioncorrales.cotizacionesapp.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        Log.d("----", "onBackPressed MainActivity");
+        Log.d("----", "onBackPressed MainActivity1");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -114,9 +115,9 @@ public class MainActivity extends AppCompatActivity
                         "Abandonar",
                         "Continuar");
             } else if(fragment instanceof ClientsFragment) {
-                showConfirmationAlertDialog(fragment,
+                showCloseSessionAlertDialog(fragment,
                         getString(R.string.app_name),
-                        "Esta a punto de cerrar sesion.",
+                        "Desea cerrar sesion?",
                         "Continuar",
                         "Cancelar");
             } else if(fragment instanceof HistorialDocsFragment) {
@@ -163,12 +164,25 @@ public class MainActivity extends AppCompatActivity
                 title  = titleClientes;
                 fragmentTag = Constants.fragmentTagClientes;
                 //viewIsAtHome = true;
+                menuItem.setChecked(true);
                 break;
             case R.id.nav_manage:
                 fragment = new HistorialDocsFragment();
                 title = titleHistorial;
                 fragmentTag = Constants.fragmentTagHistorial;
                 //viewIsAtHome = false;
+                menuItem.setChecked(true);
+                break;
+            case R.id.nav_close_session:
+                //menuItem.setChecked(false);
+                //navigationView.getMenu().getItem(2).setChecked(false);
+                //navigationView.setCheckedItem(R);
+                //navigationView.setCheckedItem(R.id.menu_none);
+                showCloseSessionFromMenuAlertDialog(fragment,
+                        getString(R.string.app_name),
+                        "Desea cerrar sesion?",
+                        "Continuar",
+                        "Cancelar");
                 break;
         }
 
@@ -184,7 +198,7 @@ public class MainActivity extends AppCompatActivity
             ft.commit();
         }
 
-        menuItem.setChecked(true);
+        //menuItem.setChecked(true);
 
 
         // set the toolbar title
@@ -217,6 +231,56 @@ public class MainActivity extends AppCompatActivity
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void showCloseSessionAlertDialog(final Fragment fragment, final String title, final String message, final String textBtnOk, String textBtnCancelar) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton(textBtnOk,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        finish();
+                    }
+                });
+        builder.setNegativeButton(textBtnCancelar,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void showCloseSessionFromMenuAlertDialog(final Fragment fragment, final String title, final String message, final String textBtnOk, String textBtnCancelar) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton(textBtnOk,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        goToLogin();
+                    }
+                });
+        builder.setNegativeButton(textBtnCancelar,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void goToLogin() {
+        //MainActivity.
+        finish();
+        /*Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);*/
+
     }
 
     /*@SuppressWarnings("StatementWithEmptyBody")

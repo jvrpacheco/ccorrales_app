@@ -2,6 +2,9 @@ package com.corporacioncorrales.cotizacionesapp.fragments;
 
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -63,6 +67,8 @@ public class HistorialDocsFragment extends Fragment {
     Spinner spEstadoDoc;
     @BindView(R.id.btnFiltrarDocumentos)
     Button btnFiltrarDocumentos;
+    @BindView(R.id.rl_btnListaClientes)
+    RelativeLayout rlBtnListaClientes;
     private ProgressBar mainProgressBar;
     private ArrayList<DocumentsResponse> documentsArrayList;
     private DocumentsAdapter documentsAdapter;
@@ -73,6 +79,7 @@ public class HistorialDocsFragment extends Fragment {
     private String rubroSeleccionado;
     private SimpleDateFormat formatToShow;
     private SimpleDateFormat formatToSend;
+    private Singleton sg;
 
     public HistorialDocsFragment() {
         // Required empty public constructor
@@ -87,7 +94,7 @@ public class HistorialDocsFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         Common.setActionBarTitle(getActivity(), Constants.fragmentTagHistorial);
-        Singleton sg = Singleton.getInstance();
+        sg = Singleton.getInstance();
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
         documentsArrayList = new ArrayList<>();
         formatToShow = new SimpleDateFormat("dd/MM/yyyy");
@@ -167,6 +174,12 @@ public class HistorialDocsFragment extends Fragment {
     @OnClick(R.id.btnFiltrarDocumentos)
     public void OnClickFiltrarDocumentos() {
         Log.d(Constants.log_arrow, String.format("Fecha inicial: %s, Fecha final: %s, Estado documento: %s, Rubro: %s", fechaInicial, fechaFinal, estadoDocSeleccionado, rubroSeleccionado));
+        getDocumentsHistory(sg.getUserCode(),
+                "0",  //<-----popup para seleccionar cliente
+                rubroSeleccionado,
+                estadoDocSeleccionado,
+                fechaInicial,
+                fechaFinal);
     }
 
     @OnClick(R.id.rl_btnFechaInicial)
@@ -180,8 +193,8 @@ public class HistorialDocsFragment extends Fragment {
         DatePickerDialog datePickerFechaInicialDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                fechaInicial = formatToSend.format(new Date(year, monthOfYear, dayOfMonth));
-                tvFechaInicial.setText(formatToShow.format(new Date(year, monthOfYear, dayOfMonth)));
+                fechaInicial = getCurrentDate(true, year, monthOfYear, dayOfMonth);
+                tvFechaInicial.setText(getCurrentDate(false, year, monthOfYear, dayOfMonth));
             }
         }, mYearInicial, mMonthInicial, mDayInicial);
 
@@ -201,12 +214,8 @@ public class HistorialDocsFragment extends Fragment {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 //fechaFinal = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                //tvFechaFinal.setText(fechaFinal);
-
-                //fechaFinal = formatToSend.format(new Date(year, monthOfYear, dayOfMonth));
-                //tvFechaFinal.setText(formatToShow.format(new Date(year, monthOfYear, dayOfMonth)));
-
-                tvFechaFinal.setText(formatDate(year, monthOfYear, dayOfMonth));
+                fechaFinal = getCurrentDate(true, year, monthOfYear, dayOfMonth);
+                tvFechaFinal.setText(getCurrentDate(false, year, monthOfYear, dayOfMonth));
             }
         }, mYearFinal, mMonthFinal, mDayFinal);
 
@@ -214,51 +223,49 @@ public class HistorialDocsFragment extends Fragment {
         datePickerFechaFinalDialog.show();
     }
 
-    private static String formatDate(int year, int month, int day) {
+    @OnClick(R.id.rl_btnListaClientes)
+    public void OnClickDialogListaClientes() {
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_historial_clientes);
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(0);
-        cal.set(year, month, day);
-        Date date = cal.getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        final Button btnAcceptDialog = (Button)dialog.findViewById(R.id.btnAccept);
+        final Button btnCloseDialog = (Button)dialog.findViewById(R.id.btnClose);
 
-        return sdf.format(date);
+
+
+        btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        btnCloseDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        //Common.hideKeyboardOnDialog(dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
-    private String getCurrentDateToSend() {
+    private String getCurrentDate(boolean isDateToSend, int year, int month, int day) {
         String currentDate = Constants.Empty;
         try {
-            Date curDate = new Date();
-            currentDate = formatToSend.format(curDate);
-
-        } catch (Exception e) {
-            Log.e(Constants.log_arrow_error, e.toString());
-        }
-        return currentDate;
-    }
-
-    private String getCurrentDateToShow() {
-        String currentDate = Constants.Empty;
-        try {
-            Date curDate = new Date();
-            currentDate = formatToShow.format(curDate);
-
-        } catch (Exception e) {
-            Log.e(Constants.log_arrow_error, e.toString());
-        }
-        return currentDate;
-    }
-
-    private String getCurrentDate1() {
-        int day, month, year;
-        String currentDate = Constants.Empty;
-        try {
-            final Calendar c = Calendar.getInstance();
-            year = c.get(Calendar.YEAR);
-            month = c.get(Calendar.MONTH);
-            day = c.get(Calendar.DAY_OF_MONTH);
-            currentDate = day + "/" + (month + 1) + "/" + year;
-
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(0);
+            cal.set(year, month, day);
+            Date date = cal.getTime();
+            if (isDateToSend) { // date to send
+                currentDate = formatToSend.format(date);
+            } else { //date to show
+                currentDate = formatToShow.format(date);
+            }
         } catch (Exception e) {
             Log.e(Constants.log_arrow_error, e.toString());
         }
@@ -266,10 +273,17 @@ public class HistorialDocsFragment extends Fragment {
     }
 
     private void initDates() {
-        fechaInicial = getCurrentDateToShow();
-        fechaFinal = getCurrentDateToShow();
-        tvFechaInicial.setText(fechaInicial);
-        tvFechaFinal.setText(fechaFinal);
+        //fecha actual
+        int day, month, year;
+        final Calendar c = Calendar.getInstance();
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH);
+        day = c.get(Calendar.DAY_OF_MONTH);
+
+        fechaInicial = getCurrentDate(true, year, month, day);
+        fechaFinal = getCurrentDate(true, year, month, day);
+        tvFechaInicial.setText(getCurrentDate(false, year, month, day));
+        tvFechaFinal.setText(getCurrentDate(false, year, month, day));
     }
 
     private void initSpinnerEstadosDoc() {
