@@ -68,6 +68,10 @@ public class DocumentsResponse {
     @Expose
     private String labelEstadoDocumento;
 
+    @SerializedName("linea_disponible")
+    @Expose
+    private String linea_disponible;
+
 
 
     public String getIdDocumento() {
@@ -188,5 +192,21 @@ public class DocumentsResponse {
         this.labelEstadoDocumento = labelEstadoDocumento;
     }
 
+    public String getLinea_disponible() {
+        String linea = Constants.Empty;
+        try{
+            if(linea_disponible.contains(",")) {
+                linea_disponible = linea_disponible.replace(",", ".");
+                linea = String.format(Constants.round_two_decimals, Double.valueOf(linea_disponible));
+            }
+        } catch (Exception e) {
+            Log.e(Constants.log_arrow_error, e.toString());
+        }
+        return linea;
+    }
+
+    public void setLinea_disponible(String linea_disponible) {
+        this.linea_disponible = linea_disponible;
+    }
 
 }

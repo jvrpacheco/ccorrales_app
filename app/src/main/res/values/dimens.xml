@@ -19,5 +19,6 @@
     <dimen name="historial_monto_total_doc_width">85dp</dimen>
     <dimen name="historial_rubro_doc_width">80dp</dimen>
     <dimen name="historial_estado_doc_width">50dp</dimen>
+    <dimen name="historial_send_message_width">45dp</dimen>
 
 </resources>

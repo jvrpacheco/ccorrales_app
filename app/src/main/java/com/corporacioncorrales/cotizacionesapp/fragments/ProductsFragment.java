@@ -191,7 +191,7 @@ public class ProductsFragment extends Fragment {
                             for(int j = 0; j < originalProductsArrayList.size(); j++) {
                                 ProductsResponse actualProduct = originalProductsArrayList.get(j);
 
-                                if (actualProduct.getId().equals(productFromDocument.getIdProducto())) {
+                                if (actualProduct.getId().trim().equals(productFromDocument.getIdProducto().trim())) {
                                     //actualProduct.setPrecio(productFromDocument.getPrecioListaActual());  //no es necesario, siempre muestra el actual
 
                                     //verificar si el precio ingresado por el vendedor es menor al precio inferior actual
@@ -270,38 +270,6 @@ public class ProductsFragment extends Fragment {
         rvQuotation.setAdapter(quotationAdapter);
         LinearLayoutManager sgm = new LinearLayoutManager(getActivity());
         rvQuotation.setLayoutManager(sgm);
-    }
-
-    private void createProductsList() {
-
-    }
-
-    private void createQuotation(ArrayList<ProductsResponse> productsList) {
-        rvQuotation.setHasFixedSize(true);
-        if(productsList!=null) {
-            quotationAdapter = new QuotationAdapter(getActivity(), productsList, tvTotalProductos, tvMontoTotal, tvIndicadorSaldoDisponible); //productsList come from Historial
-        } else {
-            quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>(), tvTotalProductos, tvMontoTotal, tvIndicadorSaldoDisponible);
-        }
-        rvQuotation.setAdapter(quotationAdapter);
-        LinearLayoutManager sgm = new LinearLayoutManager(getActivity());
-        rvQuotation.setLayoutManager(sgm);
-    }
-
-    private void createProductsAdapter(ArrayList<ProductsResponse> products) {
-        productsAdapter = new ProductsAdapter(getActivity(), products, quotationAdapter);
-        recyclerViewProductos.setAdapter(productsAdapter);
-        StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recyclerViewProductos.setLayoutManager(sgm);
-    }
-
-    private void createProductsQuotation(ArrayList<ProductsResponse> productsList, ArrayList<ProductsResponse> quotationProducts) {
-        productsAdapter = new ProductsAdapter(getActivity(), productsList, quotationAdapter);
-        recyclerViewProductos.setAdapter(productsAdapter);
-        StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recyclerViewProductos.setLayoutManager(sgm);
-
-
     }
 
     private void loadProductsPerClient(String idClient, String rubroSeleccionado) {
@@ -499,9 +467,9 @@ public class ProductsFragment extends Fragment {
         builder.setPositiveButton(textBtnOk,
                     new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, final int id) {
-                            sendQuotation(client_id,
-                                    Singleton.getInstance().getRubroSelected(),
-                                    Singleton.getInstance().getUserCode(),
+                            sendQuotation(client_id.trim(),
+                                    Singleton.getInstance().getRubroSelected().trim(),
+                                    Singleton.getInstance().getUserCode().trim(),
                                     isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
                                     Singleton.getInstance().getTipoDocumento(),
                                     dataToSend);

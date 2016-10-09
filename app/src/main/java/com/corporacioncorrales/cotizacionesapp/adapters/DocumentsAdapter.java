@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
@@ -33,6 +34,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
 
     public class ClientsViewHolder extends RecyclerView.ViewHolder{
         private TextView tvSiglaTipoDoc, tvSerie, tvNumero, tvFecha, tvRazonSocial, tvMoneda, tvTotal, tvRubro, tvEstado;
+        private ImageView ivSendDocument;
 
         public ClientsViewHolder(View view) {
             super(view);
@@ -45,6 +47,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
             tvTotal = (TextView)view.findViewById(R.id.tvTotal);
             tvRubro = (TextView)view.findViewById(R.id.tvRubro);
             tvEstado = (TextView)view.findViewById(R.id.tvEstado);
+            ivSendDocument = (ImageView) view.findViewById(R.id.ivSendDocument);
         }
     }
 
@@ -88,6 +91,12 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         }
 
         holder.tvEstado.setText(document.getEstadoDocumento());
+        holder.ivSendDocument.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Common.showToastMessage(myContext, "Enviando...");
+            }
+        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +105,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
                 loadProductsOfDocument(myContext,
                         document.getIdCliente(),
                         document.getNombreCliente(),
-                        "10500.00",
+                        document.getLinea_disponible(),
                         document.getIdRubroDocumento(),
                         document.getIdDocumento(),
                         document.getIdTipoDocumento());
@@ -117,8 +126,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         bundle.putString("cliente_saldoDisponible", saldoDisponible);
         bundle.putString("rubroSeleccionado", rubroSeleccionado);
         bundle.putString("idDocumento", idDocumento);
-        //bundle.putString("tipoDocumento", tipoDocumento);
-        bundle.putString("tipoDocumento", "2"); //test
+        bundle.putString("tipoDocumento", tipoDocumento);
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);

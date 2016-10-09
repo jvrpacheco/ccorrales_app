@@ -16,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Historial de Documentos"
+            android:visibility="gone"
             android:textSize="17sp"
             android:textStyle="bold"
             android:textColor="@color/negro"
@@ -41,7 +42,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="3dp"
                     android:text="Cliente:"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"/>
 
@@ -71,7 +72,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="3dp"
                     android:text="Inicio:"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"/>
 
@@ -100,7 +101,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="3dp"
                     android:text="Fin:"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"/>
 
@@ -128,7 +129,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="3dp"
                     android:text="Estado doc.:"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"/>
 
@@ -146,7 +147,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="3dp"
                     android:text="Rubro:"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"/>
 
@@ -357,6 +358,25 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Estado"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:maxLines="1"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/grey100"/>
+                <RelativeLayout
+                    android:layout_width="@dimen/historial_send_message_width"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/tvEnviar"
+                        android:textColor="@color/negro"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Enviar"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:maxLines="1"
