@@ -91,4 +91,6 @@ public class Constants {
     public static final String round_two_decimals = "%.2f";
     public static final String round_three_decimals = "%.3f";
 
+    public static final String todosLosClientes = "Todos";
+    public static final String todosLosClientesId = "0";
 }

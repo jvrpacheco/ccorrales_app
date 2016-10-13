@@ -34,7 +34,9 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true">
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -42,9 +44,17 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="3dp"
                     android:text="Cliente:"
+                    android:visibility="gone"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"/>
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/client1"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"/>
 
                 <RelativeLayout
                     android:id="@+id/rl_btnListaClientes"
@@ -66,15 +76,14 @@
                         android:layout_centerInParent="true"/>
                 </RelativeLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/datefrom_64"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="3dp"
-                    android:text="Inicio:"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/negro"/>
+                    android:layout_marginRight="3dp"/>
 
                 <RelativeLayout
                     android:id="@+id/rl_btnFechaInicial"
@@ -96,14 +105,22 @@
                 </RelativeLayout>
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="3dp"
                     android:text="Fin:"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"/>
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/dateto_64"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"/>
 
                 <RelativeLayout
                     android:id="@+id/rl_btnFechaFinal"
@@ -128,8 +145,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="3dp"
-                    android:text="Estado doc.:"
-                    android:textSize="14sp"
+                    android:text="Estado doc:"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"/>
 
@@ -147,7 +164,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="3dp"
                     android:text="Rubro:"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"/>
 
