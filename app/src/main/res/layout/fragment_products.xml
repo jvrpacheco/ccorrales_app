@@ -117,9 +117,11 @@
 
                 <Spinner
                     android:id="@+id/spTipoDoc"
-                    android:background="@color/gris_claro"
+                    android:background="@color/turquesa_claro"
+                    android:popupBackground="@color/turquesa_claro"
                     android:layout_width="140dp"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="3dp"
                     android:layout_alignParentRight="true"/>
             </RelativeLayout>
 
@@ -299,11 +301,22 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:background="@color/grey100">
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rvQuotation"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                    </android.support.v7.widget.RecyclerView>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/marca3_grande1">
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/rvQuotation"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:color/transparent">
+                            </android.support.v7.widget.RecyclerView>
+
+                        </LinearLayout>
+
+
                 </LinearLayout>
 
                 <RelativeLayout

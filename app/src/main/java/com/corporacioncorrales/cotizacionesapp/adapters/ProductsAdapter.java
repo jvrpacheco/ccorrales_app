@@ -219,13 +219,13 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                     if(!product.getFoto().isEmpty()) {
                         Picasso.with(mContext)
                                 .load(product.getFoto())
-                                .placeholder(R.drawable.package_96_gray)
-                                .error(R.drawable.package_96_gray)
+                                .placeholder(R.drawable.marca3_grande1)
+                                .error(R.drawable.marca3_grande1)
                                 .centerInside()
                                 .fit()
                                 .into(imageView);
                     } else {
-                        imageView.setImageResource(R.drawable.package_96_gray);
+                        imageView.setImageResource(R.drawable.marca3_grande1);
                     }
                     progressBar.setVisibility(View.GONE);
 

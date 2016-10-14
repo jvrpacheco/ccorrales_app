@@ -11,6 +11,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -19,11 +21,22 @@
             android:paddingRight="5dp"
             android:paddingBottom="5dp"
             android:background="@color/grey300">
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerViewClients"
-                android:scrollbars="vertical"
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:background="@drawable/marca3_grande1">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerViewClients"
+                    android:background="@android:color/transparent"
+                    android:scrollbars="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
+
+
         </LinearLayout>
 
         <RelativeLayout
@@ -41,13 +54,19 @@
                 android:orientation="horizontal"
                 android:layout_alignParentLeft="true">
 
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:padding="5dp"
+                    android:src="@drawable/logo_cc"/>
+
                 <android.support.v7.widget.SearchView
                     android:id="@+id/svFilterClient"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     app:queryHint="Buscar Cliente"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="0dp"
                     android:layout_marginRight="10dp"
                     app:iconifiedByDefault="false"
                     android:background="@color/gris_fondo"
