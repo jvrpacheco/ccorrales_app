@@ -175,7 +175,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
     private void showZoomProductImage(ProductsResponse product) {
         final Dialog dialog = new Dialog(mContext);
-        //dialog.setCanceledOnTouchOutside(false);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_product_zoom);
 

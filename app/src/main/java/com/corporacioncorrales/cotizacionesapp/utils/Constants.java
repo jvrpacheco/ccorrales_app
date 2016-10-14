@@ -100,4 +100,9 @@ public class Constants {
 
     public static final String todosLosClientes = "Todos";
     public static final String todosLosClientesId = "0";
+
+    // en cuanto incrementara o disminuira el precio en el dialogo de cambio de precios
+    public static final Double baseDouble = 0.001;
+    // en cuanto incrementara o disminuira la cantidad en el dialogo de cambio de cantidad de productos
+    public static final int baseInteger = 1;
 }
