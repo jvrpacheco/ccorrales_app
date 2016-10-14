@@ -1,15 +1,14 @@
 package com.corporacioncorrales.cotizacionesapp.utils;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -87,8 +86,6 @@ public class Common {
         alert.show();
     }
 
-
-
     public static void showAlertDialogMessage1(final String message, final Context context) {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -125,5 +122,19 @@ public class Common {
             android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", text);
             clipboard.setPrimaryClip(clip);
         }
+    }
+
+    public static String getDeviceId(Activity activity) {
+        String deviceId = Constants.Empty;
+
+        try{
+            TelephonyManager TM = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
+            deviceId = TM.getDeviceId();
+
+        } catch (Exception e) {
+            Log.e(Constants.log_arrow_error, e.toString());
+        }
+
+        return deviceId;
     }
 }

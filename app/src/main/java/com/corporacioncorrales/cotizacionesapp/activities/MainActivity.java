@@ -163,21 +163,17 @@ public class MainActivity extends AppCompatActivity
                 fragment = new ClientsFragment();
                 title  = titleClientes;
                 fragmentTag = Constants.fragmentTagClientes;
-                //viewIsAtHome = true;
                 menuItem.setChecked(true);
                 break;
+
             case R.id.nav_manage:
                 fragment = new HistorialDocsFragment();
                 title = titleHistorial;
                 fragmentTag = Constants.fragmentTagHistorial;
-                //viewIsAtHome = false;
                 menuItem.setChecked(true);
                 break;
+
             case R.id.nav_close_session:
-                //menuItem.setChecked(false);
-                //navigationView.getMenu().getItem(2).setChecked(false);
-                //navigationView.setCheckedItem(R);
-                //navigationView.setCheckedItem(R.id.menu_none);
                 showCloseSessionFromMenuAlertDialog(fragment,
                         getString(R.string.app_name),
                         "Desea cerrar sesion?",
