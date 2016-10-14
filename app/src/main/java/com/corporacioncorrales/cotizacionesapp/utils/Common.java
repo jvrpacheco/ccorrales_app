@@ -27,6 +27,10 @@ public class Common {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
+    public static void showToastMessageShort(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
     public static boolean isOnline(final Activity activity) {
         final ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo netInfo = cm.getActiveNetworkInfo();
@@ -105,11 +109,21 @@ public class Common {
     }
 
     public static void setActionBarTitle(Activity activity, String title) {
-
         android.support.v7.app.ActionBar mActionBar=((AppCompatActivity)activity).getSupportActionBar();
 
         if (mActionBar != null) {
             mActionBar.setTitle(title);
+        }
+    }
+
+    public static void copyTextToClipboard(Context context, String text) {
+        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboard.setText(text);
+        } else {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", text);
+            clipboard.setPrimaryClip(clip);
         }
     }
 }

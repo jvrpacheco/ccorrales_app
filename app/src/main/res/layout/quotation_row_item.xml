@@ -201,7 +201,7 @@
             android:layout_width="30dp"
             android:layout_height="match_parent">
             <ImageView
-                android:id="@+id/ivArrival"
+                android:id="@+id/ivVirtualStock"
                 android:src="@drawable/ship_50"
                 android:layout_width="20dp"
                 android:layout_height="20dp"

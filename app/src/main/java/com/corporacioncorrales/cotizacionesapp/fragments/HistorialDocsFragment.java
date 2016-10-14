@@ -3,13 +3,18 @@ package com.corporacioncorrales.cotizacionesapp.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +26,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -28,6 +34,7 @@ import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.activities.MainActivity;
+import com.corporacioncorrales.cotizacionesapp.adapters.ClientsAdapter;
 import com.corporacioncorrales.cotizacionesapp.adapters.ClientsDialogAdapter;
 import com.corporacioncorrales.cotizacionesapp.adapters.DocumentsAdapter;
 import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
@@ -94,6 +101,7 @@ public class HistorialDocsFragment extends Fragment {
     private boolean isClientSelectedFromList = false;
     private boolean todosIsChecked = false;
     private ClientsDialogAdapter okClientsAdapter;
+    private ArrayList<ClientsResponse> originalClientsArrayList;
 
 
     public HistorialDocsFragment() {
@@ -190,7 +198,7 @@ public class HistorialDocsFragment extends Fragment {
                         fechaInicial, fechaFinal, estadoDocSeleccionado, rubroSeleccionado));
 
         getDocumentsHistory(sg.getUserCode(),
-                selectedClientId,  //<-----popup para seleccionar cliente
+                selectedClientId.isEmpty() ? "0" : selectedClientId,  //<-----popup para seleccionar cliente
                 rubroSeleccionado,
                 estadoDocSeleccionado,
                 fechaInicial,
@@ -216,7 +224,6 @@ public class HistorialDocsFragment extends Fragment {
         datePickerFechaInicialDialog.setCancelable(false);
         datePickerFechaInicialDialog.show();
     }
-
 
     @OnClick(R.id.rl_btnFechaFinal)
     public void OnClickFechaFinal() {
@@ -247,6 +254,7 @@ public class HistorialDocsFragment extends Fragment {
 
         final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
         final Button btnCloseDialog = (Button) dialog.findViewById(R.id.btnClose);
+        final ImageView ivClose = (ImageView) dialog.findViewById(R.id.ivClose);
         final RecyclerView rvDialogClients = (RecyclerView) dialog.findViewById(R.id.rvDialogClients);
         final ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.newProgressBar);
         final TextView tvSelectedClient = (TextView) dialog.findViewById(R.id.tvSelectedClient);
@@ -255,7 +263,40 @@ public class HistorialDocsFragment extends Fragment {
 
         chkTodos.setChecked(true);
         todosIsChecked = true;
+        svFilterClient.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+
+                ArrayList<ClientsResponse> filteredClientsList = new ArrayList<>();
+
+                if(originalClientsArrayList!= null && originalClientsArrayList.size()>0) {
+                    if(!query.isEmpty()) {
+                        for(int i=0; i<originalClientsArrayList.size(); i++) {
+                            final String text = originalClientsArrayList.get(i).getRazon_Social().toLowerCase();
+                            if(text.contains(query.toLowerCase())) {
+                                filteredClientsList.add(originalClientsArrayList.get(i));
+                            }
+                        }
+                    } else {
+                        filteredClientsList = originalClientsArrayList;
+                    }
+                }
+
+                okClientsAdapter = new ClientsDialogAdapter(getActivity(), filteredClientsList, tvSelectedClient, btnAcceptDialog, chkTodos);
+                rvDialogClients.setAdapter(okClientsAdapter);
+                LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+                rvDialogClients.setLayoutManager(llm);
+                okClientsAdapter.notifyDataSetChanged();
+                return false;
+            }
+        });
         tvSelectedClient.setText(Constants.todosLosClientes);
+
         chkTodos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -264,6 +305,7 @@ public class HistorialDocsFragment extends Fragment {
                 if(isChecked) {
                     isClientSelectedFromList = false;
                     btnAcceptDialog.setEnabled(true);
+                    tvSelectedClient.setText(Constants.todosLosClientes);
                 } else {
                     if(okClientsAdapter!=null && okClientsAdapter.getClientSelected()!=null) {
                         isClientSelectedFromList = true;
@@ -313,6 +355,13 @@ public class HistorialDocsFragment extends Fragment {
             }
         });
 
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
         //Common.hideKeyboardOnDialog(dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
@@ -337,6 +386,9 @@ public class HistorialDocsFragment extends Fragment {
                     clientsArrayList = response.body();
 
                     if (clientsArrayList.size() > 0) {
+                        //guardando primera descarga de clientes
+                        originalClientsArrayList = clientsArrayList;
+
                         existsClients = true;
                         okClientsAdapter = new ClientsDialogAdapter(getActivity(), clientsArrayList, tvSelectedClient, btnAccept, chkTodos);
                         okClientsAdapter.notifyDataSetChanged();
@@ -437,6 +489,15 @@ public class HistorialDocsFragment extends Fragment {
 
             }
         });
+
+        //spEstadoDoc.setSelection(0, true);
+        //spEstadoDoc.setSelection(0, false);
+
+        spEstadoDoc.post(new Runnable() {
+            public void run() {
+                spEstadoDoc.setSelection(0);
+            }
+        });
     }
 
     private void initSpinnerRubroDoc() {
@@ -465,4 +526,6 @@ public class HistorialDocsFragment extends Fragment {
             }
         });
     }
+
+
 }

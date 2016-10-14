@@ -26,10 +26,13 @@ import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.PricesHistoryResponse;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
+import com.corporacioncorrales.cotizacionesapp.model.VirtualStockResponse;
 import com.corporacioncorrales.cotizacionesapp.networking.ProductsApi;
+import com.corporacioncorrales.cotizacionesapp.networking.VirtualStockApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -236,10 +239,13 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
         });
 
-        holder.ivArrival.setOnClickListener(new View.OnClickListener() {
+        holder.ivVirtualStock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                showVirtualStockDialog(mContext,
+                        Singleton.getInstance().getUserCode(),
+                        Singleton.getInstance().getRubroSelected(),
+                        product.getId());
             }
         });
     }
@@ -255,7 +261,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     public static class QuotationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView tvId, tvDescription, tvPrice, tvQuantity, tvNewPrice, tvCantidadSolicitada, tvTotalPrice;
-        ImageView ivRemove, ivArrival, ivChangePrice, ivChangeQuantity;
+        ImageView ivRemove, ivArrival, ivChangePrice, ivChangeQuantity, ivVirtualStock;
 
         public QuotationViewHolder(View view) {
             super(view);
@@ -267,9 +273,9 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             tvTotalPrice = (TextView)view.findViewById(R.id.tvTotalPrice);
             tvCantidadSolicitada = (TextView)view.findViewById(R.id.tvCantidadSolicitada);
             ivRemove = (ImageView) view.findViewById(R.id.ivRemove);
-            ivArrival = (ImageView) view.findViewById(R.id.ivArrival);
             ivChangePrice = (ImageView) view.findViewById(R.id.ivChangePrice);
             ivChangeQuantity = (ImageView) view.findViewById(R.id.ivChangeQuantity);
+            ivVirtualStock = (ImageView) view.findViewById(R.id.ivVirtualStock);
         }
 
         @Override
@@ -706,6 +712,80 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
 
         }
+    }
+
+    private void showVirtualStockDialog(final Context context, String idUsuario, String idRubro, String idArticulo) {
+        final Dialog dialog = new Dialog(mContext);
+        //dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_stock_virtual);
+
+        final RecyclerView rvStockVirtual = (RecyclerView) dialog.findViewById(R.id.rvStockVirtual);
+        final ImageView ivClose = (ImageView)dialog.findViewById(R.id.ivClose);
+        final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
+        progressBar = (ProgressBar)dialog.findViewById(R.id.newProgressBar);
+
+        getVirtualStock(context, idUsuario, idRubro, idArticulo, rvStockVirtual);
+
+        btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+    }
+
+    private void getVirtualStock(final Context context, String idUsuario, String idRubro, String idArticulo, final RecyclerView rvStockVirtual) {
+        progressBar.setVisibility(View.VISIBLE);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.url_server)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        VirtualStockApi request = retrofit.create(VirtualStockApi.class);
+        Call<ArrayList<VirtualStockResponse>> call = request.getVirtualStock(idUsuario, idRubro, idArticulo);
+
+        call.enqueue(new Callback<ArrayList<VirtualStockResponse>>() {
+            @Override
+            public void onResponse(Call<ArrayList<VirtualStockResponse>> call, Response<ArrayList<VirtualStockResponse>> response) {
+
+                if(response != null) {
+                    ArrayList<VirtualStockResponse> virtualStockList = response.body();
+                    if(virtualStockList.size()>0) {
+                        VirtualStockAdapter virtualStockAdapter = new VirtualStockAdapter(mContext, virtualStockList);
+                        rvStockVirtual.setAdapter(virtualStockAdapter);
+                        LinearLayoutManager llm = new LinearLayoutManager(mContext);
+                        rvStockVirtual.setLayoutManager(llm);
+                    } else {
+                        Log.d(Constants.log_arrow_response, "No se encontro stock virtual para este producto");
+                    }
+                    progressBar.setVisibility(View.GONE);
+
+                } else {
+                    Common.showToastMessage(context, "Error en el servidor");
+                    Log.e(Constants.log_arrow_response, response.message());
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<VirtualStockResponse>> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Common.showToastMessage(context, "Error en el servidor");
+                Log.e(Constants.log_arrow_response, t.toString());
+            }
+        });
+
     }
 
     private Boolean isUpToCreditLine(Double montoTotal, String creditLine) {

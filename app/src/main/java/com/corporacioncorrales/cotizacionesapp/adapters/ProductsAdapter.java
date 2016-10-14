@@ -86,13 +86,13 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         if(!product.getFoto().isEmpty()) {
             Picasso.with(mContext)
                     .load(product.getFoto())
-                    .placeholder(R.drawable.package_96_gray)
-                    .error(R.drawable.package_96_gray)
+                    .placeholder(R.drawable.marca2)
+                    .error(R.drawable.marca2)
                     .centerInside()
                     .fit()
                     .into(holder.ivProduct);
         } else {
-            holder.ivProduct.setImageResource(R.drawable.package_96_gray);
+            holder.ivProduct.setImageResource(R.drawable.marca2);
         }
 
         if(product.getSelected()) {

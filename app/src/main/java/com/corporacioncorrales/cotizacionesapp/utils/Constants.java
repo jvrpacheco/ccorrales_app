@@ -26,6 +26,9 @@ public class Constants {
     public static final String url_prices_history = "api/preciohistorico/prehistory";
     public static final String url_documents_history = "api/consultaproforma/historialproforma";
     public static final String url_documents_history_detail = "api/consultaproformadetalle";
+    public static final String url_enviar_datos_correo = "api/correo/enviarcorreo";
+    public static final String url_obtener_url_documento = "api/Whatsapp/enviowhatsapp";
+    public static final String url_get_virtual_stock = "api/Stock/stockVirtual";
 
 
     public static final String rubro_aluminio_label = "Aluminio";
@@ -75,7 +78,11 @@ public class Constants {
     public static final String idEstadoDocHeader = "estado_doc";
     public static final String idFechaInicioDocHeader = "fecini";
     public static final String idFechaFinDocHeader = "fecfin";
-
+    public static final String correosDestinatariosHeader = "idCorreoDestinatarios";
+    public static final String correoAsuntoHeader = "Asunto";
+    public static final String correoCuerpoHeader = "Cuerpo";
+    public static final String correoAdjuntoHeader = "Adjunto";
+    public static final String idDocumentoHeader = "idproforma";
 
     public static final String montoTotalMayorALineaDeCredito = "1";
     public static final String montoTotalMenorOIgualALineaDeCredito = "0";
