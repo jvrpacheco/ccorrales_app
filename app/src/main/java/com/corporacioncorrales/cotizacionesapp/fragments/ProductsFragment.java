@@ -150,6 +150,8 @@ public class ProductsFragment extends Fragment {
         svFilterProduct.setOnQueryTextListener(productsFilterListener);
         Common.hideKeyboard(getActivity(), edtGhost);
 
+        selectProductOnNavigationView();
+
         if (fromOnCreate) {
 
             if(comeFromHistorial) {
@@ -583,6 +585,10 @@ public class ProductsFragment extends Fragment {
             }
         }
         return false;
+    }
+
+    private void selectProductOnNavigationView() {
+        ((MainActivity)getActivity()).navigationView.getMenu().getItem(0).setChecked(true);
     }
 
 }

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity
 
     private String TAG = getClass().getCanonicalName();
     private boolean viewIsAtHome;
-    NavigationView navigationView;
+    public NavigationView navigationView;
     DrawerLayout drawer;
     Toolbar toolbar;
     String titleClientes = "Clientes";
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(final DialogInterface dialog, final int id) {
                         MainActivity.super.onBackPressed();
                         if(fragment instanceof ProductsFragment) {
-                            navigationView.getMenu().getItem(0).setChecked(true);
+                            navigationView.getMenu().getItem(1).setChecked(true);
                         }
                     }
                 });
