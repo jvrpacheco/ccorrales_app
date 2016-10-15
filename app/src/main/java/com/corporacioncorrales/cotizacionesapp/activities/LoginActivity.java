@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private String TAG = getClass().getCanonicalName();
     private String user;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onClick() {
 
         user = etLoginUser.getText().toString().trim();
-        String password = etLoginClave.getText().toString();
+        password = etLoginClave.getText().toString().trim();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.url_server)
@@ -82,7 +83,12 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginApi request = retrofit.create(LoginApi.class);
 
-        if (!user.isEmpty()) {
+        if (!user.isEmpty() && !password.isEmpty()) {
+
+            if(!password.equals(getString(R.string.temp_password))) {
+                Common.showToastMessage(LoginActivity.this, getString(R.string.msg_user_or_pass_incorrect));
+                return;
+            }
 
             if(Common.isOnline(this)) {
                 progressBarLogin.setVisibility(View.VISIBLE);
@@ -129,12 +135,9 @@ public class LoginActivity extends AppCompatActivity {
                         progressBarLogin.setVisibility(View.GONE);
                     }
                 });
-            } else {
-                Common.showToastMessage(getApplicationContext(), "Por favor verifique su conexion a internet.");
             }
-
         } else {
-            Common.showToastMessage(getApplicationContext(), getString(R.string.msg_enter_user));
+            Common.showToastMessage(getApplicationContext(), getString(R.string.msg_enter_user_and_password));
         }
 
     }

@@ -187,7 +187,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
         tvZoomDialogTitle.setText(product.getId());
         tvDescripcion.setText(product.getNombre());
-        getZoomProductImage(product.getId(), ivProductZoom);
+        if(Common.isOnline(mContext)) {
+            getZoomProductImage(product.getId(), ivProductZoom);
+        }
 
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override

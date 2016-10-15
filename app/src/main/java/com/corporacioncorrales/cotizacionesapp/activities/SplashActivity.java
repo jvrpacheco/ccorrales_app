@@ -3,8 +3,6 @@ package com.corporacioncorrales.cotizacionesapp.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
-import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,18 +35,14 @@ public class SplashActivity extends AppCompatActivity {
 
     private void useVerifyImei(boolean useImei) {
         if(useImei) {
-            /*String deviceId = Common.getDeviceId(SplashActivity.this);
-            if(!deviceId.isEmpty()) {
-                checkDeviceOnServer(deviceId);
-            }*/
-            //String x = Build.SERIAL;
-
-            String android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
-            if(!android_id.isEmpty()) {
-                checkDeviceOnServer(android_id);
+            String androidId = Common.getAndroidId(getApplicationContext());
+            if(androidId!=null && !androidId.isEmpty()) {
+                if(Common.isOnline(SplashActivity.this)) {
+                    checkDeviceOnServer(androidId);
+                }
+            } else {
+                Common.showToastMessage(SplashActivity.this, getString(R.string.error_android_id));
             }
-
         } else {
             goToLogin();
         }
@@ -83,7 +77,7 @@ public class SplashActivity extends AppCompatActivity {
                             if(imeiResponseList.get(0).getSerie().equals(Constants.imeiResultOK)) {
                                 goToLogin();
                             } else {
-                                showDenyPermissionMessage(SplashActivity.this, "Lo sentimos, Ud. no tiene permiso para usar CorralesApp. Hasta luego.");  //http://stackoverflow.com/questions/5796611/dialog-throwing-unable-to-add-window-token-null-is-not-for-an-application-wi
+                                showDenyPermissionMessage(SplashActivity.this, getString(R.string.device_not_allowed_message));  //http://stackoverflow.com/questions/5796611/dialog-throwing-unable-to-add-window-token-null-is-not-for-an-application-wi
                             }
                         }
                     }
@@ -113,8 +107,8 @@ public class SplashActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
                         dialog.dismiss();
-                        //finish();
-                        finishAffinity();
+                        finish();
+                        //finishAffinity();
                     }
                 });
 

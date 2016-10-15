@@ -111,21 +111,25 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         holder.ivSendDocument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialogSendDocumentToCLient(myContext, document.getIdCliente(), document.getIdDocumento());
+                if(Common.isOnline(myContext)) {
+                    showDialogSendDocumentToCLient(myContext, document.getIdCliente(), document.getIdDocumento());
+                }
             }
         });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.showToastMessage(myContext, "Ir al documento con Id. " + document.getIdDocumento());
-                loadProductsOfDocument(myContext,
-                        document.getIdCliente(),
-                        document.getNombreCliente(),
-                        document.getLinea_disponible(),
-                        document.getIdRubroDocumento(),
-                        document.getIdDocumento(),
-                        document.getIdTipoDocumento());
+                if(Common.isOnline(myContext)) {
+                    Common.showToastMessage(myContext, "Ir al documento con Id. " + document.getIdDocumento());
+                    loadProductsOfDocument(myContext,
+                            document.getIdCliente(),
+                            document.getNombreCliente(),
+                            document.getLinea_disponible(),
+                            document.getIdRubroDocumento(),
+                            document.getIdDocumento(),
+                            document.getIdTipoDocumento());
+                }
             }
         });
     }
@@ -196,15 +200,17 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
             @Override
             public void onClick(View view) {
                 if(!edtDestinatarios.getText().toString().isEmpty() && !edtAsunto.getText().toString().isEmpty() && !edtCuerpo.getText().toString().isEmpty()) {
-                    sendEmail(progressBar,
-                            dialog,
-                            edtAsunto,
-                            idCliente,
-                            Singleton.getInstance().getUserCode(),
-                            edtDestinatarios.getText().toString(),
-                            edtAsunto.getText().toString(),
-                            edtCuerpo.getText().toString().replaceAll("\n", "%0A"),
-                            "1");
+                    if(Common.isOnline(myContext)) {
+                        sendEmail(progressBar,
+                                dialog,
+                                edtAsunto,
+                                idCliente,
+                                Singleton.getInstance().getUserCode(),
+                                edtDestinatarios.getText().toString(),
+                                edtAsunto.getText().toString(),
+                                edtCuerpo.getText().toString().replaceAll("\n", "%0A"),
+                                "1");
+                    }
                 } else {
                     Common.showToastMessage(myContext, "Por favor ingrese todos los campos.");
                 }
@@ -240,40 +246,40 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
 
         call.enqueue(new Callback<ArrayList<CorreoResponse>>() {
 
-            @Override
-            public void onResponse(Call<ArrayList<CorreoResponse>> call, Response<ArrayList<CorreoResponse>> response) {
-                if (response != null) {
+                @Override
+                public void onResponse(Call<ArrayList<CorreoResponse>> call, Response<ArrayList<CorreoResponse>> response) {
+                    if (response != null) {
 
-                    ArrayList<CorreoResponse> respuesta = response.body();
+                        ArrayList<CorreoResponse> respuesta = response.body();
 
-                    if(respuesta.get(0).getRespuesta().equals("ok")) {
-                        Common.showToastMessage(myContext, "Mensaje enviado!");
-                        Common.hideKeyboard(myContext, edt);
-                        progressBar.setVisibility(View.GONE);
-                        dialog.dismiss();
+                        if(respuesta.get(0).getRespuesta().equals("ok")) {
+                            Common.showToastMessage(myContext, "Mensaje enviado!");
+                            Common.hideKeyboard(myContext, edt);
+                            progressBar.setVisibility(View.GONE);
+                            dialog.dismiss();
+                        } else {
+                            Common.showToastMessage(myContext, "Error en el servidor");
+                            Log.e(Constants.log_arrow_failure, respuesta.get(0).getRespuesta());
+                            progressBar.setVisibility(View.GONE);
+                            Common.hideKeyboard(myContext, edt);
+                        }
+
                     } else {
-                        Common.showToastMessage(myContext, "Error en el servidor");
-                        Log.e(Constants.log_arrow_failure, respuesta.get(0).getRespuesta());
-                        progressBar.setVisibility(View.GONE);
+                        Log.e(Constants.log_arrow_response, "response null");
+                        Common.showToastMessage(mContext, "Error en el servidor");
                         Common.hideKeyboard(myContext, edt);
+                        progressBar.setVisibility(View.GONE);
                     }
+                }
 
-                } else {
-                    Log.e(Constants.log_arrow_response, "response null");
+                @Override
+                public void onFailure(Call<ArrayList<CorreoResponse>> call, Throwable t) {
+                    Log.e(Constants.log_arrow_failure, t.toString());
                     Common.showToastMessage(mContext, "Error en el servidor");
                     Common.hideKeyboard(myContext, edt);
                     progressBar.setVisibility(View.GONE);
                 }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<CorreoResponse>> call, Throwable t) {
-                Log.e(Constants.log_arrow_failure, t.toString());
-                Common.showToastMessage(mContext, "Error en el servidor");
-                Common.hideKeyboard(myContext, edt);
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+            });
     }
 
     private void showDialogToGetDocumentUrl(final String idCliente, String idDocumento) {
@@ -290,7 +296,9 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         final ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.newProgressBar);
         progressBar.setVisibility(View.GONE);
 
-        getDocumentUrl(progressBar, dialog, edtMensaje, idCliente, idDocumento);
+        if(Common.isOnline(myContext)) {
+            getDocumentUrl(progressBar, dialog, edtMensaje, idCliente, idDocumento);
+        }
 
         btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
             @Override

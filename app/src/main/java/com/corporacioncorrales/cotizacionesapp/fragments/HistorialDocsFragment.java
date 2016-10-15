@@ -201,12 +201,14 @@ public class HistorialDocsFragment extends Fragment {
                 String.format("Fecha inicial: %s, Fecha final: %s, Estado documento: %s, Rubro: %s",
                         fechaInicial, fechaFinal, estadoDocSeleccionado, rubroSeleccionado));
 
-        getDocumentsHistory(sg.getUserCode(),
-                selectedClientId.isEmpty() ? "0" : selectedClientId,  //<-----popup para seleccionar cliente
-                rubroSeleccionado,
-                estadoDocSeleccionado,
-                fechaInicial,
-                fechaFinal);
+        if(Common.isOnline(getActivity())) {
+            getDocumentsHistory(sg.getUserCode(),
+                    selectedClientId.isEmpty() ? "0" : selectedClientId,  //<-----popup para seleccionar cliente
+                    rubroSeleccionado,
+                    estadoDocSeleccionado,
+                    fechaInicial,
+                    fechaFinal);
+        }
     }
 
     @OnClick(R.id.rl_btnFechaInicial)
@@ -322,7 +324,9 @@ public class HistorialDocsFragment extends Fragment {
             }
         });
 
-        getClients(sg.getUser(), Constants.rubro_todos, rvDialogClients, progressBar, tvSelectedClient, btnAcceptDialog, chkTodos);
+        if(Common.isOnline(getActivity())) {
+            getClients(sg.getUser(), Constants.rubro_todos, rvDialogClients, progressBar, tvSelectedClient, btnAcceptDialog, chkTodos);
+        }
 
         btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -464,12 +468,14 @@ public class HistorialDocsFragment extends Fragment {
         fechaFinal = getCurrentDate(true, year, month, day);
         tvFechaFinal.setText(getCurrentDate(false, year, month, day));
 
-        getDocumentsHistory(sg.getUserCode(),
-                "0",  //Todos los clientes
-                Constants.rubro_todos,
-                Constants.estadoDoc_todos,
-                fechaInicial,
-                fechaFinal);
+        if(Common.isOnline(getActivity())) {
+            getDocumentsHistory(sg.getUserCode(),
+                    "0",  //Todos los clientes
+                    Constants.rubro_todos,
+                    Constants.estadoDoc_todos,
+                    fechaInicial,
+                    fechaFinal);
+        }
     }
 
     private void initSpinnerEstadosDoc() {

@@ -623,10 +623,12 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 ll_prices.setVisibility(View.GONE);
                 ll_pricesHistory.setVisibility(View.VISIBLE);
 
-                loadPricesHistory(
-                        rvPricesHistory,
-                        Singleton.getInstance().getUserCode(),
-                        product.getId());
+                if(Common.isOnline(mContext)) {
+                    loadPricesHistory(
+                            rvPricesHistory,
+                            Singleton.getInstance().getUserCode(),
+                            product.getId());
+                }
             }
         });
 
@@ -783,7 +785,9 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
         progressBar = (ProgressBar)dialog.findViewById(R.id.newProgressBar);
 
-        getVirtualStock(context, idUsuario, idRubro, idArticulo, rvStockVirtual);
+        if(Common.isOnline(mContext)) {
+            getVirtualStock(context, idUsuario, idRubro, idArticulo, rvStockVirtual);
+        }
 
         btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
             @Override

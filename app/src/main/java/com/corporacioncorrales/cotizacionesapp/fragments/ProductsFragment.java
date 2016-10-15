@@ -156,14 +156,18 @@ public class ProductsFragment extends Fragment {
         if (fromOnCreate) {
 
             if(comeFromHistorial) {
-                initSpinnerDocType(tipoDocumento);
-                //rebuildFromQuotation();
-                loadProductsPerClient(client_id, rubroSeleccionado);
+                if(Common.isOnline(getActivity())) {
+                    initSpinnerDocType(tipoDocumento);
+                    //rebuildFromQuotation();
+                    loadProductsPerClient(client_id, rubroSeleccionado);
+                }
 
             } else {
-                initSpinnerDocType(Constants.Empty);
-                createNewQuotation();
-                loadProductsPerClient(client_id, rubroSeleccionado);
+                if(Common.isOnline(getActivity())) {
+                    initSpinnerDocType(Constants.Empty);
+                    createNewQuotation();
+                    loadProductsPerClient(client_id, rubroSeleccionado);
+                }
             }
 
             fromOnCreate = false;
@@ -294,8 +298,9 @@ public class ProductsFragment extends Fragment {
                         originalProductsArrayList = productsArrayList;
 
                         if(comeFromHistorial) {
-                            getProductsFromDocumentDetail(idDocumento);
-
+                            if(Common.isOnline(getActivity())) {
+                                getProductsFromDocumentDetail(idDocumento);
+                            }
                         } else {
                             //createProductsAdapter(productsArrayList);
                             productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter);
@@ -468,12 +473,14 @@ public class ProductsFragment extends Fragment {
         builder.setPositiveButton(textBtnOk,
                     new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, final int id) {
-                            sendQuotation(client_id.trim(),
-                                    Singleton.getInstance().getRubroSelected().trim(),
-                                    Singleton.getInstance().getUserCode().trim(),
-                                    isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
-                                    Singleton.getInstance().getTipoDocumento(),
-                                    dataToSend);
+                            if(Common.isOnline(getActivity())) {
+                                sendQuotation(client_id.trim(),
+                                        Singleton.getInstance().getRubroSelected().trim(),
+                                        Singleton.getInstance().getUserCode().trim(),
+                                        isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
+                                        Singleton.getInstance().getTipoDocumento(),
+                                        dataToSend);
+                            }
                         }
                     });
         builder.setNegativeButton(textBtnCancelar,

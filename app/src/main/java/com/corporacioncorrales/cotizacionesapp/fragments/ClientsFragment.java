@@ -21,9 +21,7 @@ import android.widget.TextView;
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.activities.MainActivity;
 import com.corporacioncorrales.cotizacionesapp.adapters.ClientsAdapter;
-import com.corporacioncorrales.cotizacionesapp.adapters.ProductsAdapter;
 import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
-import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.networking.ClientsApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
@@ -45,6 +43,7 @@ public class ClientsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
     private String TAG = getClass().getCanonicalName();
     private List<ClientsResponse> clientsList;
     private ArrayList<ClientsResponse> clientsArrayList = new ArrayList<ClientsResponse>();
@@ -62,31 +61,23 @@ public class ClientsFragment extends Fragment {
     RecyclerView recyclerViewClients;
     @BindView(R.id.svFilterClient)
     SearchView svFilterClient;
-    /*@BindView(R.id.btnRefreshClients)
-    Button btnRefreshClients;*/
-
-    //private RecyclerView recyclerViewClients;
+    @BindView(R.id.spinnerOrden)
+    Spinner spOrden;
 
     private Dialog mainActivityDialog;
     private ProgressBar mainProgressBar;
     private String rubroSelected;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public ClientsFragment() {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static ClientsFragment newInstance(String param1, String param2) {
         ClientsFragment fragment = new ClientsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
-        //test 3
         return fragment;
     }
 
@@ -102,7 +93,6 @@ public class ClientsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_clients, container, false);
         Common.setActionBarTitle(getActivity(), Constants.fragmentTagClientes);
         ButterKnife.bind(this, view);
@@ -129,11 +119,8 @@ public class ClientsFragment extends Fragment {
         clearClientsFilter();
 
         if (fromOnCreate) {
-            //initSpinnerRubro();
             initViews3();
         } else {
-            //initSpinnerRubro();
-
             // Rebuild recyclerViewClients from first data downloaded from server in onCreate
             if (clientsAdapter != null && clientsArrayList != null && clientsArrayList.size() > 0) {
                 updateTotalOfClients(clientsArrayList.size());
@@ -184,8 +171,10 @@ public class ClientsFragment extends Fragment {
     private void initViews3() {
         recyclerViewClients.setHasFixedSize(true);
         if (!Singleton.getInstance().getUser().isEmpty()) {
-            getClients(Singleton.getInstance().getUser(), rubroSelected);   //getClients("jsalazar", "00");   rubroSelected
-            clearClientsFilter();
+            if(Common.isOnline(getActivity())) {
+                getClients(Singleton.getInstance().getUser(), rubroSelected);   //getClients("jsalazar", "00");   rubroSelected
+                clearClientsFilter();
+            }
         }
     }
 
@@ -276,11 +265,11 @@ public class ClientsFragment extends Fragment {
 
             ArrayList<ClientsResponse> filteredClientsList = new ArrayList<>();
 
-            if(originalClientsArrayList!= null && originalClientsArrayList.size()>0) {
-                if(!query.isEmpty()) {
-                    for(int i=0; i<originalClientsArrayList.size(); i++) {
+            if (originalClientsArrayList != null && originalClientsArrayList.size() > 0) {
+                if (!query.isEmpty()) {
+                    for (int i = 0; i < originalClientsArrayList.size(); i++) {
                         final String text = originalClientsArrayList.get(i).getRazon_Social().toLowerCase();
-                        if(text.contains(query.toLowerCase())) {
+                        if (text.contains(query.toLowerCase())) {
                             filteredClientsList.add(originalClientsArrayList.get(i));
                         }
                     }
@@ -312,7 +301,7 @@ public class ClientsFragment extends Fragment {
     }
 
     private void clearClientsFilter() {
-        if(svFilterClient!=null) {
+        if (svFilterClient != null) {
             svFilterClient.setQuery(Constants.Empty, false);
             svFilterClient.clearFocus();
         }

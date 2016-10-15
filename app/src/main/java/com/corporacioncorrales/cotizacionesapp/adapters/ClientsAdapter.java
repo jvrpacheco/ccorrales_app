@@ -97,9 +97,10 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.showToastMessage(mContext, "Ir a articulos disponibles para " + client.getRazon_Social());
-                //Common.hideKeyboard(mContext, null);
-                goToProductsFragment(myContext, client);
+                if(Common.isOnline(mContext)) {
+                    Common.showToastMessageShort(mContext, String.format("%s %s", mContext.getResources().getString(R.string.ir_a_articulos), client.getRazon_Social()));
+                    goToProductsFragment(myContext, client);
+                }
             }
         });
     }

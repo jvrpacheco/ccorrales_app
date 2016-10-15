@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
@@ -31,10 +32,16 @@ public class Common {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-    public static boolean isOnline(final Activity activity) {
-        final ConnectivityManager cm = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static boolean isOnline(final Context context) {
+        final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return (netInfo != null && netInfo.isConnectedOrConnecting());
+
+        if(netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            showToastMessage(context, context.getResources().getString(R.string.not_connection_message));
+            return false;
+        }
     }
 
     public static void hideKeyboard(Context context, EditText editText) {
@@ -135,8 +142,21 @@ public class Common {
         return deviceId;
     }
 
+    public static String getAndroidId(Context context) {
+        //https://developer.android.com/reference/android/provider/Settings.Secure.html
+        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
+
     public static void selectProductOnNavigationView(Activity activity, int index) {
         //((MainActivity)getActivity()).navigationView.getMenu().getItem(0).setChecked(true);
         ((MainActivity)activity).navigationView.getMenu().getItem(index).setChecked(true);
+    }
+
+    public final static boolean isValidEmail(CharSequence target) {
+        if (target == null) {
+            return false;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
     }
 }
