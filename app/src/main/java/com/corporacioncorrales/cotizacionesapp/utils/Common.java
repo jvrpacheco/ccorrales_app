@@ -135,7 +135,6 @@ public class Common {
         try{
             TelephonyManager TM = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
             deviceId = TM.getDeviceId();
-
         } catch (Exception e) {
             Log.e(Constants.log_arrow_error, e.toString());
         }
@@ -148,7 +147,6 @@ public class Common {
     }
 
     public static void selectProductOnNavigationView(Activity activity, int index) {
-        //((MainActivity)getActivity()).navigationView.getMenu().getItem(0).setChecked(true);
         ((MainActivity)activity).navigationView.getMenu().getItem(index).setChecked(true);
     }
 

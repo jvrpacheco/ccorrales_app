@@ -43,6 +43,13 @@ public class Constants {
     public static final String rubro_todos_label = "Todos";
     public static final String rubro_todos = "99";
 
+    public static final String orden_nombre_label = "Nombre";
+    public static final String orden_nombre = "1";
+    public static final String orden_importe_label = "Importe";
+    public static final String orden_importe = "2";
+    public static final String orden_cantidad_label = "Cantidad";
+    public static final String orden_cantidad = "3";
+
 
     public static final String tipoDoc_factura_label = "Factura";
     //public static final String tipoDoc_factura = "00";

@@ -66,7 +66,6 @@ public class LoginActivity extends AppCompatActivity {
         Singleton.getInstance().setUser(Constants.Empty);
         Log.d(Constants.log_arrow + TAG, "\"" + Singleton.getInstance().getUser() + "\"");
         enableLoginControls(true);
-        
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 

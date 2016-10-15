@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -42,6 +43,8 @@ public class ClientsFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    @BindView(R.id.clientsMainLayout)
+    LinearLayout clientsMainLayout;
 
 
     private String TAG = getClass().getCanonicalName();
@@ -67,6 +70,7 @@ public class ClientsFragment extends Fragment {
     private Dialog mainActivityDialog;
     private ProgressBar mainProgressBar;
     private String rubroSelected;
+    private String ordenSelected;
 
     public ClientsFragment() {
         // Required empty public constructor
@@ -86,6 +90,7 @@ public class ClientsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         rubroSelected = Constants.rubro_vidrio; // valor por defecto del rubro en la primera carga de la vista
+        ordenSelected = Constants.orden_nombre;
         fromOnCreate = true;
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
     }
@@ -116,6 +121,7 @@ public class ClientsFragment extends Fragment {
         Log.d(Constants.log_arrow + TAG, "onResume, rubroSelected: " + rubroSelected);
 
         initSpinnerRubro();
+        initSpinnerOrden();
         clearClientsFilter();
 
         if (fromOnCreate) {
@@ -130,6 +136,36 @@ public class ClientsFragment extends Fragment {
                 recyclerViewClients.setLayoutManager(mStaggeredGridManager3);
             }
         }
+    }
+
+    private void initSpinnerOrden() {
+        ArrayAdapter adapterRubroOrden = ArrayAdapter.createFromResource(getActivity(), R.array.array_orden, android.R.layout.simple_list_item_1);
+        spOrden.setAdapter(adapterRubroOrden);
+
+        spOrden.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (fromOnCreate) {
+                    fromOnCreate = false;
+                } else {
+                    String item = parent.getItemAtPosition(position).toString();
+                    if (item.equals(Constants.orden_nombre_label)) {
+                        ordenSelected = Constants.orden_nombre;
+                    } else if (item.equals(Constants.orden_importe_label)) {
+                        ordenSelected = Constants.orden_importe;
+                    } else if (item.equals(Constants.orden_cantidad_label)) {
+                        ordenSelected = Constants.orden_cantidad;
+                    }
+                    initViews3();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
     }
 
     private void initSpinnerRubro() {
@@ -156,7 +192,7 @@ public class ClientsFragment extends Fragment {
                     }
                     initViews3();
                 }
-                //Common.showToastMessage(getActivity(), rubroSelected + "!");
+
                 Singleton.getInstance().setRubroSelected(rubroSelected);
                 Log.d(Constants.log_arrow + TAG, "onCreate, rubroSelected: " + rubroSelected);
             }
@@ -171,15 +207,16 @@ public class ClientsFragment extends Fragment {
     private void initViews3() {
         recyclerViewClients.setHasFixedSize(true);
         if (!Singleton.getInstance().getUser().isEmpty()) {
-            if(Common.isOnline(getActivity())) {
-                getClients(Singleton.getInstance().getUser(), rubroSelected);   //getClients("jsalazar", "00");   rubroSelected
+            if (Common.isOnline(getActivity())) {
+                getClients(Singleton.getInstance().getUser(), rubroSelected, ordenSelected);   //getClients("jsalazar", "00");   rubroSelected
                 clearClientsFilter();
             }
         }
     }
 
-    private void getClients(String user, String rubro) {
+    private void getClients(String user, String rubro, String orden) {
         mainProgressBar.setVisibility(View.VISIBLE);
+        clientsMainLayout.setEnabled(false);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.url_server)
@@ -187,13 +224,13 @@ public class ClientsFragment extends Fragment {
                 .build();
 
         ClientsApi request = retrofit.create(ClientsApi.class);
-        Call<ArrayList<ClientsResponse>> call = request.getClientsPerUser(user, rubro); //("jsalazar", "00");
+        Call<ArrayList<ClientsResponse>> call = request.getClientsPerUser(user, rubro, orden); //("jsalazar", "00");
 
         call.enqueue(new Callback<ArrayList<ClientsResponse>>() {
             @Override
             public void onResponse(Call<ArrayList<ClientsResponse>> call, Response<ArrayList<ClientsResponse>> response) {
 
-                if (response != null) {
+                if (response != null && clientsArrayList!=null) {
 
                     clientsArrayList.clear();
                     clientsArrayList = response.body();
@@ -235,11 +272,13 @@ public class ClientsFragment extends Fragment {
                         tvTotalClientes.setText("0");
                     }
                     mainProgressBar.setVisibility(View.GONE);
+                    clientsMainLayout.setEnabled(true);
 
                 } else {
                     Log.e(Constants.log_arrow_response, "response null");
                     Common.showToastMessage(getActivity(), "Error en el servidor");
                     mainProgressBar.setVisibility(View.GONE);
+                    clientsMainLayout.setEnabled(true);
                 }
 
             }
@@ -249,6 +288,7 @@ public class ClientsFragment extends Fragment {
                 Log.e(Constants.log_arrow_failure, t.toString());
                 Common.showToastMessage(getActivity(), "Error en el servidor");
                 mainProgressBar.setVisibility(View.GONE);
+                clientsMainLayout.setEnabled(true);
             }
         });
 

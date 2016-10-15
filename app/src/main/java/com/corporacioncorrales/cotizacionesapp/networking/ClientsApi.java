@@ -21,7 +21,8 @@ public interface ClientsApi {
     @GET(Constants.url_clients_per_user)
     Call<ArrayList<ClientsResponse>> getClientsPerUser(
             @Query("id") String id,
-            @Query("rubro") String rubro
+            @Query("rubro") String rubro,
+            @Query("orden") String orden
     );
 
 }

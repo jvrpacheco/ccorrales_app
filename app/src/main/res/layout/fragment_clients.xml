@@ -7,6 +7,7 @@
     android:background="@color/blanco">
 
     <LinearLayout
+        android:id="@+id/clientsMainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -74,6 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginRight="3dp"
                     android:textSize="16dp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"
@@ -83,7 +85,7 @@
                     android:layout_width="75dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="0dp"
                     android:layout_marginRight="10dp"
                     android:textSize="16dp"
                     android:textStyle="bold"
@@ -97,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:paddingLeft="0dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="3dp"
                     android:textSize="16dp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"
@@ -109,7 +111,7 @@
                     android:layout_width="140dp"
                     android:layout_height="match_parent"
                     android:id="@+id/spinnerOrden"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="0dp"
                     android:layout_marginRight="20dp"/>
 
                 <TextView
@@ -117,7 +119,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:paddingLeft="0dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="3dp"
                     android:textSize="16dp"
                     android:textStyle="bold"
                     android:textColor="@color/negro"

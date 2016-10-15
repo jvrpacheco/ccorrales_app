@@ -334,7 +334,7 @@ public class HistorialDocsFragment extends Fragment {
         });
 
         if(Common.isOnline(getActivity())) {
-            getClients(sg.getUser(), Constants.rubro_todos, rvDialogClients, progressBar, tvSelectedClient, btnAcceptDialog, chkTodos);
+            getClients(sg.getUser(), Constants.rubro_todos, Constants.orden_nombre, rvDialogClients, progressBar, tvSelectedClient, btnAcceptDialog, chkTodos);
         }
 
         btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
@@ -384,7 +384,7 @@ public class HistorialDocsFragment extends Fragment {
         dialog.show();
     }
 
-    private void getClients(String user, String rubro, final RecyclerView rvDialogClients, final ProgressBar progressBar, final TextView tvSelectedClient, final Button btnAccept, final CheckBox chkTodos) {
+    private void getClients(String user, String rubro, String orden, final RecyclerView rvDialogClients, final ProgressBar progressBar, final TextView tvSelectedClient, final Button btnAccept, final CheckBox chkTodos) {
         progressBar.setVisibility(View.VISIBLE);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.url_server)
@@ -392,7 +392,7 @@ public class HistorialDocsFragment extends Fragment {
                 .build();
 
         ClientsApi request = retrofit.create(ClientsApi.class);
-        Call<ArrayList<ClientsResponse>> call = request.getClientsPerUser(user, rubro); //("jsalazar", "00");
+        Call<ArrayList<ClientsResponse>> call = request.getClientsPerUser(user, rubro, orden); //("jsalazar", "00");
 
         call.enqueue(new Callback<ArrayList<ClientsResponse>>() {
             @Override

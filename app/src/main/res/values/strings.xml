@@ -50,6 +50,12 @@
         <item>Plastico</item>
     </string-array>
 
+    <string-array name="array_orden">
+        <item>Nombre</item>
+        <item>Importe</item>
+        <item>Cantidad</item>
+    </string-array>
+
     <string-array name="array_tipos_doc">
         <item>Factura</item>
         <item>Proforma</item>
