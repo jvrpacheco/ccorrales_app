@@ -73,6 +73,7 @@
                         android:textSize="14sp"
                         android:textColor="@color/negro"
                         android:textAlignment="center"
+                        android:maxLines="1"
                         android:layout_centerInParent="true"/>
                 </RelativeLayout>
 

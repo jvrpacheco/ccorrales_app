@@ -30,12 +30,13 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ////setContentView(R.layout.activity_splash);
 
-        useVerifyImei(false);
+        useVerifyImei(true);
     }
 
     private void useVerifyImei(boolean useImei) {
         if(useImei) {
             String androidId = Common.getAndroidId(getApplicationContext());
+            //Log.d(Constants.log_arrow, androidId);
             if(androidId!=null && !androidId.isEmpty()) {
                 if(Common.isOnline(SplashActivity.this)) {
                     checkDeviceOnServer(androidId);

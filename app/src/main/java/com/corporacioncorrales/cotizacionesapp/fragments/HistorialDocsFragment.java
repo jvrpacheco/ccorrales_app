@@ -202,6 +202,15 @@ public class HistorialDocsFragment extends Fragment {
                         fechaInicial, fechaFinal, estadoDocSeleccionado, rubroSeleccionado));
 
         if(Common.isOnline(getActivity())) {
+
+            Log.d(Constants.log_arrow, String.format("%s:%s, %s:%s, %s:%s, %s:%s, %s:%s, %s:%s,",
+                    "idusuario", sg.getUserCode(),
+                    "selectedClientId", selectedClientId.isEmpty() ? "0" : selectedClientId,
+                    "rubroSeleccionado", rubroSeleccionado,
+                    "estadoDocSeleccionado", estadoDocSeleccionado,
+                    "fechaInicial", fechaInicial,
+                    "fechaFinal", fechaFinal));
+
             getDocumentsHistory(sg.getUserCode(),
                     selectedClientId.isEmpty() ? "0" : selectedClientId,  //<-----popup para seleccionar cliente
                     rubroSeleccionado,
