@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -73,6 +74,8 @@ public class ProductsFragment extends Fragment {
     TextView tvLineaDeCreditoCliente;
     @BindView(R.id.tvIndicadorSaldoDisponible)
     TextView tvIndicadorSaldoDisponible;
+    @BindView(R.id.productsMainLayout)
+    LinearLayout productsMainLayout;
 
     private String TAG = getClass().getCanonicalName();
     private ProgressBar mainProgressBar;
@@ -121,7 +124,7 @@ public class ProductsFragment extends Fragment {
             rubroSeleccionado = args.getString("rubroSeleccionado");
 
             //only when coming from HistorialDocsFragment
-            if(args.containsKey("tipoDocumento") && args.containsKey("idDocumento")) {
+            if (args.containsKey("tipoDocumento") && args.containsKey("idDocumento")) {
                 tipoDocumento = args.getString("tipoDocumento");
                 idDocumento = args.getString("idDocumento");
                 comeFromHistorial = true;
@@ -155,15 +158,15 @@ public class ProductsFragment extends Fragment {
 
         if (fromOnCreate) {
 
-            if(comeFromHistorial) {
-                if(Common.isOnline(getActivity())) {
+            if (comeFromHistorial) {
+                if (Common.isOnline(getActivity())) {
                     initSpinnerDocType(tipoDocumento);
                     //rebuildFromQuotation();
                     loadProductsPerClient(client_id, rubroSeleccionado);
                 }
 
             } else {
-                if(Common.isOnline(getActivity())) {
+                if (Common.isOnline(getActivity())) {
                     initSpinnerDocType(Constants.Empty);
                     createNewQuotation();
                     loadProductsPerClient(client_id, rubroSeleccionado);
@@ -186,16 +189,16 @@ public class ProductsFragment extends Fragment {
             @Override
             public void onResponse(Call<ArrayList<DocumentDetailResponse>> call, Response<ArrayList<DocumentDetailResponse>> response) {
 
-                if(response!= null) {
+                if (response != null) {
                     productsFromDocument.clear();
                     productsFromDocument = response.body();
 
-                    if(productsFromDocument.size()>0) {  // el detalle siempre contiene productos
+                    if (productsFromDocument.size() > 0) {  // el detalle siempre contiene productos
 
-                        for(int i = 0; i < productsFromDocument.size(); i++) {
+                        for (int i = 0; i < productsFromDocument.size(); i++) {
                             DocumentDetailResponse productFromDocument = productsFromDocument.get(i);
 
-                            for(int j = 0; j < originalProductsArrayList.size(); j++) {
+                            for (int j = 0; j < originalProductsArrayList.size(); j++) {
                                 ProductsResponse actualProduct = originalProductsArrayList.get(j);
 
                                 if (actualProduct.getId().trim().equals(productFromDocument.getIdProducto().trim())) {
@@ -203,15 +206,15 @@ public class ProductsFragment extends Fragment {
 
                                     //verificar si el precio ingresado por el vendedor es menor al precio inferior actual
                                     String cp = Common.comparePrices(Double.valueOf(productFromDocument.getPrecioIngresadoPorVendedor()), Double.valueOf(actualProduct.getPre_inferior()));
-                                    if(cp.equals(Constants.comparar_esMayor) || cp.equals(Constants.comparar_esIgual)) {
+                                    if (cp.equals(Constants.comparar_esMayor) || cp.equals(Constants.comparar_esIgual)) {
                                         actualProduct.setEsPrecioMenorAlLimite(false);
-                                    } else if(cp.equals(Constants.comparar_esMenor)) {
+                                    } else if (cp.equals(Constants.comparar_esMenor)) {
                                         actualProduct.setEsPrecioMenorAlLimite(true);
                                     }
                                     actualProduct.setNuevoPrecio(productFromDocument.getPrecioIngresadoPorVendedor());
 
                                     //verificar si cambio el precio de lista actual con el que se uso al momento de generar el documento
-                                    if(!productFromDocument.getPrecioListaActual().equals(productFromDocument.getPrecioListaAnterior())) {
+                                    if (!productFromDocument.getPrecioListaActual().equals(productFromDocument.getPrecioListaAnterior())) {
                                         //mostrar icono que indica esta diferencia
                                     } else {
                                         //ocultar icono que indica esta diferencia
@@ -227,7 +230,7 @@ public class ProductsFragment extends Fragment {
                         }
 
                         //createProductsAdapter(originalProductsArrayList);
-                        if(productsToSetInQuotation.size()>0) {
+                        if (productsToSetInQuotation.size() > 0) {
                             //1.
                             rebuildFromQuotation(productsToSetInQuotation);
                             //2.
@@ -297,8 +300,8 @@ public class ProductsFragment extends Fragment {
                         //guardando primera descarga de productos
                         originalProductsArrayList = productsArrayList;
 
-                        if(comeFromHistorial) {
-                            if(Common.isOnline(getActivity())) {
+                        if (comeFromHistorial) {
+                            if (Common.isOnline(getActivity())) {
                                 getProductsFromDocumentDetail(idDocumento);
                             }
                         } else {
@@ -342,16 +345,16 @@ public class ProductsFragment extends Fragment {
             String labelTipoDocumento = Constants.Empty;
             Boolean rebasaSaldoDisponible = isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? true : false;
 
-            if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
+            if (tipoDocumento.equals(Constants.tipoDoc_factura)) {
                 labelTipoDocumento = Constants.tipoDoc_factura_label;
-            } else if(tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+            } else if (tipoDocumento.equals(Constants.tipoDoc_proforma)) {
                 labelTipoDocumento = Constants.tipoDoc_proforma_label;
-            } else if(tipoDocumento.equals(Constants.tipoDoc_preventa)) {
+            } else if (tipoDocumento.equals(Constants.tipoDoc_preventa)) {
                 labelTipoDocumento = Constants.tipoDoc_preventa_label;
             }
 
-            if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
-                if(rebasaSaldoDisponible) {
+            if (tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                if (rebasaSaldoDisponible) {
                     Common.showAlertDialogMessage(
                             labelTipoDocumento,
                             String.format("%s", "El saldo disponible no es suficiente para el monto total solicitado."),
@@ -362,9 +365,9 @@ public class ProductsFragment extends Fragment {
 
             for (int i = 0; i < productsSelected.size(); i++) {
                 ProductsResponse productSelected = productsSelected.get(i);
-                if(tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
-                    if(Integer.valueOf(productSelected.getCantidad())>0) {
-                        if(Integer.valueOf(productSelected.getCantidadSolicitada())>0) {
+                if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                    if (Integer.valueOf(productSelected.getCantidad()) > 0) {
+                        if (Integer.valueOf(productSelected.getCantidadSolicitada()) > 0) {
                             QuotationProductRequest productToSend = new QuotationProductRequest();
                             productToSend.setArticulo(productSelected.getId());
                             productToSend.setCantidad(productSelected.getCantidadSolicitada());
@@ -376,7 +379,7 @@ public class ProductsFragment extends Fragment {
                             Common.showAlertDialogMessage(
                                     labelTipoDocumento,
                                     String.format("%s %s%s",
-                                            "Por favor ingrese la cantidad a solicitar del producto con codigo",
+                                            "Por favor ingrese la cantidad a solicitar del producto con código",
                                             productSelected.getId().trim(),
                                             "."),
                                     getActivity());
@@ -386,15 +389,15 @@ public class ProductsFragment extends Fragment {
                         Common.showAlertDialogMessage(
                                 labelTipoDocumento,
                                 String.format("%s %s, %s",
-                                        "Por favor retire el producto con codigo",
+                                        "Por favor retire el producto con código",
                                         productSelected.getId().trim(),
                                         "porque no cuenta con stock."),
                                 getActivity());
                         return;
                     }
 
-                } else if(tipoDocumento.equals(Constants.tipoDoc_preventa)) {
-                    if(Integer.valueOf(productSelected.getCantidadSolicitada())>0) {
+                } else if (tipoDocumento.equals(Constants.tipoDoc_preventa)) {
+                    if (Integer.valueOf(productSelected.getCantidadSolicitada()) > 0) {
                         QuotationProductRequest productToSend = new QuotationProductRequest();
                         productToSend.setArticulo(productSelected.getId());
                         productToSend.setCantidad(productSelected.getCantidadSolicitada());
@@ -406,7 +409,7 @@ public class ProductsFragment extends Fragment {
                         Common.showAlertDialogMessage(
                                 labelTipoDocumento,
                                 String.format("%s %s%s",
-                                        "Por favor ingrese la cantidad a solicitar del producto con codigo",
+                                        "Por favor ingrese la cantidad a solicitar del producto con código",
                                         productSelected.getId().trim(),
                                         "."),
                                 getActivity());
@@ -415,7 +418,7 @@ public class ProductsFragment extends Fragment {
                 }
             }
 
-            if(dataToSend.size()>0){
+            if (dataToSend.size() > 0) {
                 showConfirmationToSendDocumentAlertDialog(getActivity().getString(R.string.app_name),
                         String.format("%s %s %s", "¿Desea enviar la", labelTipoDocumento, "?"),
                         "Enviar",
@@ -425,7 +428,7 @@ public class ProductsFragment extends Fragment {
 
         } else {
             Common.showAlertDialogMessage1(
-                    String.format("Por favor, agregue algun producto."),
+                    String.format("Por favor, agregue algún producto."),
                     getActivity());
         }
     }
@@ -471,18 +474,18 @@ public class ProductsFragment extends Fragment {
         builder.setMessage(message);
         builder.setCancelable(false);
         builder.setPositiveButton(textBtnOk,
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, final int id) {
-                            if(Common.isOnline(getActivity())) {
-                                sendQuotation(client_id.trim(),
-                                        Singleton.getInstance().getRubroSelected().trim(),
-                                        Singleton.getInstance().getUserCode().trim(),
-                                        isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
-                                        Singleton.getInstance().getTipoDocumento(),
-                                        dataToSend);
-                            }
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        if (Common.isOnline(getActivity())) {
+                            sendQuotation(client_id.trim(),
+                                    Singleton.getInstance().getRubroSelected().trim(),
+                                    Singleton.getInstance().getUserCode().trim(),
+                                    isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
+                                    Singleton.getInstance().getTipoDocumento(),
+                                    dataToSend);
                         }
-                    });
+                    }
+                });
         builder.setNegativeButton(textBtnCancelar,
                 new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
@@ -496,6 +499,9 @@ public class ProductsFragment extends Fragment {
 
     private void sendQuotation(String idCliente, String idRubro, String idUsuario, String sobregiro, String tipoDocumento, ArrayList<QuotationProductRequest> data) {
         mainProgressBar.setVisibility(View.VISIBLE);
+        productsMainLayout.setEnabled(false);
+        btnEnviarDocumento.setEnabled(false);
+
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.url_server).addConverterFactory(GsonConverterFactory.create()).build();
         QuotationApi request = retrofit.create(QuotationApi.class);
 
@@ -509,6 +515,8 @@ public class ProductsFragment extends Fragment {
                     Log.d(Constants.log_arrow_response, rp);
                     Common.showToastMessage(getActivity(), rp);
                     mainProgressBar.setVisibility(View.GONE);
+                    btnEnviarDocumento.setEnabled(true);
+                    productsMainLayout.setEnabled(true);
                     // go to Clients view
                     getFragmentManager().popBackStackImmediate();
                     Common.selectProductOnNavigationView(getActivity(), 1);
@@ -516,6 +524,8 @@ public class ProductsFragment extends Fragment {
                     Log.d(Constants.log_arrow_response, "response null");
                     Common.showToastMessage(getActivity(), "Error en el servidor");
                     mainProgressBar.setVisibility(View.GONE);
+                    btnEnviarDocumento.setEnabled(true);
+                    productsMainLayout.setEnabled(true);
                 }
             }
 
@@ -523,6 +533,8 @@ public class ProductsFragment extends Fragment {
             public void onFailure(Call<String> call, Throwable t) {
                 Log.d(Constants.log_arrow_failure, t.toString());
                 mainProgressBar.setVisibility(View.GONE);
+                btnEnviarDocumento.setEnabled(true);
+                productsMainLayout.setEnabled(true);
                 //Common.showToastMessage(getActivity(), t.getMessage());
                 Common.showToastMessage(getActivity(), "Error en el servidor");
             }
@@ -533,14 +545,14 @@ public class ProductsFragment extends Fragment {
         ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_tipos_doc, android.R.layout.simple_list_item_1);
         spTipoDoc.setAdapter(adapterRubroType);
 
-        if(comeFromHistorial) {
+        if (comeFromHistorial) {
             //set the spinner value only when come from Historial
-            if(initialValue!=null && !initialValue.isEmpty()) {
-                if(initialValue.equals("1")) {
+            if (initialValue != null && !initialValue.isEmpty()) {
+                if (initialValue.equals("1")) {
                     spTipoDoc.setSelection(0);
-                } else if(initialValue.equals("2")) {
+                } else if (initialValue.equals("2")) {
                     spTipoDoc.setSelection(1);
-                } else if(initialValue.equals("3")) {
+                } else if (initialValue.equals("3")) {
                     spTipoDoc.setSelection(2);
                 }
             }
@@ -559,12 +571,12 @@ public class ProductsFragment extends Fragment {
                 }
 
                 //quotationAdapter is not null after load products
-                if(quotationAdapter!=null) {
+                if (quotationAdapter != null) {
                     quotationAdapter.resetProducts();
                     quotationAdapter.refreshItems();
                 }
 
-                Log.d(Constants.log_arrow + TAG, "Singleton.getInstance().getTipoDocumento(): " + Singleton.getInstance().getTipoDocumento());
+                //Log.d(Constants.log_arrow + TAG, "Singleton.getInstance().getTipoDocumento(): " + Singleton.getInstance().getTipoDocumento());
             }
 
             @Override
@@ -597,7 +609,7 @@ public class ProductsFragment extends Fragment {
     }
 
     private void selectProductOnNavigationView() {
-        ((MainActivity)getActivity()).navigationView.getMenu().getItem(0).setChecked(true);
+        ((MainActivity) getActivity()).navigationView.getMenu().getItem(0).setChecked(true);
     }
 
 }

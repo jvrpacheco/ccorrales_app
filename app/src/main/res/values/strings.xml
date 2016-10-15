@@ -31,6 +31,7 @@
     <string name="device_not_allowed_message">Lo sentimos, Ud. no tiene permiso para usar CorralesApp. Hasta luego.</string>
     <string name="not_connection_message">Por favor revise su conexión a internet.</string>
     <string name="ir_a_articulos">Ir a artículos disponibles para</string>
+    <string name="msg_invalid_email">Por favor ingrese correo electrónico válido</string>
 
     //dialog Precio
     <string name="precio_dentro_del_rango">Precio dentro del rango permitido.</string>

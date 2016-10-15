@@ -201,15 +201,22 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
             public void onClick(View view) {
                 if(!edtDestinatarios.getText().toString().isEmpty() && !edtAsunto.getText().toString().isEmpty() && !edtCuerpo.getText().toString().isEmpty()) {
                     if(Common.isOnline(myContext)) {
-                        sendEmail(progressBar,
-                                dialog,
-                                edtAsunto,
-                                idCliente,
-                                Singleton.getInstance().getUserCode(),
-                                edtDestinatarios.getText().toString(),
-                                edtAsunto.getText().toString(),
-                                edtCuerpo.getText().toString().replaceAll("\n", "%0A"),
-                                "1");
+
+                        String emails = edtDestinatarios.getText().toString();
+                        if(Common.isValidEmail(emails)) {
+                            sendEmail(progressBar,
+                                    dialog,
+                                    edtAsunto,
+                                    idCliente,
+                                    Singleton.getInstance().getUserCode(),
+                                    edtDestinatarios.getText().toString(),
+                                    edtAsunto.getText().toString(),
+                                    edtCuerpo.getText().toString().replaceAll("\n", "%0A"),
+                                    "1");
+                        } else {
+                            Common.showToastMessageShort(myContext, myContext.getResources().getString(R.string.msg_invalid_email));
+                        }
+
                     }
                 } else {
                     Common.showToastMessage(myContext, "Por favor ingrese todos los campos.");

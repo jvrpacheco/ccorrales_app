@@ -11,8 +11,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -35,7 +33,6 @@
                     android:layout_height="match_parent"/>
 
             </LinearLayout>
-
 
         </LinearLayout>
 
@@ -94,6 +91,27 @@
                     android:maxLines="1"
                     android:text="0"
                     android:id="@+id/tvTotalClientes" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="0dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/negro"
+                    android:text="Orden:"
+                    android:id="@+id/textView11" />
+                <Spinner
+                    android:background="@color/turquesa"
+                    android:popupBackground="@color/turquesa"
+                    android:layout_width="140dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/spinnerOrden"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="20dp"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
