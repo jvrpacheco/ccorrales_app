@@ -120,7 +120,7 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);
-        ft.addToBackStack(Constants.fragmentTagProductos);
+        ft.addToBackStack(Constants.fragmentTagClientes);
         ft.commit();
     }
 

@@ -120,6 +120,8 @@ public class ClientsFragment extends Fragment {
         super.onResume();
 
         Common.setActionBarTitle(getActivity(), "Clientes");
+        Common.selectProductOnNavigationView(getActivity(), 0);
+
         svFilterClient.setOnQueryTextListener(clientsFilterListener);
         Log.d(Constants.log_arrow + TAG, "onResume, rubroSelected: " + rubroSelected);
 

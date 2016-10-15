@@ -29,6 +29,7 @@ public class Constants {
     public static final String url_enviar_datos_correo = "api/correo/enviarcorreo";
     public static final String url_obtener_url_documento = "api/Whatsapp/enviowhatsapp";
     public static final String url_get_virtual_stock = "api/Stock/stockVirtual";
+    public static final String url_check_imei_on_server = "api/IMEI/consultarIMEI";
 
 
     public static final String rubro_aluminio_label = "Aluminio";
@@ -83,6 +84,7 @@ public class Constants {
     public static final String correoCuerpoHeader = "Cuerpo";
     public static final String correoAdjuntoHeader = "Adjunto";
     public static final String idDocumentoHeader = "idproforma";
+    public static final String imeiHeader = "serie";
 
     public static final String montoTotalMayorALineaDeCredito = "1";
     public static final String montoTotalMenorOIgualALineaDeCredito = "0";
@@ -105,4 +107,6 @@ public class Constants {
     public static final Double baseDouble = 0.001;
     // en cuanto incrementara o disminuira la cantidad en el dialogo de cambio de cantidad de productos
     public static final int baseInteger = 1;
+
+    public static final String imeiResultOK = "1";
 }

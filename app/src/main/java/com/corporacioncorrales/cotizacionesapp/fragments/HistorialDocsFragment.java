@@ -113,6 +113,8 @@ public class HistorialDocsFragment extends Fragment {
         super.onResume();
         //existsClients = false;
         //isClientSelected = false;
+
+        Common.selectProductOnNavigationView(getActivity(), 1);
     }
 
     @Override

@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.corporacioncorrales.cotizacionesapp.R;
+import com.corporacioncorrales.cotizacionesapp.activities.MainActivity;
 
 /**
  * Created by victor on 8/10/16.
@@ -136,5 +137,10 @@ public class Common {
         }
 
         return deviceId;
+    }
+
+    public static void selectProductOnNavigationView(Activity activity, int index) {
+        //((MainActivity)getActivity()).navigationView.getMenu().getItem(0).setChecked(true);
+        ((MainActivity)activity).navigationView.getMenu().getItem(index).setChecked(true);
     }
 }

@@ -159,7 +159,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);
-        ft.addToBackStack(Constants.fragmentTagProductos);
+        ft.addToBackStack(Constants.fragmentTagHistorial);
         ft.commit();
     }
 

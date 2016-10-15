@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -214,9 +215,18 @@ public class MainActivity extends AppCompatActivity
                 new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
                         MainActivity.super.onBackPressed();
+                        //tengo que saber si vengo de productos o historial
+                        //esta considerando que vino solo de productos
                         if(fragment instanceof ProductsFragment) {
-                            navigationView.getMenu().getItem(1).setChecked(true);
+                            navigationView.getMenu().getItem(0).setChecked(true);
                         }
+
+                        //ver cual es el fragment previo y marcar esa opcion en el navigationview
+                        /*int index = MainActivity.this.getFragmentManager().getBackStackEntryCount() - 1;
+                        android.support.v4.app.FragmentManager.BackStackEntry backEntry = MainActivity.this.getFragmentManager().getBackStackEntryAt(index);
+                        String tag = backEntry.getName();
+                        Fragment fragment = getFragmentManager().findFragmentByTag(tag);*/
+
                     }
                 });
         builder.setNegativeButton(textBtnCancelar,

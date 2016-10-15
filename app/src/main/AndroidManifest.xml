@@ -16,7 +16,8 @@
         <activity
             android:name=".activities.SplashActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:excludeFromRecents="false">  <!-- close app from background -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

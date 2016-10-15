@@ -150,7 +150,8 @@ public class ProductsFragment extends Fragment {
         svFilterProduct.setOnQueryTextListener(productsFilterListener);
         Common.hideKeyboard(getActivity(), edtGhost);
 
-        selectProductOnNavigationView();
+        //selectProductOnNavigationView();
+        Common.selectProductOnNavigationView(getActivity(), 0);
 
         if (fromOnCreate) {
 
