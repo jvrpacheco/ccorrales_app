@@ -53,15 +53,15 @@ public class Common {
         int retval = Double.compare(d1, d2);
 
         if(retval > 0) {
-            Log.d(Constants.log_arrow, "d1 is greater than d2");
+            //Log.d(Constants.log_arrow, "d1 is greater than d2");
             result = Constants.comparar_esMayor;
         }
         else if(retval < 0) {
-            Log.d(Constants.log_arrow, "d1 is less than d2");
+            //Log.d(Constants.log_arrow, "d1 is less than d2");
             result = Constants.comparar_esMenor;
         }
         else {
-            Log.d(Constants.log_arrow, "d1 is equal to d2");
+            //Log.d(Constants.log_arrow, "d1 is equal to d2");
             result = Constants.comparar_esIgual;
         }
 
@@ -83,7 +83,6 @@ public class Common {
 
 
         AlertDialog alert = builder.create();
-        //(((FragmentActivity)context)).attatchAlertDialog(alert);
         alert.show();
     }
 
@@ -102,13 +101,11 @@ public class Common {
 
 
         AlertDialog alert = builder.create();
-        //(((FragmentActivity)context)).attatchAlertDialog(alert);
         alert.show();
     }
 
     public static void setActionBarTitle(Activity activity, String title) {
         android.support.v7.app.ActionBar mActionBar=((AppCompatActivity)activity).getSupportActionBar();
-
         if (mActionBar != null) {
             mActionBar.setTitle(title);
         }
@@ -125,9 +122,9 @@ public class Common {
         }
     }
 
+    //just for phones
     public static String getDeviceId(Activity activity) {
         String deviceId = Constants.Empty;
-
         try{
             TelephonyManager TM = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
             deviceId = TM.getDeviceId();
@@ -135,7 +132,6 @@ public class Common {
         } catch (Exception e) {
             Log.e(Constants.log_arrow_error, e.toString());
         }
-
         return deviceId;
     }
 
