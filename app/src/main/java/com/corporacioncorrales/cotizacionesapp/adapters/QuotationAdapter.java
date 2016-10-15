@@ -479,7 +479,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final LinearLayout ll_prices = (LinearLayout) dialog.findViewById(R.id.ll_prices);
         final RecyclerView rvPricesHistory = (RecyclerView) dialog.findViewById(R.id.rvPricesHistory);
 
-
         //tvPrecio.setText(price);
         //tvPrecio.setText(String.valueOf(Double.parseDouble(price)));
         //tvPrecioLimiteInferior.setText(priceMinLimit);
@@ -681,13 +680,14 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
                     } else {
                         Log.d(Constants.log_arrow_response, "No se encontraron precios para este producto");
-                        //Common.showToastMessage(mContext, "No se encontraron productos para este cliente");
+                        Common.showToastMessage(mContext, "No se encontraron precios para este producto");
                     }
 
                     //mainProgressBar.setVisibility(View.GONE);
 
                 } else {
                     Log.d(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(mContext, "Error en el servidor");
                     //mainProgressBar.setVisibility(View.GONE);
                 }
             }
@@ -695,6 +695,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             @Override
             public void onFailure(Call<ArrayList<PricesHistoryResponse>> call, Throwable t) {
                 Log.d(Constants.log_arrow_response, "response null");
+                Common.showToastMessage(mContext, "Error en el servidor");
                 //mainProgressBar.setVisibility(View.GONE);
             }
         });

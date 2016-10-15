@@ -115,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         } else {
                             Log.d(Constants.log_arrow_response, "response null");
+                            Common.showToastMessage(LoginActivity.this, "Error en el servidor");
                             enableLoginControls(true);
                             progressBarLogin.setVisibility(View.GONE);
                         }
@@ -123,6 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<LoginResponse> call, Throwable t) {
                         Log.d(Constants.log_arrow_failure, t.toString());
+                        Common.showToastMessage(LoginActivity.this, "Error en el servidor");
                         enableLoginControls(true);
                         progressBarLogin.setVisibility(View.GONE);
                     }

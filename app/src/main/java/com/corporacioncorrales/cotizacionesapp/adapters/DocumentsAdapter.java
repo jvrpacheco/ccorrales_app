@@ -1,18 +1,14 @@
 package com.corporacioncorrales.cotizacionesapp.adapters;
 
 import android.app.Dialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.InstrumentationInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +17,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -29,11 +24,9 @@ import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
-import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.CorreoResponse;
 import com.corporacioncorrales.cotizacionesapp.model.DocumentsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.MensajeResponse;
-import com.corporacioncorrales.cotizacionesapp.networking.ClientsApi;
 import com.corporacioncorrales.cotizacionesapp.networking.CorreoApi;
 import com.corporacioncorrales.cotizacionesapp.networking.MensajeApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
@@ -79,10 +72,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
     }
 
     public DocumentsAdapter(Context mContext, ArrayList<DocumentsResponse> documentsList) {
-        //this.mContext = mContext;
         this.documentsList = documentsList;
         this.myContext = (FragmentActivity) mContext;
-        //mainProgressBar = myContext.getApplicationContext().getApplicationContext()
     }
 
     @Override
@@ -98,7 +89,6 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         final DocumentsResponse document = documentsList.get(position);
 
         holder.tvSiglaTipoDoc.setText(document.getLabelSiglasTipoDocumento());
-        //holder.tvSiglaTipoDoc.setText(document.getIdTipoDocumento());
         holder.tvSerie.setText(document.getNroSerieDocumento());
         holder.tvNumero.setText(document.getNroDocumento());
         holder.tvFecha.setText(document.getFechaEmisionDocumento().trim());
@@ -117,12 +107,10 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
             holder.tvRubro.setText(Constants.rubro_plastico_label);
         }
 
-        //holder.tvEstado.setText(document.getEstadoDocumento());
         holder.tvEstado.setText(document.getLabelEstadoDocumento());
         holder.ivSendDocument.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Common.showToastMessage(myContext, "Enviando...");
                 showDialogSendDocumentToCLient(myContext, document.getIdCliente(), document.getIdDocumento());
             }
         });
@@ -265,14 +253,14 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
                         dialog.dismiss();
                     } else {
                         Common.showToastMessage(myContext, "Error en el servidor");
-                        //Common.showToastMessage(myContext, respuesta.get(0).getRespuesta());
                         Log.e(Constants.log_arrow_failure, respuesta.get(0).getRespuesta());
                         progressBar.setVisibility(View.GONE);
                         Common.hideKeyboard(myContext, edt);
                     }
 
                 } else {
-                    Log.d(Constants.log_arrow_response, "response null");
+                    Log.e(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(mContext, "Error en el servidor");
                     Common.hideKeyboard(myContext, edt);
                     progressBar.setVisibility(View.GONE);
                 }
@@ -280,7 +268,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
 
             @Override
             public void onFailure(Call<ArrayList<CorreoResponse>> call, Throwable t) {
-                Log.d(Constants.log_arrow_failure, t.toString());
+                Log.e(Constants.log_arrow_failure, t.toString());
+                Common.showToastMessage(mContext, "Error en el servidor");
                 Common.hideKeyboard(myContext, edt);
                 progressBar.setVisibility(View.GONE);
             }
@@ -342,7 +331,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         MensajeApi request = retrofit.create(MensajeApi.class);
-        Call<ArrayList<MensajeResponse>> call = request.getDocumentUrl(idCliente, idDocumento); //("jsalazar", "00");
+        Call<ArrayList<MensajeResponse>> call = request.getDocumentUrl(idCliente, idDocumento);
 
         call.enqueue(new Callback<ArrayList<MensajeResponse>>() {
 
@@ -367,6 +356,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
 
                 } else {
                     Log.d(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(myContext, "Error en el servidor");
                     Common.hideKeyboard(myContext, edt);
                     progressBar.setVisibility(View.GONE);
                 }
@@ -375,6 +365,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
             @Override
             public void onFailure(Call<ArrayList<MensajeResponse>> call, Throwable t) {
                 Log.d(Constants.log_arrow_failure, t.toString());
+                Common.showToastMessage(myContext, "Error en el servidor");
                 Common.hideKeyboard(myContext, edt);
                 progressBar.setVisibility(View.GONE);
             }

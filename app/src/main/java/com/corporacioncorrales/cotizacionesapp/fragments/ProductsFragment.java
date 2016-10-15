@@ -209,18 +209,12 @@ public class ProductsFragment extends Fragment {
                                     //verificar si cambio el precio de lista actual con el que se uso al momento de generar el documento
                                     if(!productFromDocument.getPrecioListaActual().equals(productFromDocument.getPrecioListaAnterior())) {
                                         //mostrar icono que indica esta diferencia
-                                        String x = "d";
                                     } else {
                                         //ocultar icono que indica esta diferencia
-                                        String y = "d";
                                     }
 
                                     actualProduct.setCantidadSolicitada(productFromDocument.getCantidadSolicitada());
-
-
                                     actualProduct.setSelected(true);
-
-
                                     productsToSetInQuotation.add(actualProduct);
                                     //break;
                                 }
@@ -244,7 +238,8 @@ public class ProductsFragment extends Fragment {
                     }
 
                 } else {
-                    Log.d(Constants.log_arrow_response, "response null");
+                    Log.e(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(getActivity(), "Error en el servidor");
                     mainProgressBar.setVisibility(View.GONE);
                 }
 
@@ -252,9 +247,10 @@ public class ProductsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<DocumentDetailResponse>> call, Throwable t) {
-                Log.d(Constants.log_arrow_failure, t.toString());
+                Log.e(Constants.log_arrow_failure, t.toString());
                 mainProgressBar.setVisibility(View.GONE);
-                Common.showToastMessage(getActivity(), t.getMessage());
+                //Common.showToastMessage(getActivity(), t.getMessage());
+                Common.showToastMessage(getActivity(), "Error en el servidor");
             }
         });
     }
@@ -315,6 +311,7 @@ public class ProductsFragment extends Fragment {
                     mainProgressBar.setVisibility(View.GONE);
                 } else {
                     Log.d(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(getActivity(), "Error en el servidor");
                     mainProgressBar.setVisibility(View.GONE);
                 }
             }
@@ -323,7 +320,8 @@ public class ProductsFragment extends Fragment {
             public void onFailure(Call<ArrayList<ProductsResponse>> call, Throwable t) {
                 Log.d(Constants.log_arrow_failure, t.toString());
                 mainProgressBar.setVisibility(View.GONE);
-                Common.showToastMessage(getActivity(), t.getMessage());
+                //Common.showToastMessage(getActivity(), t.getMessage());
+                Common.showToastMessage(getActivity(), "Error en el servidor");
             }
         });
     }
@@ -508,6 +506,7 @@ public class ProductsFragment extends Fragment {
                     getFragmentManager().popBackStackImmediate();
                 } else {
                     Log.d(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(getActivity(), "Error en el servidor");
                     mainProgressBar.setVisibility(View.GONE);
                 }
             }
@@ -516,7 +515,8 @@ public class ProductsFragment extends Fragment {
             public void onFailure(Call<String> call, Throwable t) {
                 Log.d(Constants.log_arrow_failure, t.toString());
                 mainProgressBar.setVisibility(View.GONE);
-                Common.showToastMessage(getActivity(), t.getMessage());
+                //Common.showToastMessage(getActivity(), t.getMessage());
+                Common.showToastMessage(getActivity(), "Error en el servidor");
             }
         });
     }

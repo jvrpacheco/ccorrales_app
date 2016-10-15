@@ -220,15 +220,6 @@ public class ClientsFragment extends Fragment {
                         clientsAdapter.notifyDataSetChanged();
                         recyclerViewClients.setAdapter(clientsAdapter);
 
-                        /*LinearLayoutManager – Displays items in a vertical or horizontal scrolling list.
-                        GridLayoutManager – Displays items in a grid.
-                        StaggeredGridLayoutManager – Displays items in a staggered grid.*/
-
-                        // ListView
-                        //layoutManager2 = new LinearLayoutManager(getActivity());
-                        //recyclerViewClients.setLayoutManager(layoutManager2);
-
-                        // Grid
                         StaggeredGridLayoutManager mStaggeredGridManager3 = new StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL);
                         recyclerViewClients.setLayoutManager(mStaggeredGridManager3);
 
@@ -257,7 +248,8 @@ public class ClientsFragment extends Fragment {
                     mainProgressBar.setVisibility(View.GONE);
 
                 } else {
-                    Log.d(Constants.log_arrow_response, "response null");
+                    Log.e(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(getActivity(), "Error en el servidor");
                     mainProgressBar.setVisibility(View.GONE);
                 }
 
@@ -265,7 +257,8 @@ public class ClientsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ArrayList<ClientsResponse>> call, Throwable t) {
-                Log.d(Constants.log_arrow_failure, t.toString());
+                Log.e(Constants.log_arrow_failure, t.toString());
+                Common.showToastMessage(getActivity(), "Error en el servidor");
                 mainProgressBar.setVisibility(View.GONE);
             }
         });

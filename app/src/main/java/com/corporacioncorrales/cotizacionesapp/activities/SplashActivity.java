@@ -13,7 +13,6 @@ import android.util.Log;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.model.ImeiResponse;
-import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.networking.ImeiApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
@@ -33,7 +32,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ////setContentView(R.layout.activity_splash);
 
-        useVerifyImei(true);
+        useVerifyImei(false);
     }
 
     private void useVerifyImei(boolean useImei) {
@@ -91,15 +90,16 @@ public class SplashActivity extends AppCompatActivity {
                     //progressBar.setVisibility(View.GONE);
                 } else {
                     Log.e(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(SplashActivity.this, "Error en el servidor");
                     //progressBar.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<ImeiResponse>> call, Throwable t) {
-                Log.d(Constants.log_arrow_failure, t.toString());
+                Log.e(Constants.log_arrow_failure, t.toString());
+                Common.showToastMessage(SplashActivity.this, "Error en el servidor");
                 //progressBar.setVisibility(View.GONE);
-                Common.showToastMessage(getApplicationContext(), t.toString());
             }
         });
     }

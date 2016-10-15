@@ -231,6 +231,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
                 } else {
                     Log.d(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(mContext, "Error en el servidor");
                     progressBar.setVisibility(View.GONE);
                 }
             }
@@ -239,7 +240,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             public void onFailure(Call<ProductsResponse> call, Throwable t) {
                 Log.d(Constants.log_arrow_failure, t.toString());
                 progressBar.setVisibility(View.GONE);
-                Common.showToastMessage(mContext, t.getMessage());
+                Common.showToastMessage(mContext, "Error en el servidor");
+                //Common.showToastMessage(mContext, t.getMessage());
             }
         });
 

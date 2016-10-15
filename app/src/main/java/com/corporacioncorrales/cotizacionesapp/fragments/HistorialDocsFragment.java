@@ -179,14 +179,16 @@ public class HistorialDocsFragment extends Fragment {
                     }
                     mainProgressBar.setVisibility(View.GONE);
                 } else {
-                    Log.d(Constants.log_arrow_response, "response null");
+                    Log.e(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(getActivity(), "Error en el servidor");
                     mainProgressBar.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<DocumentsResponse>> call, Throwable t) {
-                Log.d(Constants.log_arrow_failure, t.toString());
+                Log.e(Constants.log_arrow_failure, t.toString());
+                Common.showToastMessage(getActivity(), "Error en el servidor");
                 mainProgressBar.setVisibility(View.GONE);
             }
         });
@@ -415,7 +417,8 @@ public class HistorialDocsFragment extends Fragment {
 
                 } else {
                     isClientSelectedFromList = false;
-                    Log.d(Constants.log_arrow_response, "response null");
+                    Log.e(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(getActivity(), "Error en el servidor");
                     progressBar.setVisibility(View.GONE);
                 }
             }
@@ -423,7 +426,8 @@ public class HistorialDocsFragment extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<ClientsResponse>> call, Throwable t) {
                 isClientSelectedFromList = false;
-                Log.d(Constants.log_arrow_failure, t.toString());
+                Log.e(Constants.log_arrow_failure, t.toString());
+                Common.showToastMessage(getActivity(), "Error en el servidor");
                 progressBar.setVisibility(View.GONE);
             }
         });
