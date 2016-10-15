@@ -504,6 +504,7 @@ public class ProductsFragment extends Fragment {
                     mainProgressBar.setVisibility(View.GONE);
                     // go to Clients view
                     getFragmentManager().popBackStackImmediate();
+                    Common.selectProductOnNavigationView(getActivity(), 1);
                 } else {
                     Log.d(Constants.log_arrow_response, "response null");
                     Common.showToastMessage(getActivity(), "Error en el servidor");

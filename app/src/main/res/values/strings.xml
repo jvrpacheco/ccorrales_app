@@ -5,6 +5,10 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="navigationview_clientes_productos">Clientes / Productos</string>
+    <string name="navigationview_historial">Historial</string>
+    <string name="navigationview_cerrar_sesion">Cerrar Sesión</string>
+
     <string name="action_settings">Settings</string>
     <string name="category_clients">Clientes</string>
     <string name="accept">Aceptar</string>

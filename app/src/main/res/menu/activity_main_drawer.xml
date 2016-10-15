@@ -5,25 +5,15 @@
         <item
             android:id="@+id/nav_clients"
             android:icon="@drawable/ic_people_black_36dp"
-            android:title="Clientes/Productos"/>
-        <!--<item
-            android:id="@+id/nav_products"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Productos" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />-->
+            android:title="@string/navigationview_clientes_productos"/>
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_description_black_36dp"
-            android:title="Historial" />
-
+            android:title="@string/navigationview_historial" />
         <item
             android:id="@+id/nav_close_session"
             android:icon="@drawable/ic_vpn_key_white_36dp"
-            android:title="Cerrar Sesion" />
-
+            android:title="@string/navigationview_cerrar_sesion" />
         <item
             android:id="@+id/menu_none"
             android:icon="@drawable/ic_vpn_key_white_36dp"

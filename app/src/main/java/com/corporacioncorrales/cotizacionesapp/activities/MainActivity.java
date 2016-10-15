@@ -93,6 +93,13 @@ public class MainActivity extends AppCompatActivity
                     @SuppressWarnings("StatementWithEmptyBody")
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                        //avoid to select "Cerrar Sesion" option if select not close session
+                        if(((MenuItem) menuItem).getTitle().equals(getString(R.string.navigationview_cerrar_sesion))) {
+                            selectDrawerItem(menuItem);
+                            return false;
+                        }
+
                         selectDrawerItem(menuItem);
                         return true;
                     }
@@ -185,23 +192,10 @@ public class MainActivity extends AppCompatActivity
 
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            /*if(title.equals(titleClientes)) {
-                ft.replace(R.id.content_frame, fragment);
-            } else {
-                ft.add(R.id.content_frame, fragment);
-            }*/
             ft.replace(R.id.content_frame, fragment);
             ft.addToBackStack(fragmentTag);
             ft.commit();
         }
-
-        //menuItem.setChecked(true);
-
-
-        // set the toolbar title
-        /*if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(title);
-        }*/
 
         drawer.closeDrawer(GravityCompat.START);
     }
@@ -215,18 +209,9 @@ public class MainActivity extends AppCompatActivity
                 new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
                         MainActivity.super.onBackPressed();
-                        //tengo que saber si vengo de productos o historial
-                        //esta considerando que vino solo de productos
-                        if(fragment instanceof ProductsFragment) {
+                        /*if(fragment instanceof ProductsFragment) {
                             navigationView.getMenu().getItem(0).setChecked(true);
-                        }
-
-                        //ver cual es el fragment previo y marcar esa opcion en el navigationview
-                        /*int index = MainActivity.this.getFragmentManager().getBackStackEntryCount() - 1;
-                        android.support.v4.app.FragmentManager.BackStackEntry backEntry = MainActivity.this.getFragmentManager().getBackStackEntryAt(index);
-                        String tag = backEntry.getName();
-                        Fragment fragment = getFragmentManager().findFragmentByTag(tag);*/
-
+                        }*/
                     }
                 });
         builder.setNegativeButton(textBtnCancelar,
@@ -277,70 +262,14 @@ public class MainActivity extends AppCompatActivity
                         dialog.dismiss();
                     }
                 });
+
+        //navigationView.getMenu().getItem(3).setChecked(true);
         AlertDialog alert = builder.create();
         alert.show();
     }
 
     private void goToLogin() {
-        //MainActivity.
         finish();
-        /*Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);*/
-
     }
 
-    /*@SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-
-        Fragment fragment = null;
-        int id = item.getItemId();
-        String title = getString(R.string.app_name);
-
-        switch (id) {
-            case R.id.nav_clients:
-                Common.showToastMessage(getApplicationContext(), "1");
-                break;
-            case R.id.nav_manage:
-                fragment = new HistorialDocsFragment();
-                Common.showToastMessage(getApplicationContext(), "2");
-                break;
-            case R.id.nav_share:
-                //fragmentClass = ThirdFragment.class;
-                break;
-            case R.id.nav_send:
-                //fragmentClass = ThirdFragment.class;
-                break;
-            default:
-                fragment = new ClientsFragment();
-                title = "Clientes - Default";
-                break;
-        }
-
-        try {
-            // Insert the fragment by replacing any existing fragment
-            if (fragment != null) {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, fragment);
-                ft.addToBackStack("asd");
-                ft.commit();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //setActionBarTitle(title);
-        Common.setActionBarTitle(this, title);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }*/
-
-    /*private void setActionBarTitle(String title) {
-        // set the toolbar title
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(title);
-        }
-    }*/
 }
