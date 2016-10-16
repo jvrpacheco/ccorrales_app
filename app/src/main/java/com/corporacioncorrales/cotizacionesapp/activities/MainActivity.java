@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity
                 navigationView.getMenu().getItem(0).setChecked(true);
             }
         }
-        Log.d(Constants.log_arrow + TAG + " User", Singleton.getInstance().getUser());
+        Log.d(Constants.log_arrow + " Usuario", Singleton.getInstance().getUser());
     }
 
     @Override

@@ -35,21 +35,9 @@ public class VirtualStockAdapter extends RecyclerView.Adapter<VirtualStockAdapte
 
     @Override
     public void onBindViewHolder(final ProductsViewHolder holder, final int position) {
-
         final VirtualStockResponse virtualStock = virtualStockList.get(position);
-
         holder.tvCodigo.setText(virtualStock.getCodigo());
         holder.tvFecha.setText(virtualStock.getFecha());
-
-        /*if(price.getFecha().contains("T")) {
-            String [] datetime = price.getFecha().split("T");
-
-            holder.tvDatetimeHistory.setText(
-                    //String.format("%s\n%s", datetime[0], datetime[1])
-                    datetime[0]
-            );
-        }*/
-
         holder.tvCantidad.setText(virtualStock.getCantidad());
     }
 

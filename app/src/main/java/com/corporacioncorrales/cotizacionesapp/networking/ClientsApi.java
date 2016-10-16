@@ -15,9 +15,6 @@ import retrofit2.http.Query;
  */
 public interface ClientsApi {
 
-    //http://190.81.34.42:8080/api/clientes?id=jsalazar&rubro=00
-    //http://190.81.34.42:8080/api/clientes?id={id}&rubro={rubro}
-
     @GET(Constants.url_clients_per_user)
     Call<ArrayList<ClientsResponse>> getClientsPerUser(
             @Query("id") String id,

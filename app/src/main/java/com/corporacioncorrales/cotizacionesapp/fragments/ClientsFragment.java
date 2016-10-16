@@ -89,8 +89,10 @@ public class ClientsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        rubroSelected = Constants.rubro_vidrio; // valor por defecto del rubro en la primera carga de la vista
+        //default spinner values
+        rubroSelected = Constants.rubro_vidrio;
         ordenSelected = Constants.orden_nombre;
+
         fromOnCreate = true;
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
     }
@@ -323,7 +325,7 @@ public class ClientsFragment extends Fragment {
             recyclerViewClients.setAdapter(clientsAdapter);
             StaggeredGridLayoutManager mStaggeredGridManager3 = new StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL);
             recyclerViewClients.setLayoutManager(mStaggeredGridManager3);
-            clientsAdapter.notifyDataSetChanged();  // data set changed
+            clientsAdapter.notifyDataSetChanged();
             return false;
         }
     };

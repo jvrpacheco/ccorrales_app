@@ -20,12 +20,9 @@ import retrofit2.http.Query;
  */
 public interface ProductsApi {
 
-    //http://190.81.34.42:8080/api/articulos?id=124896&rubro=00
-    // "/api/articulos?id={id}&rubro={rubro}"
-
     @GET(Constants.url_products_per_user)
     Call<ArrayList<ProductsResponse>> getProductsPerClient(
-            @Query("id") String id,  //id del Cliente
+            @Query("id") String id,
             @Query("rubro") String rubro
     );
 
@@ -34,7 +31,7 @@ public interface ProductsApi {
             @Query("id") String id
     );
 
-    @POST(Constants.url_prices_history)  //api/preciohistorico/prehistory
+    @POST(Constants.url_prices_history)
     Call<ArrayList<PricesHistoryResponse>> getPricesHistory(
             @Header(Constants.idClienteHeader) String idCliente,
             @Header(Constants.idArticuloHeader) String idArticulo

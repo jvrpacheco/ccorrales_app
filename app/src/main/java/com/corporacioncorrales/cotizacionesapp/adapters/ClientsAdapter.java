@@ -1,25 +1,19 @@
 package com.corporacioncorrales.cotizacionesapp.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
-import com.corporacioncorrales.cotizacionesapp.activities.MainActivity;
-import com.corporacioncorrales.cotizacionesapp.fragments.ClientsFragment;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
-import com.corporacioncorrales.cotizacionesapp.model.Client;
 import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
@@ -27,8 +21,6 @@ import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by victor on 8/10/16.
@@ -64,13 +56,6 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.client_card_row_item, parent, false);
 
-        /*itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });*/
-
         return new ClientsViewHolder(itemView);
     }
 
@@ -81,7 +66,6 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         holder.tvRazonSocial.setText(client.getRazon_Social());
         holder.tvRUC.setText("RUC " + client.getRuc());
 
-        //https://futurestud.io/blog/picasso-image-resizing-scaling-and-fit
         if(!client.getFoto().isEmpty()) {
             Picasso.with(mContext)
                     .load(client.getFoto())

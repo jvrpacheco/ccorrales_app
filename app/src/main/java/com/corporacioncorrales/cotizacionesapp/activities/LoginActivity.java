@@ -106,13 +106,13 @@ public class LoginActivity extends AppCompatActivity {
                                 Singleton.getInstance().setUser(user);
                                 Singleton.getInstance().setUserCode(response.body().getCodUsu());
                                 Log.d(Constants.log_arrow, response.body().getCodUsu());
-                                Log.d(Constants.log_arrow + TAG + " User admitid", Singleton.getInstance().getUser());
+                                Log.d(Constants.log_arrow + " admitido", Singleton.getInstance().getUser());
                                 Common.showToastMessage(getApplicationContext(), "Bienvenido " + user + "!");
                                 enterToApp(user);
                                 progressBarLogin.setVisibility(View.GONE);
 
                             } else {
-                                Log.d(Constants.log_arrow + TAG + " User no admi", Singleton.getInstance().getUser());
+                                Log.d(Constants.log_arrow + " no admitido", Singleton.getInstance().getUser());
                                 Common.showToastMessage(getApplicationContext(), user + " no admitido!");
                                 enableLoginControls(true);
                                 progressBarLogin.setVisibility(View.GONE);

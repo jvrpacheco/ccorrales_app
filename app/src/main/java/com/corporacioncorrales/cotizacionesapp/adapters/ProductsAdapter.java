@@ -74,11 +74,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         }
 
         if(product.getCantidadSolicitada()==null) {
-            /*if(Integer.parseInt(product.getCantidad()) > 0) {
-                product.setCantidadSolicitada("1");
-            } else {
-                product.setCantidadSolicitada("0");
-            }*/
             product.setCantidadSolicitada("0");
         }
         //*************************
@@ -97,7 +92,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
         if(product.getSelected()) {
             holder.ivCheck.setVisibility(View.VISIBLE);
-            //quotationAdapter.addItem(quotationAdapter.getItemCount(), product);
         } else {
             holder.ivCheck.setVisibility(View.GONE);
         }
@@ -126,7 +120,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             @Override
             public boolean onLongClick(View v) {
                 showZoomProductImage(product);
-                return true; // si esta en false, luego de long click ejecutara onclick
+                return true;
             }
         });
 
@@ -210,7 +204,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                 .build();
 
         ProductsApi request = retrofit.create(ProductsApi.class);
-        Call<ProductsResponse> call = request.getProductImageZoom(idProduct);  //product.getId()   //00000172
+        Call<ProductsResponse> call = request.getProductImageZoom(idProduct);
 
         call.enqueue(new Callback<ProductsResponse>() {
             @Override
@@ -243,7 +237,6 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                 Log.d(Constants.log_arrow_failure, t.toString());
                 progressBar.setVisibility(View.GONE);
                 Common.showToastMessage(mContext, "Error en el servidor");
-                //Common.showToastMessage(mContext, t.getMessage());
             }
         });
 

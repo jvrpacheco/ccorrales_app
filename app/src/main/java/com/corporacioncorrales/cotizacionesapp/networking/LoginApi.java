@@ -17,7 +17,6 @@ import retrofit2.http.Query;
  */
 public interface LoginApi {
 
-    //"/api/usuario/{user}"
     @GET(Constants.url_user_login)
     Call<LoginResponse> getUserAccess(
         @Path("user") String user

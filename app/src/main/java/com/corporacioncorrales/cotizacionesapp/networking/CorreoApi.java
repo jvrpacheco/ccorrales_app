@@ -18,7 +18,7 @@ import retrofit2.http.Path;
  */
 public interface CorreoApi {
 
-    @POST(Constants.url_enviar_datos_correo)  //api/preciohistorico/prehistory
+    @POST(Constants.url_enviar_datos_correo)
     Call<ArrayList<CorreoResponse>> sendDataToEmail(
             @Header(Constants.idClienteHeader) String idCliente,
             @Header(Constants.idUsuarioHeader) String idUsuario,

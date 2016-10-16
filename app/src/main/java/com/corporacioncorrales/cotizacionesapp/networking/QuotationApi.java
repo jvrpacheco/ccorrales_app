@@ -18,7 +18,7 @@ import retrofit2.http.Query;
  */
 public interface QuotationApi {
 
-    @POST(Constants.url_send_quotation)  //api/products/createproducts
+    @POST(Constants.url_send_quotation)
     Call<String> sendQuotation(
             @Header(Constants.idClienteHeader) String idCliente,
             @Header(Constants.idRubroHeader) String idRubro,

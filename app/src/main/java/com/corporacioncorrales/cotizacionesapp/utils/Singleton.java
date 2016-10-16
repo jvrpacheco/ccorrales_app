@@ -12,7 +12,7 @@ public class Singleton {
     private String userCode;
     private String rubroSelected;
     private String saldoDisponibleCliente;
-    private String tipoDocumento; //Factura/Proforma
+    private String tipoDocumento;
     private ClientsResponse clientSelected;
     private String idclientSelected;
 

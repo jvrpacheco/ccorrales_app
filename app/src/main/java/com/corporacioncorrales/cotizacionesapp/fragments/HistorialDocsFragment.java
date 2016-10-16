@@ -3,18 +3,13 @@ package com.corporacioncorrales.cotizacionesapp.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,8 +106,6 @@ public class HistorialDocsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //existsClients = false;
-        //isClientSelected = false;
 
         Common.selectProductOnNavigationView(getActivity(), 1);
     }
@@ -212,7 +205,7 @@ public class HistorialDocsFragment extends Fragment {
                     "fechaFinal", fechaFinal));
 
             getDocumentsHistory(sg.getUserCode(),
-                    selectedClientId.isEmpty() ? "0" : selectedClientId,  //<-----popup para seleccionar cliente
+                    selectedClientId.isEmpty() ? "0" : selectedClientId,  // popup to select client
                     rubroSeleccionado,
                     estadoDocSeleccionado,
                     fechaInicial,
@@ -250,7 +243,6 @@ public class HistorialDocsFragment extends Fragment {
         DatePickerDialog datePickerFechaFinalDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                //fechaFinal = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
                 fechaFinal = getCurrentDate(true, year, monthOfYear, dayOfMonth);
                 tvFechaFinal.setText(getCurrentDate(false, year, monthOfYear, dayOfMonth));
             }
@@ -356,9 +348,6 @@ public class HistorialDocsFragment extends Fragment {
                         }
                     } else {
                         btnAcceptDialog.setEnabled(false);
-                        /*selectedClientId = Constants.todosLosClientesId;
-                        tvSelectedClient.setText(Constants.todosLosClientes);
-                        tvClienteSeleccionado.setText(Constants.todosLosClientes);*/
                     }
                     dialog.dismiss();
                 }
@@ -379,7 +368,6 @@ public class HistorialDocsFragment extends Fragment {
             }
         });
 
-        //Common.hideKeyboardOnDialog(dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
     }
@@ -510,9 +498,6 @@ public class HistorialDocsFragment extends Fragment {
 
             }
         });
-
-        //spEstadoDoc.setSelection(0, true);
-        //spEstadoDoc.setSelection(0, false);
 
         spEstadoDoc.post(new Runnable() {
             public void run() {

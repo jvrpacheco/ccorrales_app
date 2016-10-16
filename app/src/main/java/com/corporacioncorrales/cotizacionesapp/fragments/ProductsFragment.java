@@ -153,7 +153,6 @@ public class ProductsFragment extends Fragment {
         svFilterProduct.setOnQueryTextListener(productsFilterListener);
         Common.hideKeyboard(getActivity(), edtGhost);
 
-        //selectProductOnNavigationView();
         Common.selectProductOnNavigationView(getActivity(), 0);
 
         if (fromOnCreate) {
@@ -229,7 +228,6 @@ public class ProductsFragment extends Fragment {
 
                         }
 
-                        //createProductsAdapter(originalProductsArrayList);
                         if (productsToSetInQuotation.size() > 0) {
                             //1.
                             rebuildFromQuotation(productsToSetInQuotation);
@@ -256,7 +254,6 @@ public class ProductsFragment extends Fragment {
             public void onFailure(Call<ArrayList<DocumentDetailResponse>> call, Throwable t) {
                 Log.e(Constants.log_arrow_failure, t.toString());
                 mainProgressBar.setVisibility(View.GONE);
-                //Common.showToastMessage(getActivity(), t.getMessage());
                 Common.showToastMessage(getActivity(), "Error en el servidor");
             }
         });
@@ -286,7 +283,7 @@ public class ProductsFragment extends Fragment {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.url_server).addConverterFactory(GsonConverterFactory.create()).build();
 
         ProductsApi request = retrofit.create(ProductsApi.class);
-        Call<ArrayList<ProductsResponse>> call = request.getProductsPerClient(idClient, rubroSeleccionado);   //busca productos por cliente y por rubro
+        Call<ArrayList<ProductsResponse>> call = request.getProductsPerClient(idClient, rubroSeleccionado);
 
         call.enqueue(new Callback<ArrayList<ProductsResponse>>() {
             @Override
@@ -305,7 +302,6 @@ public class ProductsFragment extends Fragment {
                                 getProductsFromDocumentDetail(idDocumento);
                             }
                         } else {
-                            //createProductsAdapter(productsArrayList);
                             productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter);
                             recyclerViewProductos.setAdapter(productsAdapter);
                             StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -328,7 +324,6 @@ public class ProductsFragment extends Fragment {
             public void onFailure(Call<ArrayList<ProductsResponse>> call, Throwable t) {
                 Log.d(Constants.log_arrow_failure, t.toString());
                 mainProgressBar.setVisibility(View.GONE);
-                //Common.showToastMessage(getActivity(), t.getMessage());
                 Common.showToastMessage(getActivity(), "Error en el servidor");
             }
         });
@@ -449,7 +444,7 @@ public class ProductsFragment extends Fragment {
                     for (int i = 0; i < originalProductsArrayList.size(); i++) {
                         final String productId = originalProductsArrayList.get(i).getId().toLowerCase();
                         final String productName = originalProductsArrayList.get(i).getNombre().toLowerCase();
-                        // Filtro por id o por nombre de producto
+                        // Filter using id or product name
                         if (productId.contains(query.toLowerCase()) || productName.contains(query.toLowerCase())) {
                             filteredProductsList.add(originalProductsArrayList.get(i));
                         }
@@ -463,7 +458,7 @@ public class ProductsFragment extends Fragment {
             recyclerViewProductos.setAdapter(productsAdapter);
             StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
             recyclerViewProductos.setLayoutManager(sgm);
-            productsAdapter.notifyDataSetChanged();  // data set changed
+            productsAdapter.notifyDataSetChanged();
             return false;
         }
     };
@@ -535,7 +530,6 @@ public class ProductsFragment extends Fragment {
                 mainProgressBar.setVisibility(View.GONE);
                 btnEnviarDocumento.setEnabled(true);
                 productsMainLayout.setEnabled(true);
-                //Common.showToastMessage(getActivity(), t.getMessage());
                 Common.showToastMessage(getActivity(), "Error en el servidor");
             }
         });
@@ -575,8 +569,6 @@ public class ProductsFragment extends Fragment {
                     quotationAdapter.resetProducts();
                     quotationAdapter.refreshItems();
                 }
-
-                //Log.d(Constants.log_arrow + TAG, "Singleton.getInstance().getTipoDocumento(): " + Singleton.getInstance().getTipoDocumento());
             }
 
             @Override
@@ -606,10 +598,6 @@ public class ProductsFragment extends Fragment {
             }
         }
         return false;
-    }
-
-    private void selectProductOnNavigationView() {
-        ((MainActivity) getActivity()).navigationView.getMenu().getItem(0).setChecked(true);
     }
 
 }

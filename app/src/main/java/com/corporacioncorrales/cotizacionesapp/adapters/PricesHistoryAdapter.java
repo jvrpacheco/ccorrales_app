@@ -56,7 +56,6 @@ public class PricesHistoryAdapter extends RecyclerView.Adapter<PricesHistoryAdap
         final PricesHistoryResponse price = pricesHistoryList.get(position);
 
         try {
-            //holder.tvPriceHistory.setText(String.format(Constants.round_three_decimals, price.getPrecio()));
             holder.tvPriceHistory.setText(price.getPrecio());
         } catch (Exception e) {
             Log.e(Constants.log_arrow_error, e.toString());

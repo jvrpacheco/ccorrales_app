@@ -30,6 +30,6 @@ public interface DocumentsApi {
 
     @GET(Constants.url_documents_history_detail)
     Call<ArrayList<DocumentDetailResponse>> getProductsFromDocumentDetail(
-            @Query("id") String id   //id del documento
+            @Query("id") String id
     );
 }
