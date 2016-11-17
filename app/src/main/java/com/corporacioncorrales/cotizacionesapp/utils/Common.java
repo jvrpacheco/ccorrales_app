@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.Settings;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
@@ -148,6 +149,11 @@ public class Common {
 
     public static void selectProductOnNavigationView(Activity activity, int index) {
         ((MainActivity)activity).navigationView.getMenu().getItem(index).setChecked(true);
+    }
+
+    public static void selectProductOnNavigationView2(int index, NavigationView navigationView) {
+        //((MainActivity)activity).navigationView.getMenu().getItem(index).setChecked(true);
+        navigationView.getMenu().getItem(index).setChecked(true);
     }
 
     public final static boolean isValidEmail(CharSequence target) {

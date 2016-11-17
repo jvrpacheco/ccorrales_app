@@ -3,6 +3,7 @@ package com.corporacioncorrales.cotizacionesapp.fragments;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -76,6 +77,7 @@ public class ProductsFragment extends Fragment {
     TextView tvIndicadorSaldoDisponible;
     @BindView(R.id.productsMainLayout)
     LinearLayout productsMainLayout;
+    NavigationView nvMainActivity;
 
     private String TAG = getClass().getCanonicalName();
     private ProgressBar mainProgressBar;
@@ -106,6 +108,8 @@ public class ProductsFragment extends Fragment {
         comeFromHistorial = false;
         fromOnCreate = true;
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
+        nvMainActivity = ((MainActivity) getActivity()).navigationView;
+
         productsArrayList = new ArrayList<>();
         productsSelectedList = new ArrayList<>();
         productsFromDocument = new ArrayList<>();
@@ -119,6 +123,7 @@ public class ProductsFragment extends Fragment {
 
             //tvCliente.setText(args.getString("cliente_razonSocial")); //butterKnife load in onCreateView
             client_id = args.getString("cliente_id");
+            Singleton.getInstance().setIdclientSelected(client_id);
             client_razonSocial = args.getString("cliente_razonSocial");
             cliente_saldoDisponible = args.getString("cliente_saldoDisponible");
             rubroSeleccionado = args.getString("rubroSeleccionado");
@@ -514,7 +519,7 @@ public class ProductsFragment extends Fragment {
                     productsMainLayout.setEnabled(true);
                     // go to Clients view
                     getFragmentManager().popBackStackImmediate();
-                    Common.selectProductOnNavigationView(getActivity(), 1);
+                    Common.selectProductOnNavigationView2(1, nvMainActivity);
                 } else {
                     Log.d(Constants.log_arrow_response, "response null");
                     Common.showToastMessage(getActivity(), "Error en el servidor");

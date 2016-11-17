@@ -30,7 +30,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ////setContentView(R.layout.activity_splash);
 
-        useVerifyImei(true);
+        useVerifyImei(false);
     }
 
     private void useVerifyImei(boolean useImei) {

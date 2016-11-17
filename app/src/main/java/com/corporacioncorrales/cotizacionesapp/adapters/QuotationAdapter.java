@@ -626,7 +626,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 if(Common.isOnline(mContext)) {
                     loadPricesHistory(
                             rvPricesHistory,
-                            Singleton.getInstance().getUserCode(),
+                            //Singleton.getInstance().getUserCode(),
+                            Singleton.getInstance().getIdclientSelected(),
                             product.getId());
                 }
             }
