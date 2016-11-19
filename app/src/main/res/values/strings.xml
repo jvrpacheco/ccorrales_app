@@ -42,6 +42,10 @@
     <string name="cantidad_solicitada_no_permitida">Cantidad no disponible.</string>
     <string name="cantidad_solicitada_mayor_a_cero">Por favor ingrese una cantidad mayor a cero.</string>
     <string name="cantidad_solicitada_vacia">Por favor ingrese una cantidad.</string>
+    //dialog Seleccionar Cliente
+    <string name="select_client_tittle">SELECCIONE CLIENTE</string>
+    //dialog Unidad de Venta
+    <string name="unidad_venta_tittle">UNIDAD DE VENTA</string>
 
     <string-array name="array_rubros">
         <item>Vidrio</item>
@@ -76,5 +80,6 @@
         <item>Accesorio</item>
         <item>Plastico</item>
     </string-array>
+
 
 </resources>

@@ -44,6 +44,36 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@android:color/holo_orange_dark"/>
+        <LinearLayout
+            android:layout_width="@dimen/quotation_unidad_venta_width"
+            android:layout_height="match_parent">
+            <ImageView
+                android:visibility="visible"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:id="@+id/ivShowDialogUnidad"
+                android:src="@drawable/wincha_45x45"
+                android:layout_alignParentRight="true"/>
+            <TextView
+                android:id="@+id/tvUnidadVenta"
+                android:textColor="@color/negro"
+                android:textSize="@dimen/textSize_header_products"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Unidad de Venta"
+                android:paddingLeft="0dp"
+                android:paddingRight="5dp"
+                android:maxLines="1"
+                android:layout_centerVertical="true"/>
+        </LinearLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_orange_dark"/>
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -60,32 +90,6 @@
                 android:singleLine="true"
                 android:layout_centerVertical="true"/>
         </RelativeLayout>
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@android:color/holo_orange_dark"/>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="70dp"
-            android:layout_height="match_parent">
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-                <TextView
-                    android:id="@+id/tvPrice"
-                    android:textColor="@color/negro"
-                    android:textSize="@dimen/textSize_header_products"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="P. Real"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:singleLine="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"/>
-            </RelativeLayout>
-        </LinearLayout>
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"

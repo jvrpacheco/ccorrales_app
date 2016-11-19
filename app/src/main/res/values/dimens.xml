@@ -21,4 +21,6 @@
     <dimen name="historial_estado_doc_width">50dp</dimen>
     <dimen name="historial_send_message_width">45dp</dimen>
 
+    <dimen name="quotation_unidad_venta_width">230dp</dimen>
+
 </resources>

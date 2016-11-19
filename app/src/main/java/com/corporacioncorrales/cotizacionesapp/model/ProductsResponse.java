@@ -29,13 +29,21 @@ public class ProductsResponse {
     @Expose
     private String Pre_inferior;
 
-    @SerializedName("Foto")
+    @SerializedName("Unidad")
     @Expose
-    private String Foto;
+    private String Unidad;   //id de la unidad de medida del producto
+
+    @SerializedName("Presentacion")
+    @Expose
+    private String Presentacion;   //descripcion de la unidad de medida del producto
 
     @SerializedName("Cantidad")
     @Expose
     private String Cantidad;
+
+    @SerializedName("Foto")
+    @Expose
+    private String Foto;
 
     //********************************************
 
@@ -56,6 +64,8 @@ public class ProductsResponse {
 
     //********************************************
 
+    private String nuevoPrecio;
+
     public String getNuevoPrecio() {
         try{
             if(nuevoPrecio!=null) {
@@ -71,8 +81,6 @@ public class ProductsResponse {
     public void setNuevoPrecio(String nuevoPrecio) {
         this.nuevoPrecio = nuevoPrecio;
     }
-
-    private String nuevoPrecio;
 
     //********************************************
 
@@ -94,6 +102,8 @@ public class ProductsResponse {
 
     //********************************************
 
+    private String cantidadSolicitada;
+
     public String getCantidadSolicitada() {
         return cantidadSolicitada;
     }
@@ -102,8 +112,63 @@ public class ProductsResponse {
         this.cantidadSolicitada = cantidadSolicitada;
     }
 
-    private String cantidadSolicitada;
+    //********************************************
 
+    private String nuevaCantidad;  //nuevo Stock de acuerdo a la unidad seleccionada
+
+    public String getNuevaCantidad() {
+        String temp = "";
+        if(nuevaCantidad==null) {
+            temp = getCantidad();
+        } else {
+            temp = nuevaCantidad;
+        }
+        return temp;
+    }
+
+    public void setNuevaCantidad(String nuevaCantidad) {
+        this.nuevaCantidad = nuevaCantidad;
+    }
+
+    //********************************************
+
+    private String nuevaUnidad;
+
+    public String getNuevaUnidad() {
+        String newUnit = "";
+
+        if(nuevaCantidad==null) {
+            newUnit = getUnidad();
+        } else {
+            newUnit = nuevaCantidad;
+        }
+
+        return newUnit;
+    }
+
+    public void setNuevaUnidad(String nuevaUnidad) {
+        this.nuevaUnidad = nuevaUnidad;
+    }
+
+    //********************************************
+
+    private String nuevaPresentacion;
+
+    public String getNuevaPresentacion() {
+        String newPresentation = "";
+
+        if(nuevaPresentacion==null) {
+            newPresentation = getPresentacion();
+        } else {
+            newPresentation = nuevaPresentacion;
+        }
+
+        return newPresentation;
+    }
+
+    public void setNuevaPresentacion(String nuevaPresentacion) {
+        this.nuevaPresentacion = nuevaPresentacion;
+    }
 
     //********************************************
 
@@ -145,11 +210,27 @@ public class ProductsResponse {
         return Cantidad;
     }
 
+    public String getUnidad() {
+        return Unidad;
+    }
+
+    public void setUnidad(String unidad) {
+        Unidad = unidad;
+    }
+
+    public String getPresentacion() {
+        return Presentacion;
+    }
+
+    public void setPresentacion(String presentacion) {
+        Presentacion = presentacion;
+    }
+
 
     @Override
     public String toString()
     {
-        return "ClassPojo [Nombre = "+Nombre+", Id = "+Id+", Foto = "+Foto+" , Cantidad = "+Cantidad+" , Pre_inferior = "+Pre_inferior + ", Precio = "+Precio+"]";
+        return "Producto: [Nombre = "+Nombre+", Id = "+Id+", Foto = "+Foto+" , Cantidad = "+Cantidad+" , Pre_inferior = "+Pre_inferior + ", Precio = "+Precio+ ", Unidad = "+Unidad + ", Presentacion = "+Presentacion +"]";
     }
 
 }

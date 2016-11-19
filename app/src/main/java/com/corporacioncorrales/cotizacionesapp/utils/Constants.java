@@ -30,6 +30,7 @@ public class Constants {
     public static final String url_obtener_url_documento = "api/Whatsapp/enviowhatsapp";
     public static final String url_get_virtual_stock = "api/Stock/stockVirtual";
     public static final String url_check_imei_on_server = "api/IMEI/consultarIMEI";
+    public static final String url_get_units = "api/UnidadMedida/consultarunidad";
 
 
     public static final String rubro_aluminio_label = "Aluminio";
@@ -82,6 +83,7 @@ public class Constants {
     public static final String idSobregiroHeader = "Sobregiro";
     public static final String idTipoDocHeader = "TipoDoc";
     public static final String idArticuloHeader = "idArticulo";
+    public static final String articuloUnitsHeader = "Articulo";
     public static final String idRubroDocHeader = "rubro";
     public static final String idEstadoDocHeader = "estado_doc";
     public static final String idFechaInicioDocHeader = "fecini";

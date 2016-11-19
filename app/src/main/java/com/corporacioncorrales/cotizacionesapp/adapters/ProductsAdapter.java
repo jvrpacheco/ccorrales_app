@@ -66,7 +66,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         final ProductsResponse product = productsList.get(position);
 
         holder.tvId.setText(product.getId());
-        holder.tvCantidad.setText("Stock: " + product.getCantidad());
+        //holder.tvCantidad.setText("Stock: " + product.getCantidad());
 
         //*************************
         if(product.getNuevoPrecio()==null) {
@@ -76,6 +76,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         if(product.getCantidadSolicitada()==null) {
             product.setCantidadSolicitada("0");
         }
+
         //*************************
 
         if(!product.getFoto().isEmpty()) {
@@ -108,7 +109,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                     product.setSelected(true);
                     holder.ivCheck.setVisibility(View.VISIBLE);
                     productsSelectedList.add(product);
-                    //quotationAdapter.addItem(0, product);
+                    Log.d("Producto selecccionado", product.toString());
                     quotationAdapter.addItem(quotationAdapter.getItemCount(), product);
                 }
 
@@ -144,7 +145,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             super(view);
             ivProduct = (ImageView)view.findViewById(R.id.iv_Product);
             tvId = (TextView)view.findViewById(R.id.tv_id);
-            tvCantidad = (TextView)view.findViewById(R.id.tv_cantidad);
+            //tvCantidad = (TextView)view.findViewById(R.id.tv_cantidad);
             ivCheck = (ImageView) view.findViewById(R.id.ivCheck);
         }
 

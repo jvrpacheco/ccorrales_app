@@ -26,8 +26,10 @@ import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.PricesHistoryResponse;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
+import com.corporacioncorrales.cotizacionesapp.model.UnitsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.VirtualStockResponse;
 import com.corporacioncorrales.cotizacionesapp.networking.ProductsApi;
+import com.corporacioncorrales.cotizacionesapp.networking.UnitsApi;
 import com.corporacioncorrales.cotizacionesapp.networking.VirtualStockApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
@@ -36,6 +38,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,6 +61,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     private String precioIngresado = "";
     private Boolean esPrecioMenorAlLimite;
     private String tipoDocumento;
+    private UnitsAdapter unitsAdapter;
 
     public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos, TextView tvMontoTotal, TextView tvIndicadorSaldoDisponible) {
         this.mContext = mContext;
@@ -81,10 +85,11 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final ProductsResponse product = productsList.get(position);
 
         holder.tvId.setText(product.getId());
+        holder.tvUnidadVenta.setText(product.getNuevaPresentacion());  //al inicio es getPresentacion()
         holder.tvDescription.setText(product.getNombre());
 
         //Precio
-        holder.tvPrice.setText(product.getPrecio());
+        //holder.tvPrice.setText(product.getPrecio());
 
         //Nuevo Precio y Cantidad Solicitada
         if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
@@ -152,7 +157,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         }
 
         //Stock
-        holder.tvQuantity.setText(product.getCantidad());
+        //holder.tvQuantity.setText(product.getCantidad());
+        holder.tvQuantity.setText(product.getNuevaCantidad());   //product.getNuevaCantidad() si es null obtendra el valor original de getCantidad()
 
         //Precio total
         //if(Integer.parseInt(product.getCantidad())>0) {
@@ -167,28 +173,20 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
                     holder.tvNewPrice.setText(product.getPrecio());
                     total = Double.valueOf(product.getPrecio()) * Integer.valueOf(product.getCantidadSolicitada());
-                    holder.tvTotalPrice.setText(String.format(
-                            Constants.round_two_decimals,
-                            total));
+                    holder.tvTotalPrice.setText(String.format( Constants.round_two_decimals, total));
 
                 } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
-
                     holder.tvCantidadSolicitada.setText("0");
                     product.setCantidadSolicitada("0");
                     holder.tvNewPrice.setText(product.getPrecio());
                     total = Double.valueOf(product.getPrecio());
-                    holder.tvTotalPrice.setText(String.format(
-                            Constants.round_two_decimals,
-                            total));
+                    holder.tvTotalPrice.setText(String.format(Constants.round_two_decimals, total));
 
                 } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
-
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
                     holder.tvNewPrice.setText(product.getNuevoPrecio());
                     total = Double.valueOf(product.getNuevoPrecio()) * Integer.valueOf(product.getCantidadSolicitada());
-                    holder.tvTotalPrice.setText(String.format(
-                            Constants.round_two_decimals,
-                            total));
+                    holder.tvTotalPrice.setText(String.format(Constants.round_two_decimals, total));
                 }
 
             } catch (Exception ex) {
@@ -248,6 +246,13 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                         product.getId());
             }
         });
+
+        holder.ivShowDialogUnidad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showUnidadDeMedidaDialog(mContext, product);
+            }
+        });
     }
 
     @Override
@@ -260,14 +265,14 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     }
 
     public static class QuotationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView tvId, tvDescription, tvPrice, tvQuantity, tvNewPrice, tvCantidadSolicitada, tvTotalPrice;
-        ImageView ivRemove, ivArrival, ivChangePrice, ivChangeQuantity, ivVirtualStock;
+        TextView tvId, tvUnidadVenta, tvDescription, tvPrice, tvQuantity, tvNewPrice, tvCantidadSolicitada, tvTotalPrice;
+        ImageView ivRemove, ivArrival, ivChangePrice, ivChangeQuantity, ivVirtualStock, ivShowDialogUnidad;
 
         public QuotationViewHolder(View view) {
             super(view);
             tvId = (TextView)view.findViewById(R.id.tvId);
+            tvUnidadVenta = (TextView)view.findViewById(R.id.tvUnidadVenta);
             tvDescription = (TextView)view.findViewById(R.id.tvDescription);
-            tvPrice = (TextView)view.findViewById(R.id.tvPrice);
             tvNewPrice = (TextView)view.findViewById(R.id.tvNewPrice);
             tvQuantity = (TextView)view.findViewById(R.id.tvQuantity);
             tvTotalPrice = (TextView)view.findViewById(R.id.tvTotalPrice);
@@ -276,6 +281,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             ivChangePrice = (ImageView) view.findViewById(R.id.ivChangePrice);
             ivChangeQuantity = (ImageView) view.findViewById(R.id.ivChangeQuantity);
             ivVirtualStock = (ImageView) view.findViewById(R.id.ivVirtualStock);
+            ivShowDialogUnidad = (ImageView) view.findViewById(R.id.ivShowDialogUnidad);
         }
 
         @Override
@@ -310,6 +316,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         product.setNuevoPrecio(product.getPrecio());
         product.setEsPrecioMenorAlLimite(false);
         product.setCantidadSolicitada("0");
+
+        product.setNuevaUnidad(product.getUnidad());
+        product.setNuevaPresentacion(product.getPresentacion());
+        product.setNuevaCantidad(product.getCantidad());
     }
 
     public void resetProducts() {
@@ -332,7 +342,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final TextView tvCompareResult = (TextView)dialog.findViewById(R.id.tvCompareResult);
         final ImageView ivUpQuantity = (ImageView) dialog.findViewById(R.id.ivUpQuantity);
         final ImageView ivDownQuantity = (ImageView) dialog.findViewById(R.id.ivDownQuantity);
-        final String stock = product.getCantidad();
+        //final String stock = product.getCantidad();
+        final String stock = product.getNuevaCantidad();
 
         tvProductDes.setText(product.getNombre());
         quantityInserted = product.getCantidadSolicitada();
@@ -478,13 +489,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final LinearLayout ll_pricesHistory = (LinearLayout) dialog.findViewById(R.id.ll_pricesHistory);
         final LinearLayout ll_prices = (LinearLayout) dialog.findViewById(R.id.ll_prices);
         final RecyclerView rvPricesHistory = (RecyclerView) dialog.findViewById(R.id.rvPricesHistory);
-
-        //tvPrecio.setText(price);
-        //tvPrecio.setText(String.valueOf(Double.parseDouble(price)));
-        //tvPrecioLimiteInferior.setText(priceMinLimit);
-        //tvPrecioLimiteInferior.setText(String.valueOf(Double.parseDouble(priceMinLimit)));
-        //tvPrecioIngresado.setText(product.getNuevoPrecio());
-        //tvPrecioIngresado.setText(String.valueOf(Double.parseDouble(product.getNuevoPrecio())));
 
         try {
             tvPrecio.setText(String.format(Constants.round_three_decimals, Double.parseDouble(price)));
@@ -849,6 +853,112 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
         });
 
+    }
+
+    public void showUnidadDeMedidaDialog(final Context context, final ProductsResponse product) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_unidad_venta);
+
+        final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
+        final Button btnCloseDialog = (Button) dialog.findViewById(R.id.btnClose);
+        final ProgressBar newProgressBar = (ProgressBar) dialog.findViewById(R.id.newProgressBar);
+        final ImageView ivClose = (ImageView) dialog.findViewById(R.id.ivClose);
+        final RecyclerView rvUnitsPerArticle = (RecyclerView) dialog.findViewById(R.id.rvUnitsPerArticle);
+        final TextView tvTittle = (TextView) dialog.findViewById(R.id.tvTittle);
+        final TextView tvSelectedUnit = (TextView) dialog.findViewById(R.id.tvSelectedUnit);
+
+        tvTittle.setText(product.getId());
+
+        //seteando unidad por defecto
+        tvSelectedUnit.setText(String.format("Codigo: %s, Presentacion: %s, Stock: %s", product.getUnidad(), product.getPresentacion(), product.getCantidad()));
+
+        if(Common.isOnline(context)) {
+            getUnitsPerArticle(context, newProgressBar, product.getId(), rvUnitsPerArticle, tvSelectedUnit);
+        }
+
+        btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(unitsAdapter!=null && unitsAdapter.getUnitSelected()!=null) {
+
+                    UnitsResponse unitSelected = unitsAdapter.getUnitSelected();
+                    product.setNuevaUnidad(unitSelected.getUnidad());
+                    product.setNuevaPresentacion(unitSelected.getPresentacion());
+                    product.setNuevaCantidad(unitSelected.getStock());
+
+
+                    refreshItems();
+
+                }
+
+                dialog.dismiss();
+            }
+        });
+
+        btnCloseDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+    }
+
+    private void getUnitsPerArticle(final Context context, final ProgressBar newProgressBar, String idArticulo, final RecyclerView rvUnitsPerArticle, final TextView tvSelectedUnit) {
+        newProgressBar.setVisibility(View.VISIBLE);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.url_server)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UnitsApi request = retrofit.create(UnitsApi.class);
+        Call<ArrayList<UnitsResponse>> call = request.getUnits(idArticulo);
+
+        call.enqueue(new Callback<ArrayList<UnitsResponse>>() {
+            @Override
+            public void onResponse(Call<ArrayList<UnitsResponse>> call, Response<ArrayList<UnitsResponse>> response) {
+
+                if(response != null) {
+                    ArrayList<UnitsResponse> unitsPerArticleList = response.body();
+                    if(unitsPerArticleList.size()>0) {
+
+                        unitsAdapter = new UnitsAdapter(context, unitsPerArticleList, tvSelectedUnit);
+                        rvUnitsPerArticle.setAdapter(unitsAdapter);
+                        LinearLayoutManager llm = new LinearLayoutManager(mContext);
+                        rvUnitsPerArticle.setLayoutManager(llm);
+
+                    } else {
+                        Log.d(Constants.log_arrow_response, "No se encontro stock virtual para este producto");
+                        Common.showToastMessageShort(context, "No se encontro stock virtual para este producto");
+                    }
+                    newProgressBar.setVisibility(View.GONE);
+
+                } else {
+                    Common.showToastMessage(context, "Error en el servidor");
+                    Log.e(Constants.log_arrow_response, response.message());
+                    newProgressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<UnitsResponse>> call, Throwable t) {
+                newProgressBar.setVisibility(View.GONE);
+                Common.showToastMessage(context, "Error en el servidor");
+                Log.e(Constants.log_arrow_response, t.toString());
+            }
+        });
     }
 
     private Boolean isUpToCreditLine(Double montoTotal, String creditLine) {

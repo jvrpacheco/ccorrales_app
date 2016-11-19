@@ -512,14 +512,22 @@ public class ProductsFragment extends Fragment {
 
                 if (response != null) {
                     String rp = response.body();
-                    Log.d(Constants.log_arrow_response, rp);
-                    Common.showToastMessage(getActivity(), rp);
+
+                    if(rp!=null) {
+                        Log.d(Constants.log_arrow_response, rp);
+                        Common.showToastMessage(getActivity(), rp);
+                        // go to Clients view
+                        getFragmentManager().popBackStackImmediate();
+                        Common.selectProductOnNavigationView2(1, nvMainActivity);
+                    } else {
+                        Log.d(Constants.log_arrow_response, "body null:" + response.raw().message());
+                        Common.showToastMessage(getActivity(), "Error en el servidor");
+                    }
+
                     mainProgressBar.setVisibility(View.GONE);
                     btnEnviarDocumento.setEnabled(true);
                     productsMainLayout.setEnabled(true);
-                    // go to Clients view
-                    getFragmentManager().popBackStackImmediate();
-                    Common.selectProductOnNavigationView2(1, nvMainActivity);
+
                 } else {
                     Log.d(Constants.log_arrow_response, "response null");
                     Common.showToastMessage(getActivity(), "Error en el servidor");
