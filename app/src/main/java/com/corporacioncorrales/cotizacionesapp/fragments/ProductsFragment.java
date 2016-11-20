@@ -266,7 +266,7 @@ public class ProductsFragment extends Fragment {
 
     private void createNewQuotation() {
         rvQuotation.setHasFixedSize(true);
-        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>(), tvTotalProductos, tvMontoTotal, tvIndicadorSaldoDisponible);
+        quotationAdapter = new QuotationAdapter(getActivity(), new ArrayList<ProductsResponse>(), tvTotalProductos, tvMontoTotal, tvIndicadorSaldoDisponible, mainProgressBar);
         rvQuotation.setAdapter(quotationAdapter);
         LinearLayoutManager sgm = new LinearLayoutManager(getActivity());
         rvQuotation.setLayoutManager(sgm);
@@ -274,7 +274,7 @@ public class ProductsFragment extends Fragment {
 
     private void rebuildFromQuotation(ArrayList<ProductsResponse> quotationList) {
         rvQuotation.setHasFixedSize(true);
-        quotationAdapter = new QuotationAdapter(getActivity(), quotationList, tvTotalProductos, tvMontoTotal, tvIndicadorSaldoDisponible);
+        quotationAdapter = new QuotationAdapter(getActivity(), quotationList, tvTotalProductos, tvMontoTotal, tvIndicadorSaldoDisponible, mainProgressBar);
         rvQuotation.setAdapter(quotationAdapter);
         LinearLayoutManager sgm = new LinearLayoutManager(getActivity());
         rvQuotation.setLayoutManager(sgm);

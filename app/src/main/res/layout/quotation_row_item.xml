@@ -96,7 +96,7 @@
             android:background="@android:color/holo_orange_dark"/>
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="85dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent">
             <ImageView
                 android:id="@+id/ivChangePrice"

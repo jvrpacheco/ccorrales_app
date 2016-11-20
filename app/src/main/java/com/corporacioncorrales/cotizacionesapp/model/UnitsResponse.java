@@ -40,7 +40,6 @@ public class UnitsResponse {
 
     public String getStock() {
         return stock;
-        //return "55";
     }
 
     public void setStock(String stock) {

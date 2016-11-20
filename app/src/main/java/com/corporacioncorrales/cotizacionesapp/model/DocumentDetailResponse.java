@@ -37,6 +37,8 @@ public class DocumentDetailResponse {
     @Expose
     private String montoTotalEnDocumento;
 
+    //3 campos de la unidad
+
 
     public String getIdProducto() {
         return idProducto.trim();

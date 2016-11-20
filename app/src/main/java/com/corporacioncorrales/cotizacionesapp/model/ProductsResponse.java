@@ -137,10 +137,10 @@ public class ProductsResponse {
     public String getNuevaUnidad() {
         String newUnit = "";
 
-        if(nuevaCantidad==null) {
+        if(nuevaUnidad==null) {
             newUnit = getUnidad();
         } else {
-            newUnit = nuevaCantidad;
+            newUnit = nuevaUnidad;
         }
 
         return newUnit;
@@ -171,6 +171,26 @@ public class ProductsResponse {
     }
 
     //********************************************
+    private String precioRecalculado;
+
+    public String getPrecioRecalculado() {
+        String precioRecal = "";
+
+        if(precioRecalculado==null) {
+            precioRecal = getPrecio();
+        } else {
+            precioRecal = precioRecalculado;
+        }
+
+        return precioRecal;
+    }
+
+    public void setPrecioRecalculado(String precioRecalculado) {
+        this.precioRecalculado = precioRecalculado;
+    }
+
+    //********************************************
+
 
     public String getId() {
         return Id.trim();

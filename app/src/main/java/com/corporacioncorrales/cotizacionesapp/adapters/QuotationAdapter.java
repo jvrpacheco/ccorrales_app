@@ -24,10 +24,12 @@ import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
+import com.corporacioncorrales.cotizacionesapp.model.NewPriceResponse;
 import com.corporacioncorrales.cotizacionesapp.model.PricesHistoryResponse;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.UnitsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.VirtualStockResponse;
+import com.corporacioncorrales.cotizacionesapp.networking.NewPriceApi;
 import com.corporacioncorrales.cotizacionesapp.networking.ProductsApi;
 import com.corporacioncorrales.cotizacionesapp.networking.UnitsApi;
 import com.corporacioncorrales.cotizacionesapp.networking.VirtualStockApi;
@@ -62,13 +64,15 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     private Boolean esPrecioMenorAlLimite;
     private String tipoDocumento;
     private UnitsAdapter unitsAdapter;
+    private ProgressBar productsProgressBar;
 
-    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos, TextView tvMontoTotal, TextView tvIndicadorSaldoDisponible) {
+    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos, TextView tvMontoTotal, TextView tvIndicadorSaldoDisponible, ProgressBar productsProgressBar) {
         this.mContext = mContext;
         this.productsList = productsList;
         this.tvTotalProductos = tvTotalProductos;
         this.tvMontoTotal = tvMontoTotal;
         this.tvIndicadorSaldoDisponible = tvIndicadorSaldoDisponible;
+        this.productsProgressBar = productsProgressBar;
     }
 
     @Override
@@ -88,26 +92,26 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.tvUnidadVenta.setText(product.getNuevaPresentacion());  //al inicio es getPresentacion()
         holder.tvDescription.setText(product.getNombre());
 
-        //Precio
-        //holder.tvPrice.setText(product.getPrecio());
-
         //Nuevo Precio y Cantidad Solicitada
         if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
 
             holder.ivChangeQuantity.setVisibility(View.GONE);
             holder.tvCantidadSolicitada.setText("0");
-            holder.tvNewPrice.setText(product.getNuevoPrecio());
+            //holder.tvNewPrice.setText(product.getNuevoPrecio());
+            holder.tvNewPrice.setText(product.getPrecioRecalculado());
 
         } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()==null) {
 
             if(product.getCantidad().equals("0")) {
                 holder.ivChangeQuantity.setVisibility(View.GONE);
                 holder.tvCantidadSolicitada.setText("0");
-                holder.tvNewPrice.setText(product.getPrecio());
+                //holder.tvNewPrice.setText(product.getPrecio());
+                holder.tvNewPrice.setText(product.getPrecioRecalculado());
             } else {
                 holder.ivChangeQuantity.setVisibility(View.VISIBLE);
                 holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
-                holder.tvNewPrice.setText(product.getPrecio());
+                //holder.tvNewPrice.setText(product.getPrecio());
+                holder.tvNewPrice.setText(product.getPrecioRecalculado());
             }
 
         } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
@@ -116,16 +120,19 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 if(product.getCantidad().equals("0")) {
                     holder.ivChangeQuantity.setVisibility(View.GONE);
                     holder.tvCantidadSolicitada.setText("0");
-                    holder.tvNewPrice.setText(product.getPrecio());
+                    //holder.tvNewPrice.setText(product.getPrecio());
+                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
                 } else {
                     holder.ivChangeQuantity.setVisibility(View.VISIBLE);
                     holder.tvCantidadSolicitada.setText("0");
-                    holder.tvNewPrice.setText(product.getPrecio());
+                    //holder.tvNewPrice.setText(product.getPrecio());
+                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
                 }
             } else if(tipoDocumento.equals(Constants.tipoDoc_preventa)) {
                 holder.ivChangeQuantity.setVisibility(View.VISIBLE);
                 holder.tvCantidadSolicitada.setText("0");
-                holder.tvNewPrice.setText(product.getPrecio());
+                //holder.tvNewPrice.setText(product.getPrecio());
+                holder.tvNewPrice.setText(product.getPrecioRecalculado());
             }
 
 
@@ -136,17 +143,20 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     holder.ivChangeQuantity.setVisibility(View.GONE);
                     product.setCantidadSolicitada("0");
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
-                    holder.tvNewPrice.setText(product.getNuevoPrecio());
+                    //holder.tvNewPrice.setText(product.getNuevoPrecio());
+                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
                 } else {
                     holder.ivChangeQuantity.setVisibility(View.VISIBLE);
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
-                    holder.tvNewPrice.setText(product.getNuevoPrecio());
+                    //holder.tvNewPrice.setText(product.getNuevoPrecio());
+                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
                 }
             } else if(tipoDocumento.equals(Constants.tipoDoc_preventa)) {
                 holder.ivChangeQuantity.setVisibility(View.VISIBLE);
                 //product.setCantidadSolicitada("0");
                 holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
-                holder.tvNewPrice.setText(product.getNuevoPrecio());
+                //holder.tvNewPrice.setText(product.getNuevoPrecio());
+                holder.tvNewPrice.setText(product.getPrecioRecalculado());
             }
         }
 
@@ -166,26 +176,30 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 Double total = 0.00;
                 if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
                     holder.tvCantidadSolicitada.setText("0");
-                    holder.tvNewPrice.setText(product.getNuevoPrecio());
+                    //holder.tvNewPrice.setText(product.getNuevoPrecio());
+                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
                     holder.tvTotalPrice.setText("0.00");
 
                 } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()==null) {
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
-                    holder.tvNewPrice.setText(product.getPrecio());
-                    total = Double.valueOf(product.getPrecio()) * Integer.valueOf(product.getCantidadSolicitada());
+                    //holder.tvNewPrice.setText(product.getPrecio());
+                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
+                    total = Double.valueOf(product.getPrecioRecalculado()) * Integer.valueOf(product.getCantidadSolicitada());
                     holder.tvTotalPrice.setText(String.format( Constants.round_two_decimals, total));
 
                 } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
                     holder.tvCantidadSolicitada.setText("0");
                     product.setCantidadSolicitada("0");
-                    holder.tvNewPrice.setText(product.getPrecio());
-                    total = Double.valueOf(product.getPrecio());
+                    //holder.tvNewPrice.setText(product.getPrecio());
+                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
+                    total = Double.valueOf(product.getPrecioRecalculado());
                     holder.tvTotalPrice.setText(String.format(Constants.round_two_decimals, total));
 
                 } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
-                    holder.tvNewPrice.setText(product.getNuevoPrecio());
-                    total = Double.valueOf(product.getNuevoPrecio()) * Integer.valueOf(product.getCantidadSolicitada());
+                    //holder.tvNewPrice.setText(product.getNuevoPrecio());
+                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
+                    total = Double.valueOf(product.getPrecioRecalculado()) * Integer.valueOf(product.getCantidadSolicitada());
                     holder.tvTotalPrice.setText(String.format(Constants.round_two_decimals, total));
                 }
 
@@ -320,6 +334,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         product.setNuevaUnidad(product.getUnidad());
         product.setNuevaPresentacion(product.getPresentacion());
         product.setNuevaCantidad(product.getCantidad());
+        product.setPrecioRecalculado(product.getPrecio());
     }
 
     public void resetProducts() {
@@ -384,7 +399,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                                 btnAcceptDialog.setEnabled(true);
                                 quantityInserted = qInserted;
                             } else {
-                                tvCompareResult.setText(String.format("%s %s %s", "El maximo permitido es de", stock, "productos."));
+                                tvCompareResult.setText(String.format("%s %s %s", "El máximo permitido es de", stock, "productos."));
                                 tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
                                 btnAcceptDialog.setEnabled(false);
                                 //quantityInserted = qInserted;
@@ -501,7 +516,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         tvProductDes.setText(product.getNombre());
 
         precioIngresado = product.getNuevoPrecio();
-        //edtPrice.setText(precioIngresado);
         edtPrice.setText(String.valueOf(Double.parseDouble(precioIngresado)));
 
         String cp = Common.comparePrices(Double.valueOf(product.getNuevoPrecio()), Double.valueOf(product.getPre_inferior()));
@@ -613,11 +627,15 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
             @Override
             public void onClick(View v) {
-                product.setNuevoPrecio(precioIngresado);
+                /*product.setNuevoPrecio(precioIngresado);
                 product.setEsPrecioMenorAlLimite(esPrecioMenorAlLimite);
                 //refreshItem(position, product);
                 refreshItems();
-                dialog.dismiss();
+                dialog.dismiss();*/
+
+                if(Common.isOnline(context)) {
+                    getNewPriceRecalculatedFromChangePriceDialog(context, dialog, productsProgressBar, product, precioIngresado, btnAcceptDialog, btnCloseDialog);
+                }
             }
         });
 
@@ -657,6 +675,118 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
+    }
+
+    private void getNewPriceRecalculatedFromChangePriceDialog(final Context context, final Dialog dialog, final ProgressBar newProgressBar, final ProductsResponse product, final String precioIngresado, Button btnAcceptDialog, Button btnCloseDialog) {
+        newProgressBar.setVisibility(View.VISIBLE);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.url_server)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        NewPriceApi request = retrofit.create(NewPriceApi.class);
+        Call<ArrayList<NewPriceResponse>> call = request.getNewPriceRecalculated(product.getId().trim(), product.getNuevaUnidad().trim(), precioIngresado);
+
+        call.enqueue(new Callback<ArrayList<NewPriceResponse>>() {
+            @Override
+            public void onResponse(Call<ArrayList<NewPriceResponse>> call, Response<ArrayList<NewPriceResponse>> response) {
+                if(response != null) {
+                    if(response.body()!=null) {
+                        ArrayList<NewPriceResponse> newPriceReca = response.body();
+
+                        if(newPriceReca.size()>0) {
+                            if(newPriceReca.get(0)!=null && !newPriceReca.get(0).getImporteRecalculado().isEmpty()) {
+                                String priceRecalculated = newPriceReca.get(0).getImporteRecalculado();
+
+                                if(!priceRecalculated.isEmpty()) {
+                                    product.setNuevoPrecio(precioIngresado);
+                                    product.setPrecioRecalculado(String.format(Constants.round_three_decimals, Double.parseDouble(priceRecalculated)));
+                                    product.setEsPrecioMenorAlLimite(esPrecioMenorAlLimite);
+                                    refreshItems();
+                                    dialog.dismiss();
+                                }
+                            }
+                        } else {
+                            Log.d(Constants.log_arrow_response, "Lo sentimos, el servidor no ha devuelto el precio.");
+                            Common.showToastMessage(context, "Lo sentimos, el servidor no ha devuelto el precio.");
+                        }
+                        newProgressBar.setVisibility(View.GONE);
+                    } else {
+                        Log.d(Constants.log_arrow_response, "body null:" + response.raw().message());
+                        Common.showToastMessage(context, "Error en el servidor");
+                    }
+                } else {
+                    Common.showToastMessage(context, "Error en el servidor");
+                    Log.e(Constants.log_arrow_response, response.message());
+                    newProgressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<NewPriceResponse>> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Common.showToastMessage(context, "Error en el servidor");
+                Log.e(Constants.log_arrow_response, t.toString());
+            }
+        });
+    }
+
+    private void getNewPriceRecalculatedFromChangeUnitDialog(final UnitsResponse unitSelected, final Context context, final Dialog dialog, final ProgressBar newProgressBar, final ProductsResponse product, final String precioIngresado, Button btnAcceptDialog, Button btnCloseDialog) {
+        newProgressBar.setVisibility(View.VISIBLE);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.url_server)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        NewPriceApi request = retrofit.create(NewPriceApi.class);
+        Call<ArrayList<NewPriceResponse>> call = request.getNewPriceRecalculated(product.getId().trim(), unitSelected.getUnidad(), precioIngresado);
+
+        call.enqueue(new Callback<ArrayList<NewPriceResponse>>() {
+            @Override
+            public void onResponse(Call<ArrayList<NewPriceResponse>> call, Response<ArrayList<NewPriceResponse>> response) {
+                if(response != null) {
+                    if(response.body()!=null) {
+                        ArrayList<NewPriceResponse> newPriceReca = response.body();
+
+                        if(newPriceReca.size()>0) {
+                            if(newPriceReca.get(0)!=null && !newPriceReca.get(0).getImporteRecalculado().isEmpty()) {
+                                String priceRecalculated = newPriceReca.get(0).getImporteRecalculado();
+
+                                if(!priceRecalculated.isEmpty()) {
+                                    product.setNuevaUnidad(unitSelected.getUnidad());
+                                    product.setNuevaPresentacion(unitSelected.getPresentacion());
+                                    product.setNuevaCantidad(unitSelected.getStock());
+                                    product.setPrecioRecalculado(String.format(Constants.round_three_decimals, Double.parseDouble(priceRecalculated)));
+                                    product.setNuevoPrecio(product.getPrecio());
+                                    product.setCantidadSolicitada("0");
+                                    refreshItems();
+                                    dialog.dismiss();
+                                }
+                            }
+                        } else {
+                            Log.d(Constants.log_arrow_response, "Lo sentimos, el servidor no ha devuelto el precio.");
+                            Common.showToastMessage(context, "Lo sentimos, el servidor no ha devuelto el precio.");
+                        }
+                        newProgressBar.setVisibility(View.GONE);
+                    } else {
+                        Log.d(Constants.log_arrow_response, "body null:" + response.raw().message());
+                        Common.showToastMessage(context, "Error en el servidor");
+                        newProgressBar.setVisibility(View.GONE);
+                    }
+                } else {
+                    Common.showToastMessage(context, "Error en el servidor");
+                    Log.e(Constants.log_arrow_response, response.message());
+                    newProgressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<NewPriceResponse>> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Common.showToastMessage(context, "Error en el servidor");
+                Log.e(Constants.log_arrow_response, t.toString());
+            }
+        });
     }
 
     private void loadPricesHistory(final RecyclerView rv, String idCliente ,String idProduct) {
@@ -884,17 +1014,27 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
                 if(unitsAdapter!=null && unitsAdapter.getUnitSelected()!=null) {
 
-                    UnitsResponse unitSelected = unitsAdapter.getUnitSelected();
+                    if(Common.isOnline(context)) {
+                        UnitsResponse unitSelected = unitsAdapter.getUnitSelected();
+
+                        if(!product.getNuevoPrecio().isEmpty()) {
+                            getNewPriceRecalculatedFromChangeUnitDialog(unitSelected, context, dialog, productsProgressBar, product, product.getNuevoPrecio(), btnAcceptDialog, btnCloseDialog);
+                        } else {
+                            getNewPriceRecalculatedFromChangeUnitDialog(unitSelected, context, dialog, productsProgressBar, product, product.getPrecio(), btnAcceptDialog, btnCloseDialog);
+                        }
+
+                    }
+
+                    /*UnitsResponse unitSelected = unitsAdapter.getUnitSelected();
                     product.setNuevaUnidad(unitSelected.getUnidad());
                     product.setNuevaPresentacion(unitSelected.getPresentacion());
                     product.setNuevaCantidad(unitSelected.getStock());
-
-
+                    product.setPrecioRecalculado(null);
+                    product.setNuevoPrecio(product.getPrecio());
+                    product.setCantidadSolicitada("0");
                     refreshItems();
-
+                    dialog.dismiss();*/
                 }
-
-                dialog.dismiss();
             }
         });
 

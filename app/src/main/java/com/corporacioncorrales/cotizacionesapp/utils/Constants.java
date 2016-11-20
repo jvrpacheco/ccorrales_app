@@ -31,6 +31,7 @@ public class Constants {
     public static final String url_get_virtual_stock = "api/Stock/stockVirtual";
     public static final String url_check_imei_on_server = "api/IMEI/consultarIMEI";
     public static final String url_get_units = "api/UnidadMedida/consultarunidad";
+    public static final String url_get_new_price = "api/PrecioxUnidad/calculoprecio";
 
 
     public static final String rubro_aluminio_label = "Aluminio";
@@ -94,6 +95,9 @@ public class Constants {
     public static final String correoAdjuntoHeader = "Adjunto";
     public static final String idDocumentoHeader = "idproforma";
     public static final String imeiHeader = "serie";
+    public static final String idUnidadVentaHeader = "Uni_Vta";
+    public static final String precioIngresadoHeader = "Precio_nuevo";
+
 
     public static final String montoTotalMayorALineaDeCredito = "1";
     public static final String montoTotalMenorOIgualALineaDeCredito = "0";
