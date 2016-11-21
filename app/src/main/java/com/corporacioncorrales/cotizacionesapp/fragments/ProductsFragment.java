@@ -78,6 +78,8 @@ public class ProductsFragment extends Fragment {
     @BindView(R.id.productsMainLayout)
     LinearLayout productsMainLayout;
     NavigationView nvMainActivity;
+    @BindView(R.id.spFormaPago)
+    Spinner spFormaPago;
 
     private String TAG = getClass().getCanonicalName();
     private ProgressBar mainProgressBar;
@@ -278,7 +280,6 @@ public class ProductsFragment extends Fragment {
     }
 
     private void loadProductsPerClient(String idClient, String rubroSeleccionado) {
-
         recyclerViewProductos.setHasFixedSize(true);
         mainProgressBar.setVisibility(View.VISIBLE);
 
@@ -365,7 +366,7 @@ public class ProductsFragment extends Fragment {
                 if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
                     if (Integer.valueOf(productSelected.getNuevaCantidad()) > 0) {   //cantidad por unidad
                         if (Integer.valueOf(productSelected.getCantidadSolicitada()) > 0) {
-                            if(Integer.valueOf(productSelected.getNuevaCantidad()) >= Integer.valueOf(productSelected.getCantidadSolicitada())) {
+                            if (Integer.valueOf(productSelected.getNuevaCantidad()) >= Integer.valueOf(productSelected.getCantidadSolicitada())) {
                                 QuotationProductRequest productToSend = new QuotationProductRequest();
                                 productToSend.setArticulo(productSelected.getId());
                                 productToSend.setCantidad(productSelected.getCantidadSolicitada());
@@ -377,7 +378,7 @@ public class ProductsFragment extends Fragment {
                             } else {
                                 Common.showAlertDialogMessage(
                                         labelTipoDocumento,
-                                        String.format("%s %s %s.", "La cantidad solicitada del producto",  productSelected.getId().trim(), "debe ser menor o igual al stock disponible"),
+                                        String.format("%s %s %s.", "La cantidad solicitada del producto", productSelected.getId().trim(), "debe ser menor o igual al stock disponible"),
                                         getActivity()
                                 );
                             }
@@ -477,7 +478,7 @@ public class ProductsFragment extends Fragment {
                                     Singleton.getInstance().getUserCode().trim(),
                                     isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
                                     Singleton.getInstance().getTipoDocumento(),
-                                    "8",
+                                    "263",  //Deposito
                                     tvMontoTotal.getText().toString().trim(),
                                     dataToSend);
                         }
@@ -510,7 +511,7 @@ public class ProductsFragment extends Fragment {
                 if (response != null) {
                     String rp = response.body();
 
-                    if(rp!=null) {
+                    if (rp != null) {
                         Log.d(Constants.log_arrow_response, rp);
                         Common.showToastMessage(getActivity(), rp);
                         // go to Clients view
@@ -543,6 +544,25 @@ public class ProductsFragment extends Fragment {
                 Common.showToastMessage(getActivity(), "Error en el servidor");
             }
         });
+    }
+
+    private void initSpinnerFormaPago(String initialValue) {
+        //ArrayAdapter adapterFormaPago = ArrayAdapter.createFromResource(getActivity(), R.array.array_formas_pago, android.R.layout.simple_list_item_1);
+        ArrayAdapter adapterFormaPago = ArrayAdapter.createFromResource(getActivity(), R.array.array_tipos_doc, android.R.layout.simple_list_item_1);
+
+        spFormaPago.setAdapter(adapterFormaPago);
+
+        if(comeFromHistorial) {
+            if (initialValue != null && !initialValue.isEmpty()) {
+
+            }
+        } else {
+            spFormaPago.setSelection(0);  //Credito
+        }
+    }
+
+    private void getPaymentsOptions() {
+
     }
 
     private void initSpinnerDocType(String initialValue) {

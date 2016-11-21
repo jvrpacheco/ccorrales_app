@@ -113,17 +113,30 @@
                             android:singleLine="true"
                             android:layout_centerVertical="true"/>
                     </LinearLayout>
-
                 </LinearLayout>
 
-                <Spinner
-                    android:id="@+id/spTipoDoc"
-                    android:background="@color/turquesa_claro"
-                    android:popupBackground="@color/turquesa_claro"
-                    android:layout_width="140dp"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="3dp"
-                    android:layout_alignParentRight="true"/>
+                    android:orientation="horizontal"
+                    android:layout_alignParentRight="true">
+                    <Spinner
+                        android:id="@+id/spFormaPago"
+                        android:visibility="gone"
+                        android:background="@color/turquesa_claro"
+                        android:popupBackground="@color/turquesa_claro"
+                        android:layout_width="140dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"/>
+                    <Spinner
+                        android:id="@+id/spTipoDoc"
+                        android:background="@color/turquesa_claro"
+                        android:popupBackground="@color/turquesa_claro"
+                        android:layout_width="140dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="3dp"/>
+                </LinearLayout>
+
             </RelativeLayout>
 
 

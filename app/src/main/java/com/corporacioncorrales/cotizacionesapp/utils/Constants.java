@@ -32,6 +32,7 @@ public class Constants {
     public static final String url_check_imei_on_server = "api/IMEI/consultarIMEI";
     public static final String url_get_units = "api/UnidadMedida/consultarunidad";
     public static final String url_get_new_price = "api/PrecioxUnidad/calculoprecio";
+    public static final String url_get_payment_options = "api/formapago";
 
 
     public static final String rubro_aluminio_label = "Aluminio";
