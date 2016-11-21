@@ -84,16 +84,16 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!user.isEmpty() && !password.isEmpty()) {
 
-            if(!password.equals(getString(R.string.temp_password))) {
+            /*if(!password.equals(getString(R.string.temp_password))) {
                 Common.showToastMessage(LoginActivity.this, getString(R.string.msg_user_or_pass_incorrect));
                 return;
-            }
+            }*/
 
             if(Common.isOnline(this)) {
                 progressBarLogin.setVisibility(View.VISIBLE);
                 enableLoginControls(false);
 
-                Call<LoginResponse> call = request.getUserAccess(user);
+                Call<LoginResponse> call = request.getUserAccess(user,password);
                 call.enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {

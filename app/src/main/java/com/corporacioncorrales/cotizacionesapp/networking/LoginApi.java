@@ -19,7 +19,8 @@ public interface LoginApi {
 
     @GET(Constants.url_user_login)
     Call<LoginResponse> getUserAccess(
-        @Path("user") String user
+            @Query("id") String id,
+            @Query("clave") String clave
     );
 
 }

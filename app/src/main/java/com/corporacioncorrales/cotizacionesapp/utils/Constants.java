@@ -54,7 +54,6 @@ public class Constants {
 
 
     public static final String tipoDoc_factura_label = "Factura";
-    //public static final String tipoDoc_factura = "00";
     public static final String tipoDoc_factura = "1";
     public static final String tipoDoc_proforma_label = "Proforma";
     public static final String tipoDoc_proforma = "2";
@@ -82,6 +81,8 @@ public class Constants {
     public static final String idRubroHeader = "idRubro";
     public static final String idUsuarioHeader = "idUsuario";
     public static final String idSobregiroHeader = "Sobregiro";
+    public static final String formaPagoHeader = "formaPago";
+    public static final String totalHeader = "total";
     public static final String idTipoDocHeader = "TipoDoc";
     public static final String idArticuloHeader = "idArticulo";
     public static final String articuloUnitsHeader = "Articulo";
