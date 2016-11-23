@@ -233,46 +233,48 @@ public class ClientsFragment extends Fragment {
             public void onResponse(Call<ArrayList<ClientsResponse>> call, Response<ArrayList<ClientsResponse>> response) {
 
                 if (response != null && clientsArrayList!=null) {
-
                     clientsArrayList.clear();
                     clientsArrayList = response.body();
 
-                    if (clientsArrayList.size() > 0) {
+                    if(clientsArrayList!=null) {
+                        if (clientsArrayList.size() > 0) {
+                            //guardando primera descarga de clientes
+                            originalClientsArrayList = clientsArrayList;
 
-                        //guardando primera descarga de clientes
-                        originalClientsArrayList = clientsArrayList;
+                            updateTotalOfClients(clientsArrayList.size());
+                            clientsAdapter = new ClientsAdapter(getActivity(), clientsArrayList);
+                            clientsAdapter.notifyDataSetChanged();
+                            recyclerViewClients.setAdapter(clientsAdapter);
+                            StaggeredGridLayoutManager mStaggeredGridManager3 = new StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL);
+                            recyclerViewClients.setLayoutManager(mStaggeredGridManager3);
 
-                        updateTotalOfClients(clientsArrayList.size());
+                            recyclerViewClients.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+                                @Override
+                                public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                                    return false;
+                                }
 
-                        clientsAdapter = new ClientsAdapter(getActivity(), clientsArrayList);
-                        clientsAdapter.notifyDataSetChanged();
-                        recyclerViewClients.setAdapter(clientsAdapter);
+                                @Override
+                                public void onTouchEvent(RecyclerView rv, MotionEvent e) {
 
-                        StaggeredGridLayoutManager mStaggeredGridManager3 = new StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL);
-                        recyclerViewClients.setLayoutManager(mStaggeredGridManager3);
+                                }
 
-                        recyclerViewClients.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-                            @Override
-                            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                                return false;
-                            }
+                                @Override
+                                public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
-                            @Override
-                            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+                                }
+                            });
 
-                            }
-
-                            @Override
-                            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-                            }
-                        });
-
+                        } else {
+                            Log.d(Constants.log_arrow, "No se encontraron clientes para este usuario");
+                            Common.showToastMessage(getActivity(), "No se encontraron clientes para este usuario");
+                            tvTotalClientes.setText("0");
+                        }
                     } else {
-                        Log.d(Constants.log_arrow, "No se encontraron clientes para este usuario");
-                        Common.showToastMessage(getActivity(), "No se encontraron clientes para este usuario");
-                        tvTotalClientes.setText("0");
+                        Log.d(Constants.log_arrow, "Error al consultar la data.");
+                        Common.showToastMessage(getActivity(), "Error al consultar la data.");
                     }
+
                     mainProgressBar.setVisibility(View.GONE);
                     clientsMainLayout.setEnabled(true);
 
