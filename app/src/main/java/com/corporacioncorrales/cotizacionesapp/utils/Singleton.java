@@ -1,6 +1,9 @@
 package com.corporacioncorrales.cotizacionesapp.utils;
 
 import com.corporacioncorrales.cotizacionesapp.model.ClientsResponse;
+import com.corporacioncorrales.cotizacionesapp.model.PaymentsResponse;
+
+import java.util.ArrayList;
 
 /**
  * Created by victor on 8/11/16.
@@ -15,7 +18,28 @@ public class Singleton {
     private String tipoDocumento;
     private ClientsResponse clientSelected;
     private String idclientSelected;
+    private ArrayList<PaymentsResponse> paymentTypes;
+    private String idPaymentTypeSelected;
 
+
+    private Singleton() {
+    }
+
+    public ArrayList<PaymentsResponse> getPaymentTypes() {
+        return paymentTypes;
+    }
+
+    public void setPaymentTypes(ArrayList<PaymentsResponse> paymentTypes) {
+        this.paymentTypes = paymentTypes;
+    }
+
+    public String getIdPaymentTypeSelected() {
+        return idPaymentTypeSelected;
+    }
+
+    public void setIdPaymentTypeSelected(String idPaymentTypeSelected) {
+        this.idPaymentTypeSelected = idPaymentTypeSelected;
+    }
 
     public String getTipoDocumento() {
         return tipoDocumento;
@@ -23,9 +47,6 @@ public class Singleton {
 
     public void setTipoDocumento(String tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
-    }
-
-    private Singleton() {
     }
 
     public String getSaldoDisponibleCliente() {

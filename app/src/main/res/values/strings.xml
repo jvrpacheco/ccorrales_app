@@ -61,9 +61,9 @@
     </string-array>
 
     <string-array name="array_tipos_doc">
-        <item>Factura</item>
-        <item>Proforma</item>
-        <item>Preventa</item>
+        <item>FACTURA</item>
+        <item>PROFORMA</item>
+        <item>PREVENTA</item>
         <!--<item>Proforma</item>
         <item>Factura</item>
         <item>Preventa</item>-->

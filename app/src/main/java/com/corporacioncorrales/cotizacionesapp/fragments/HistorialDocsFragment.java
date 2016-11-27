@@ -134,18 +134,9 @@ public class HistorialDocsFragment extends Fragment {
     private void getDocumentsHistory(String idUsuario, String idCliente, String idRubro, String idEstadoDoc, String fechaInicio, String fechaFin) {
         mainProgressBar.setVisibility(View.VISIBLE);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.url_server)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.url_server).addConverterFactory(GsonConverterFactory.create()).build();
         DocumentsApi request = retrofit.create(DocumentsApi.class);
-        Call<ArrayList<DocumentsResponse>> call = request.getDocumentsHistory(idUsuario,
-                idCliente,
-                idRubro,
-                idEstadoDoc,
-                fechaInicio,
-                fechaFin);
+        Call<ArrayList<DocumentsResponse>> call = request.getDocumentsHistory(idUsuario, idCliente, idRubro, idEstadoDoc, fechaInicio, fechaFin);
 
         call.enqueue(new Callback<ArrayList<DocumentsResponse>>() {
             @Override

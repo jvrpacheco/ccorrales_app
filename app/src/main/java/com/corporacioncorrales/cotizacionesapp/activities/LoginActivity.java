@@ -14,10 +14,15 @@ import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.model.LoginResponse;
+import com.corporacioncorrales.cotizacionesapp.model.PaymentsResponse;
 import com.corporacioncorrales.cotizacionesapp.networking.LoginApi;
+import com.corporacioncorrales.cotizacionesapp.networking.PaymentsApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -84,11 +89,6 @@ public class LoginActivity extends AppCompatActivity {
 
         if (!user.isEmpty() && !password.isEmpty()) {
 
-            /*if(!password.equals(getString(R.string.temp_password))) {
-                Common.showToastMessage(LoginActivity.this, getString(R.string.msg_user_or_pass_incorrect));
-                return;
-            }*/
-
             if(Common.isOnline(this)) {
                 progressBarLogin.setVisibility(View.VISIBLE);
                 enableLoginControls(false);
@@ -102,14 +102,12 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(Constants.log_arrow_response, response.body().getCodUsu());
 
                             if(response.body().getFocoUsu().equals(Constants.allowEnterToApp)) {
-
                                 Singleton.getInstance().setUser(user);
                                 Singleton.getInstance().setUserCode(response.body().getCodUsu());
                                 Log.d(Constants.log_arrow, response.body().getCodUsu());
                                 Log.d(Constants.log_arrow + " admitido", Singleton.getInstance().getUser());
-                                Common.showToastMessage(getApplicationContext(), "Bienvenido " + user + "!");
-                                enterToApp(user);
-                                progressBarLogin.setVisibility(View.GONE);
+
+                                getPaymentTypes(progressBarLogin, user);
 
                             } else {
                                 Log.d(Constants.log_arrow + " no admitido", Singleton.getInstance().getUser());
@@ -141,9 +139,60 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void getPaymentTypes(final ProgressBar progressBar, final String user) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.url_server).addConverterFactory(GsonConverterFactory.create()).build();
+        PaymentsApi request = retrofit.create(PaymentsApi.class);
+
+        Call<ArrayList<PaymentsResponse>> call = request.getPaymentOptions();
+        call.enqueue(new Callback<ArrayList<PaymentsResponse>>() {
+            @Override
+            public void onResponse(Call<ArrayList<PaymentsResponse>> call, Response<ArrayList<PaymentsResponse>> response) {
+                if(response!=null) {
+
+                    if(response.body()!= null) {
+                        if(response.body().size()>0) {
+                            //saving Payment Types from server
+                            ArrayList<PaymentsResponse> paymentTypes = new ArrayList<PaymentsResponse>(response.body());
+                            Singleton.getInstance().setPaymentTypes(paymentTypes);
+
+                            Common.showToastMessage(getApplicationContext(), "Bienvenido " + user + "!");
+                            enterToApp(user);
+
+                        } else {
+                            Common.showToastMessage(LoginActivity.this, "Error, el servidor no ha enviado algún tipo de pago.");
+                        }
+                        progressBar.setVisibility(View.GONE);
+
+                    } else {
+                        Log.d(Constants.log_arrow, "Error al consultar la data.");
+                        Common.showToastMessage(LoginActivity.this, "Error al consultar la data.");
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                } else {
+                    Log.e(Constants.log_arrow_response, "response null");
+                    Common.showToastMessage(LoginActivity.this, "Error en el servidor");
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<PaymentsResponse>> call, Throwable t) {
+                Log.e(Constants.log_arrow_failure, t.toString());
+                Common.showToastMessage(LoginActivity.this, "Error en el servidor");
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void savePaymentTypes() {
+        HashMap hm = new HashMap();
+        hm.put("", "");
+    }
+
     private void enterToApp(String user) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("userFromLogin",user);
+        intent.putExtra("userFromLogin", user);
         startActivity(intent);
     }
 

@@ -37,8 +37,21 @@ public class DocumentDetailResponse {
     @Expose
     private String montoTotalEnDocumento;
 
-    //3 campos de la unidad
+    @SerializedName("Unidad")
+    @Expose
+    private String idUnidad;
 
+    @SerializedName("Unidadtexto")
+    @Expose
+    private String nombreUnidad;
+
+    @SerializedName("stock")
+    @Expose
+    private String stockUnidad;
+
+    @SerializedName("precioxunidad")
+    @Expose
+    private String precioPorUnidad;
 
     public String getIdProducto() {
         return idProducto.trim();
@@ -96,4 +109,35 @@ public class DocumentDetailResponse {
         this.montoTotalEnDocumento = montoTotalEnDocumento;
     }
 
+    public String getIdUnidad() {
+        return idUnidad;
+    }
+
+    public void setIdUnidad(String idUnidad) {
+        this.idUnidad = idUnidad;
+    }
+
+    public String getNombreUnidad() {
+        return nombreUnidad;
+    }
+
+    public void setNombreUnidad(String nombreUnidad) {
+        this.nombreUnidad = nombreUnidad;
+    }
+
+    public String getStockUnidad() {
+        return stockUnidad;
+    }
+
+    public void setStockUnidad(String stockUnidad) {
+        this.stockUnidad = stockUnidad;
+    }
+
+    public String getPrecioPorUnidad() {
+        return precioPorUnidad;
+    }
+
+    public void setPrecioPorUnidad(String precioPorUnidad) {
+        this.precioPorUnidad = precioPorUnidad;
+    }
 }

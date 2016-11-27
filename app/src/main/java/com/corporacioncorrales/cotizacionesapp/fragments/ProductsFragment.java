@@ -28,6 +28,7 @@ import com.corporacioncorrales.cotizacionesapp.activities.MainActivity;
 import com.corporacioncorrales.cotizacionesapp.adapters.ProductsAdapter;
 import com.corporacioncorrales.cotizacionesapp.adapters.QuotationAdapter;
 import com.corporacioncorrales.cotizacionesapp.model.DocumentDetailResponse;
+import com.corporacioncorrales.cotizacionesapp.model.PaymentsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.QuotationProductRequest;
 import com.corporacioncorrales.cotizacionesapp.networking.DocumentsApi;
@@ -38,6 +39,7 @@ import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,6 +92,8 @@ public class ProductsFragment extends Fragment {
     private String rubroSeleccionado;
     private String idDocumento;
     private String tipoDocumento;
+    private String idFormaDePago;
+    private String nombreFormaDePago;
     private ArrayList<ProductsResponse> productsArrayList;
     private ArrayList<ProductsResponse> originalProductsArrayList;
     private ArrayList<DocumentDetailResponse> productsFromDocument;
@@ -130,10 +134,12 @@ public class ProductsFragment extends Fragment {
             cliente_saldoDisponible = args.getString("cliente_saldoDisponible");
             rubroSeleccionado = args.getString("rubroSeleccionado");
 
-            //only when coming from HistorialDocsFragment
+            //when coming from HistorialDocsFragment...
             if (args.containsKey("tipoDocumento") && args.containsKey("idDocumento")) {
                 tipoDocumento = args.getString("tipoDocumento");
                 idDocumento = args.getString("idDocumento");
+                idFormaDePago = args.getString("idFormaDePago");
+                nombreFormaDePago = args.getString("nombreFormaDePago");
                 comeFromHistorial = true;
             }
 
@@ -165,17 +171,20 @@ public class ProductsFragment extends Fragment {
         if (fromOnCreate) {
             if (comeFromHistorial) {
                 if (Common.isOnline(getActivity())) {
+                    initSpinnerFormaPago(idFormaDePago);
                     initSpinnerDocType(tipoDocumento);
                     //rebuildFromQuotation();
                     loadProductsPerClient(client_id, rubroSeleccionado);
                 }
             } else {
                 if (Common.isOnline(getActivity())) {
+                    initSpinnerFormaPago(Constants.idTipoDePagoDeposito);   //SEGUN ESPECIFICACION, 'DEPOSITO' ES EL TIPO DE PAGO POR DEFECTO
                     initSpinnerDocType(Constants.tipoDoc_proforma);
                     createNewQuotation();
                     loadProductsPerClient(client_id, rubroSeleccionado);
                 }
             }
+
             fromOnCreate = false;
         }
     }
@@ -196,54 +205,78 @@ public class ProductsFragment extends Fragment {
                     productsFromDocument.clear();
                     productsFromDocument = response.body();
 
-                    if (productsFromDocument.size() > 0) {  // el detalle siempre contiene productos
+                    if(productsFromDocument!=null) {
+                        if (productsFromDocument.size() > 0) {  // el detalle siempre contiene productos
+                            for (int i = 0; i < productsFromDocument.size(); i++) {
+                                DocumentDetailResponse productFromDocument = productsFromDocument.get(i);
 
-                        for (int i = 0; i < productsFromDocument.size(); i++) {
-                            DocumentDetailResponse productFromDocument = productsFromDocument.get(i);
+                                for (int j = 0; j < originalProductsArrayList.size(); j++) {
+                                    ProductsResponse actualProduct = originalProductsArrayList.get(j);
 
-                            for (int j = 0; j < originalProductsArrayList.size(); j++) {
-                                ProductsResponse actualProduct = originalProductsArrayList.get(j);
+                                    if (actualProduct.getId().trim().equals(productFromDocument.getIdProducto().trim())) {
+                                        //actualProduct.setPrecio(productFromDocument.getPrecioListaActual());  //no es necesario, siempre muestra el actual
 
-                                if (actualProduct.getId().trim().equals(productFromDocument.getIdProducto().trim())) {
-                                    //actualProduct.setPrecio(productFromDocument.getPrecioListaActual());  //no es necesario, siempre muestra el actual
+                                        //verificar si el precio ingresado por el vendedor es menor al precio inferior actual
+                                        String cp = Common.comparePrices(Double.valueOf(productFromDocument.getPrecioIngresadoPorVendedor()), Double.valueOf(actualProduct.getPre_inferior()));
+                                        if (cp.equals(Constants.comparar_esMayor) || cp.equals(Constants.comparar_esIgual)) {
+                                            actualProduct.setEsPrecioMenorAlLimite(false);
+                                        } else if (cp.equals(Constants.comparar_esMenor)) {
+                                            actualProduct.setEsPrecioMenorAlLimite(true);
+                                        }
 
-                                    //verificar si el precio ingresado por el vendedor es menor al precio inferior actual
-                                    String cp = Common.comparePrices(Double.valueOf(productFromDocument.getPrecioIngresadoPorVendedor()), Double.valueOf(actualProduct.getPre_inferior()));
-                                    if (cp.equals(Constants.comparar_esMayor) || cp.equals(Constants.comparar_esIgual)) {
-                                        actualProduct.setEsPrecioMenorAlLimite(false);
-                                    } else if (cp.equals(Constants.comparar_esMenor)) {
-                                        actualProduct.setEsPrecioMenorAlLimite(true);
+                                        //Precio recalculado
+                                        actualProduct.setPrecioRecalculado(productFromDocument.getPrecioPorUnidad());
+
+                                        //verificar si cambio el precio de lista actual con el que se uso al momento de generar el documento
+                                        if (!productFromDocument.getPrecioListaActual().equals(productFromDocument.getPrecioListaAnterior())) {
+                                            //mostrar icono que indica esta diferencia
+                                        } else {
+                                            //ocultar icono que indica esta diferencia
+                                        }
+
+                                        //unidad
+                                        if(productFromDocument.getIdUnidad()!=null && !productFromDocument.getIdUnidad().isEmpty()) {
+                                            actualProduct.setNuevaUnidad(productFromDocument.getIdUnidad());
+                                        } else {
+                                            //actualProduct.setNuevaUnidad(actualProduct.getIdUnidad());
+                                        }
+
+                                        if(productFromDocument.getNombreUnidad()!=null && !productFromDocument.getNombreUnidad().isEmpty()) {
+                                            actualProduct.setNuevaPresentacion(productFromDocument.getNombreUnidad());
+                                        }
+
+                                        if(productFromDocument.getStockUnidad()!=null && !productFromDocument.getStockUnidad().isEmpty()) {
+                                            actualProduct.setNuevaCantidad(productFromDocument.getStockUnidad());
+                                        }
+
+                                        //Cantidad Solicitada
+                                        actualProduct.setCantidadSolicitada(productFromDocument.getCantidadSolicitada());
+
+                                        actualProduct.setSelected(true);
+                                        productsToSetInQuotation.add(actualProduct);
+                                        //break;
                                     }
-                                    actualProduct.setNuevoPrecio(productFromDocument.getPrecioIngresadoPorVendedor());
-
-                                    //verificar si cambio el precio de lista actual con el que se uso al momento de generar el documento
-                                    if (!productFromDocument.getPrecioListaActual().equals(productFromDocument.getPrecioListaAnterior())) {
-                                        //mostrar icono que indica esta diferencia
-                                    } else {
-                                        //ocultar icono que indica esta diferencia
-                                    }
-
-                                    actualProduct.setCantidadSolicitada(productFromDocument.getCantidadSolicitada());
-                                    actualProduct.setSelected(true);
-                                    productsToSetInQuotation.add(actualProduct);
-                                    //break;
                                 }
+
+                            }
+
+                            if (productsToSetInQuotation.size() > 0) {
+                                //1.
+                                rebuildFromQuotation(productsToSetInQuotation);
+                                //2.
+                                productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter, mainProgressBar);
+                                recyclerViewProductos.setAdapter(productsAdapter);
+                                StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                                recyclerViewProductos.setLayoutManager(sgm);
+                                //3.
+                                quotationAdapter.refreshItems();
                             }
 
                         }
 
-                        if (productsToSetInQuotation.size() > 0) {
-                            //1.
-                            rebuildFromQuotation(productsToSetInQuotation);
-                            //2.
-                            productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter);
-                            recyclerViewProductos.setAdapter(productsAdapter);
-                            StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-                            recyclerViewProductos.setLayoutManager(sgm);
-                            //3.
-                            quotationAdapter.refreshItems();
-                        }
-
+                    } else {
+                        Common.showToastMessage(getActivity(), "Error en el servidor");
+                        mainProgressBar.setVisibility(View.GONE);
                     }
 
                 } else {
@@ -302,10 +335,10 @@ public class ProductsFragment extends Fragment {
 
                         if (comeFromHistorial) {
                             if (Common.isOnline(getActivity())) {
-                                getProductsFromDocumentDetail(idDocumento);
+                                getProductsFromDocumentDetail(idDocumento.trim());
                             }
                         } else {
-                            productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter);
+                            productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter, mainProgressBar);
                             recyclerViewProductos.setAdapter(productsAdapter);
                             StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                             recyclerViewProductos.setLayoutManager(sgm);
@@ -370,10 +403,10 @@ public class ProductsFragment extends Fragment {
                                 QuotationProductRequest productToSend = new QuotationProductRequest();
                                 productToSend.setArticulo(productSelected.getId());
                                 productToSend.setCantidad(productSelected.getCantidadSolicitada());
-                                productToSend.setPrecio_real(productSelected.getPrecio());
+                                productToSend.setPrecio_real(productSelected.getPrecioProductResponse());
                                 productToSend.setPrecio(productSelected.getNuevoPrecio());
                                 productToSend.setMas_bajo_que_limite(productSelected.getEsPrecioMenorAlLimite() ? "1" : "0");
-                                productToSend.setIdUnidad(productSelected.getIdUnidad());
+                                productToSend.setIdUnidad(productSelected.getNuevaUnidad());
                                 dataToSend.add(productToSend);
                             } else {
                                 Common.showAlertDialogMessage(
@@ -402,9 +435,10 @@ public class ProductsFragment extends Fragment {
                         QuotationProductRequest productToSend = new QuotationProductRequest();
                         productToSend.setArticulo(productSelected.getId());
                         productToSend.setCantidad(productSelected.getCantidadSolicitada());
-                        productToSend.setPrecio_real(productSelected.getPrecio());
+                        productToSend.setPrecio_real(productSelected.getPrecioProductResponse());
                         productToSend.setPrecio(productSelected.getNuevoPrecio());
                         productToSend.setMas_bajo_que_limite(productSelected.getEsPrecioMenorAlLimite() ? "1" : "0");
+                        productToSend.setIdUnidad(productSelected.getNuevaUnidad());
                         dataToSend.add(productToSend);
                     } else {
                         Common.showAlertDialogMessage(
@@ -455,7 +489,7 @@ public class ProductsFragment extends Fragment {
                 filteredProductsList = originalProductsArrayList;
             }
 
-            productsAdapter = new ProductsAdapter(getActivity(), filteredProductsList, quotationAdapter);
+            productsAdapter = new ProductsAdapter(getActivity(), filteredProductsList, quotationAdapter, mainProgressBar);
             recyclerViewProductos.setAdapter(productsAdapter);
             StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
             recyclerViewProductos.setLayoutManager(sgm);
@@ -478,7 +512,7 @@ public class ProductsFragment extends Fragment {
                                     Singleton.getInstance().getUserCode().trim(),
                                     isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
                                     Singleton.getInstance().getTipoDocumento(),
-                                    "263",  //Deposito
+                                    Singleton.getInstance().getIdPaymentTypeSelected(),
                                     tvMontoTotal.getText().toString().trim(),
                                     dataToSend);
                         }
@@ -495,7 +529,7 @@ public class ProductsFragment extends Fragment {
         alert.show();
     }
 
-    private void sendQuotation(String idCliente, String idRubro, String idUsuario, String sobregiro, String tipoDocumento, String formaPago, String montoTotal, ArrayList<QuotationProductRequest> data) {
+    private void sendQuotation(String idCliente, String idRubro, String idUsuario, String sobregiro, String tipoDocumento, String idFormaPago, String montoTotal, ArrayList<QuotationProductRequest> data) {
         mainProgressBar.setVisibility(View.VISIBLE);
         productsMainLayout.setEnabled(false);
         btnEnviarDocumento.setEnabled(false);
@@ -503,7 +537,7 @@ public class ProductsFragment extends Fragment {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.url_server).addConverterFactory(GsonConverterFactory.create()).build();
         QuotationApi request = retrofit.create(QuotationApi.class);
 
-        Call<String> call = request.sendQuotation(idCliente, idRubro, idUsuario, sobregiro, tipoDocumento, formaPago, montoTotal, data);
+        Call<String> call = request.sendQuotation(idCliente, idRubro, idUsuario, sobregiro, tipoDocumento, idFormaPago, montoTotal, data);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -546,23 +580,51 @@ public class ProductsFragment extends Fragment {
         });
     }
 
-    private void initSpinnerFormaPago(String initialValue) {
-        //ArrayAdapter adapterFormaPago = ArrayAdapter.createFromResource(getActivity(), R.array.array_formas_pago, android.R.layout.simple_list_item_1);
-        ArrayAdapter adapterFormaPago = ArrayAdapter.createFromResource(getActivity(), R.array.array_tipos_doc, android.R.layout.simple_list_item_1);
+    private void initSpinnerFormaPago(String idInitialPaymentType) {
+        boolean existsIdInitialPaymentType = false;
+        int positionInitialPaymentType = -1;
+        ArrayList<PaymentsResponse> paymentTypes = Singleton.getInstance().getPaymentTypes();  //para grabar, se valido que tenga al menos un tipo de pago
 
-        spFormaPago.setAdapter(adapterFormaPago);
+        if(paymentTypes!=null) {
+            final ArrayList<String> idPaymentsType = new ArrayList<String>();
+            final ArrayList<String> namePaymentsType = new ArrayList<String>();
 
-        if(comeFromHistorial) {
-            if (initialValue != null && !initialValue.isEmpty()) {
+            for(int i=0; i<paymentTypes.size(); i++) {
+                idPaymentsType.add(paymentTypes.get(i).getIdPaymentType());
+                namePaymentsType.add(paymentTypes.get(i).getPaymentType());
 
+                if(paymentTypes.get(i).getIdPaymentType().equals(idInitialPaymentType)) {
+                    existsIdInitialPaymentType = true;
+                    positionInitialPaymentType = i;
+                }
             }
-        } else {
-            spFormaPago.setSelection(0);  //Credito
+
+            ArrayAdapter adapterFormaPago = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, namePaymentsType);
+            spFormaPago.setAdapter(adapterFormaPago);
+
+            if(existsIdInitialPaymentType && positionInitialPaymentType>0) {
+                spFormaPago.setSelection(positionInitialPaymentType);  //VERIFICAR QUE EXISTA 'DEPOSITO' EN LO QUE TRAJO EL SERVER, DE LO CONTRARIO MOSTRAR EL PRIMERO QUE VENGA
+            } else {
+                spFormaPago.setSelection(0); //sino encuentra el id inicial en la lista selecciona el primero por defecto
+            }
+
+            spFormaPago.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    for(int j=0; j<namePaymentsType.size(); j++) {
+                        if(namePaymentsType.get(j).equals(adapterView.getItemAtPosition(i).toString())) {
+                            Singleton.getInstance().setIdPaymentTypeSelected(idPaymentsType.get(i));
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
         }
-    }
-
-    private void getPaymentsOptions() {
-
     }
 
     private void initSpinnerDocType(String initialValue) {

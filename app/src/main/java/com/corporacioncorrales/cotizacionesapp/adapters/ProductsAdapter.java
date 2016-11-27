@@ -22,7 +22,9 @@ import android.widget.TextView;
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
+import com.corporacioncorrales.cotizacionesapp.model.UnitsResponse;
 import com.corporacioncorrales.cotizacionesapp.networking.ProductsApi;
+import com.corporacioncorrales.cotizacionesapp.networking.UnitsApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.squareup.picasso.Picasso;
@@ -45,11 +47,13 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     QuotationAdapter quotationAdapter;
     Context mContext;
     private ProgressBar progressBar;
+    private ProgressBar mainProgressBar;
 
-    public ProductsAdapter(Context mContext, ArrayList<ProductsResponse> productsList, QuotationAdapter quotationAdapter) {
+    public ProductsAdapter(Context mContext, ArrayList<ProductsResponse> productsList, QuotationAdapter quotationAdapter, ProgressBar mainProgressBar) {
         this.mContext = mContext;
         this.productsList = productsList;
         this.quotationAdapter = quotationAdapter;
+        this.mainProgressBar = mainProgressBar;
         productsSelectedList = new ArrayList<>();
     }
 
@@ -70,7 +74,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
         //*************************
         if(product.getNuevoPrecio()==null) {
-            product.setNuevoPrecio(product.getPrecio());
+            product.setNuevoPrecio(product.getPrecioProductResponse());
         }
 
         if(product.getCantidadSolicitada()==null) {
@@ -106,11 +110,13 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                     productsSelectedList.remove(product);
                     quotationAdapter.removeItem(product);
                 } else {
-                    product.setSelected(true);
+                    /*product.setSelected(true);
                     holder.ivCheck.setVisibility(View.VISIBLE);
                     productsSelectedList.add(product);
                     Log.d("Producto selecccionado", product.toString());
-                    quotationAdapter.addItem(quotationAdapter.getItemCount(), product);
+                    quotationAdapter.addItem(quotationAdapter.getItemCount(), product);*/
+
+                    getUpdatedStockPerUnit(mContext, mainProgressBar, holder, product);
                 }
 
             Log.d(Constants.log_arrow, String.valueOf(productsSelectedList.size()));
@@ -195,6 +201,67 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
+    }
+
+    private void getUpdatedStockPerUnit(final Context context, final ProgressBar newProgressBar, final ProductsViewHolder holder, final ProductsResponse product) {
+        newProgressBar.setVisibility(View.VISIBLE);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.url_server)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UnitsApi request = retrofit.create(UnitsApi.class);
+        Call<ArrayList<UnitsResponse>> call = request.getUnits(product.getId().trim());
+
+        call.enqueue(new Callback<ArrayList<UnitsResponse>>() {
+            @Override
+            public void onResponse(Call<ArrayList<UnitsResponse>> call, Response<ArrayList<UnitsResponse>> response) {
+
+                if(response != null) {
+                    ArrayList<UnitsResponse> unitsPerArticleList = response.body();
+                    if(unitsPerArticleList.size()>0) {
+
+                        for(int i=0; i<unitsPerArticleList.size(); i++) {
+                            UnitsResponse unitAvailable = unitsPerArticleList.get(i);
+
+                            if(unitAvailable.getUnidad()!=null && !unitAvailable.getUnidad().isEmpty()) {
+                                if(unitAvailable.getUnidad().equals(product.getIdUnidad())) {
+                                    product.setNuevaUnidad(unitAvailable.getUnidad());
+                                    product.setNuevaPresentacion(unitAvailable.getPresentacion());
+                                    product.setNuevaCantidad(unitAvailable.getStock());
+
+                                    product.setSelected(true);
+                                    holder.ivCheck.setVisibility(View.VISIBLE);
+                                    productsSelectedList.add(product);
+                                    Log.d("Producto selecccionado", product.toString());
+                                    quotationAdapter.addItem(quotationAdapter.getItemCount(), product);
+
+                                    break;
+                                }
+                            }
+
+                        }
+
+                    } else {
+                        Log.d(Constants.log_arrow_response, "No se encontro stock virtual para este producto");
+                        Common.showToastMessageShort(context, "No se encontro stock virtual para este producto");
+                    }
+                    newProgressBar.setVisibility(View.GONE);
+
+                } else {
+                    Common.showToastMessage(context, "Error en el servidor");
+                    Log.e(Constants.log_arrow_response, response.message());
+                    newProgressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<UnitsResponse>> call, Throwable t) {
+                newProgressBar.setVisibility(View.GONE);
+                Common.showToastMessage(context, "Error en el servidor");
+                Log.e(Constants.log_arrow_response, t.toString());
+            }
+        });
     }
 
     private void getZoomProductImage(String idProduct, final ImageView imageView) {

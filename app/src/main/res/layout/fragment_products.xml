@@ -122,7 +122,6 @@
                     android:layout_alignParentRight="true">
                     <Spinner
                         android:id="@+id/spFormaPago"
-                        android:visibility="gone"
                         android:background="@color/turquesa_claro"
                         android:popupBackground="@color/turquesa_claro"
                         android:layout_width="140dp"

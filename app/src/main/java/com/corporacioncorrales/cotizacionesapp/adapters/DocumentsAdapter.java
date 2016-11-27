@@ -128,7 +128,9 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
                             document.getLinea_disponible(),
                             document.getIdRubroDocumento(),
                             document.getIdDocumento(),
-                            document.getIdTipoDocumento());
+                            document.getIdTipoDocumento(),
+                            document.getIdFormaDePago(),
+                            document.getNombreFormaDePago());
                 }
             }
         });
@@ -139,7 +141,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         return documentsList.size();
     }
 
-    private void loadProductsOfDocument(FragmentActivity mContext, String idCliente, String razonSocial, String saldoDisponible, String rubroSeleccionado, String idDocumento, String tipoDocumento) {
+    private void loadProductsOfDocument(FragmentActivity mContext, String idCliente, String razonSocial, String saldoDisponible,
+                                        String rubroSeleccionado, String idDocumento, String tipoDocumento, String idFormaDePago, String nombreFormaDePago) {
         ProductsFragment pf = new ProductsFragment();
         Bundle bundle = new Bundle();
         bundle.putString("cliente_id", idCliente);
@@ -148,6 +151,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         bundle.putString("rubroSeleccionado", rubroSeleccionado);
         bundle.putString("idDocumento", idDocumento);
         bundle.putString("tipoDocumento", tipoDocumento);
+        bundle.putString("idFormaDePago", idFormaDePago);
+        bundle.putString("nombreFormaDePago", nombreFormaDePago);
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);

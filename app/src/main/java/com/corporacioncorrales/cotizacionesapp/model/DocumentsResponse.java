@@ -72,7 +72,30 @@ public class DocumentsResponse {
     @Expose
     private String linea_disponible;
 
+    @SerializedName("formapago")
+    @Expose
+    private String idFormaDePago;
 
+    @SerializedName("nombrefp")
+    @Expose
+    private String nombreFormaDePago;
+
+
+    public String getIdFormaDePago() {
+        return idFormaDePago;
+    }
+
+    public void setIdFormaDePago(String idFormaDePago) {
+        this.idFormaDePago = idFormaDePago;
+    }
+
+    public String getNombreFormaDePago() {
+        return nombreFormaDePago;
+    }
+
+    public void setNombreFormaDePago(String nombreFormaDePago) {
+        this.nombreFormaDePago = nombreFormaDePago;
+    }
 
     public String getIdDocumento() {
         return idDocumento;
