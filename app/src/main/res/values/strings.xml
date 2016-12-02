@@ -18,6 +18,8 @@
 
     <string name="refrescar">REFRESCAR</string>
 
+    <string name="dias_de_validez_label">Dias de validez: </string>
+
     //Messages
     <string name="msg_enter_user_and_password">Por favor ingrese usuario y clave.</string>
     <string name="temp_password">123</string>
@@ -47,6 +49,11 @@
     <string name="select_client_tittle">SELECCIONE CLIENTE</string>
     //dialog Unidad de Venta
     <string name="unidad_venta_tittle">UNIDAD DE VENTA</string>
+    //dialog maximo de dias
+    <string name="nro_dias_maximo">El máximo de días permitidos para este cliente es</string>
+    <string name="nro_dias_dentro_del_rango">Número de días permitido.</string>
+    <string name="nro_dias_fuera_del_rango">Número de días no permitido</string>
+    <string name="nro_dias_ingresado_vacio">Por favor ingrese el número de días.</string>
 
     <string-array name="array_rubros">
         <item>Vidrio</item>

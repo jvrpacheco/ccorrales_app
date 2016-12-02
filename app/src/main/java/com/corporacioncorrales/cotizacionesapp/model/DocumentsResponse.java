@@ -68,6 +68,10 @@ public class DocumentsResponse {
     @Expose
     private String labelEstadoDocumento;
 
+    @SerializedName("linea_credito")
+    @Expose
+    private String linea_total;
+
     @SerializedName("linea_disponible")
     @Expose
     private String linea_disponible;
@@ -80,14 +84,26 @@ public class DocumentsResponse {
     @Expose
     private String nombreFormaDePago;
 
-    @SerializedName("dias")
+    @SerializedName("dias_max")
     @Expose
     private String dias;
 
+    @SerializedName("dias")
+    @Expose
+    private String diasEscogidos;
 
+
+
+    public String getDiasEscogidos() {
+        return diasEscogidos;
+    }
+
+    public void setDiasEscogidos(String diasEscogidos) {
+        this.diasEscogidos = diasEscogidos;
+    }
 
     public String getDias() {
-        return dias;
+        return dias.trim();
     }
 
     public void setDias(String dias) {
@@ -245,4 +261,20 @@ public class DocumentsResponse {
         this.linea_disponible = linea_disponible;
     }
 
+    public String getLinea_total() {
+        String linea = Constants.Empty;
+        try{
+            if(linea_total.contains(",")) {
+                linea_total = linea_total.replace(",", ".");
+                linea = String.format(Constants.round_two_decimals, Double.valueOf(linea_total));
+            }
+        } catch (Exception e) {
+            Log.e(Constants.log_arrow_error, e.toString());
+        }
+        return linea;
+    }
+
+    public void setLinea_total(String linea_total) {
+        this.linea_total = linea_total;
+    }
 }

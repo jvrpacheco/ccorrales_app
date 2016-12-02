@@ -219,7 +219,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
                 if(response != null) {
                     ArrayList<UnitsResponse> unitsPerArticleList = response.body();
-                    if(unitsPerArticleList.size()>0) {
+                    if(unitsPerArticleList!=null && unitsPerArticleList.size()>0) {
 
                         for(int i=0; i<unitsPerArticleList.size(); i++) {
                             UnitsResponse unitAvailable = unitsPerArticleList.get(i);
@@ -280,17 +280,23 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                 if(response != null) {
                     ProductsResponse product = response.body();
 
-                    if(!product.getFoto().isEmpty()) {
-                        Picasso.with(mContext)
-                                .load(product.getFoto())
-                                .placeholder(R.drawable.marca3_grande1)
-                                .error(R.drawable.marca3_grande1)
-                                .centerInside()
-                                .fit()
-                                .into(imageView);
+                    if(product!= null) {
+                        if(!product.getFoto().isEmpty()) {
+                            Picasso.with(mContext)
+                                    .load(product.getFoto())
+                                    .placeholder(R.drawable.marca3_grande1)
+                                    .error(R.drawable.marca3_grande1)
+                                    .centerInside()
+                                    .fit()
+                                    .into(imageView);
+                        } else {
+                            imageView.setImageResource(R.drawable.marca3_grande1);
+                        }
                     } else {
-                        imageView.setImageResource(R.drawable.marca3_grande1);
+                        Log.d(Constants.log_arrow, "Error al consultar la data.");
+                        Common.showToastMessage(mContext, "Error al consultar la data.");
                     }
+
                     progressBar.setVisibility(View.GONE);
 
                 } else {

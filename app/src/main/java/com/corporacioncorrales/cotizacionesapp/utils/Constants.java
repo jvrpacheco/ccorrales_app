@@ -68,6 +68,7 @@ public class Constants {
 
     //tipos de pago
     public static final String idTipoDePagoDeposito = "263";
+    public static final String idTipoDePagoEfectivo = "7";
 
     //para comparar los precios
     public static final String comparar_esMayor = "esMayor";

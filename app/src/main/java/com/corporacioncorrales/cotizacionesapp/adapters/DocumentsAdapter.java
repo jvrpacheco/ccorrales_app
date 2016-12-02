@@ -125,12 +125,14 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
                     loadProductsOfDocument(myContext,
                             document.getIdCliente(),
                             document.getNombreCliente(),
+                            document.getLinea_total(),
                             document.getLinea_disponible(),
                             document.getIdRubroDocumento(),
                             document.getIdDocumento(),
                             document.getIdTipoDocumento(),
                             document.getIdFormaDePago(),
                             document.getNombreFormaDePago(),
+                            document.getDiasEscogidos(),
                             document.getDias());
                 }
             }
@@ -142,20 +144,22 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         return documentsList.size();
     }
 
-    private void loadProductsOfDocument(FragmentActivity mContext, String idCliente, String razonSocial, String saldoDisponible,
+    private void loadProductsOfDocument(FragmentActivity mContext, String idCliente, String razonSocial, String saldoTotal, String saldoDisponible,
                                         String rubroSeleccionado, String idDocumento, String tipoDocumento, String idFormaDePago,
-                                        String nombreFormaDePago, String dias) {
+                                        String nombreFormaDePago, String diasEscogidosPorVendedor, String dias) {
         ProductsFragment pf = new ProductsFragment();
         Bundle bundle = new Bundle();
         bundle.putString("cliente_id", idCliente);
         bundle.putString("cliente_razonSocial", razonSocial);
+        bundle.putString("cliente_saldoTotal", saldoTotal);
         bundle.putString("cliente_saldoDisponible", saldoDisponible);
         bundle.putString("rubroSeleccionado", rubroSeleccionado);
         bundle.putString("idDocumento", idDocumento);
         bundle.putString("tipoDocumento", tipoDocumento);
         bundle.putString("idFormaDePago", idFormaDePago);
         bundle.putString("nombreFormaDePago", nombreFormaDePago);
-        bundle.putString("dias", dias);
+        bundle.putString("daysSelectedFromHistory", diasEscogidosPorVendedor);
+        bundle.putString("maxdias", dias);
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);
@@ -268,16 +272,22 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
 
                         ArrayList<CorreoResponse> respuesta = response.body();
 
-                        if(respuesta.get(0).getRespuesta().equals("ok")) {
-                            Common.showToastMessage(myContext, "Mensaje enviado!");
-                            Common.hideKeyboard(myContext, edt);
-                            progressBar.setVisibility(View.GONE);
-                            dialog.dismiss();
+                        if(respuesta!= null && respuesta.size()>0) {
+                            if(respuesta.get(0).getRespuesta().equals("ok")) {
+                                Common.showToastMessage(myContext, "Mensaje enviado!");
+                                Common.hideKeyboard(myContext, edt);
+                                progressBar.setVisibility(View.GONE);
+                                dialog.dismiss();
+                            } else {
+                                Common.showToastMessage(myContext, "Error en el servidor");
+                                Log.e(Constants.log_arrow_failure, respuesta.get(0).getRespuesta());
+                                progressBar.setVisibility(View.GONE);
+                                Common.hideKeyboard(myContext, edt);
+                            }
                         } else {
-                            Common.showToastMessage(myContext, "Error en el servidor");
-                            Log.e(Constants.log_arrow_failure, respuesta.get(0).getRespuesta());
+                            Log.d(Constants.log_arrow, "Error al consultar la data.");
+                            Common.showToastMessage(myContext, "Error al consultar la data.");
                             progressBar.setVisibility(View.GONE);
-                            Common.hideKeyboard(myContext, edt);
                         }
 
                     } else {

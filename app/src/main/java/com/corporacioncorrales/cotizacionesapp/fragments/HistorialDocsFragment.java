@@ -145,7 +145,7 @@ public class HistorialDocsFragment extends Fragment {
                 if (response != null) {
                     documentsArrayList.clear();
                     documentsArrayList = response.body();
-                    if (documentsArrayList.size() > 0) {
+                    if (documentsArrayList!=null && documentsArrayList.size() > 0) {
                         documentsAdapter = new DocumentsAdapter(getActivity(), documentsArrayList);
                         documentsAdapter.notifyDataSetChanged();
                         rvDocumentsHistory.setAdapter(documentsAdapter);
@@ -381,7 +381,7 @@ public class HistorialDocsFragment extends Fragment {
                     clientsArrayList.clear();
                     clientsArrayList = response.body();
 
-                    if (clientsArrayList.size() > 0) {
+                    if (clientsArrayList!=null && clientsArrayList.size() > 0) {
                         //guardando primera descarga de clientes
                         originalClientsArrayList = clientsArrayList;
 

@@ -825,7 +825,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     ArrayList<PricesHistoryResponse> pricesHistory = response.body();
                     pricesHistory = response.body();
 
-                    if(pricesHistory.size() > 0) {
+                    if(pricesHistory!=null && pricesHistory.size() > 0) {
 
                         PricesHistoryAdapter pricesHistoryAdapter = new PricesHistoryAdapter(mContext, pricesHistory);
                         rv.setAdapter(pricesHistoryAdapter);
@@ -1019,7 +1019,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
                 if(response != null) {
                     ArrayList<VirtualStockResponse> virtualStockList = response.body();
-                    if(virtualStockList.size()>0) {
+                    if(virtualStockList!=null && virtualStockList.size()>0) {
                         VirtualStockAdapter virtualStockAdapter = new VirtualStockAdapter(mContext, virtualStockList);
                         rvStockVirtual.setAdapter(virtualStockAdapter);
                         LinearLayoutManager llm = new LinearLayoutManager(mContext);
@@ -1133,16 +1133,17 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
                 if(response != null) {
                     ArrayList<UnitsResponse> unitsPerArticleList = response.body();
-                    if(unitsPerArticleList.size()>0) {
 
+                    if(unitsPerArticleList!=null && unitsPerArticleList.size()>0) {
                         unitsAdapter = new UnitsAdapter(context, unitsPerArticleList, tvSelectedUnit);
                         rvUnitsPerArticle.setAdapter(unitsAdapter);
                         LinearLayoutManager llm = new LinearLayoutManager(mContext);
                         rvUnitsPerArticle.setLayoutManager(llm);
-
                     } else {
-                        Log.d(Constants.log_arrow_response, "No se encontro stock virtual para este producto");
-                        Common.showToastMessageShort(context, "No se encontro stock virtual para este producto");
+                        /*Log.d(Constants.log_arrow_response, "No se encontro stock virtual para este producto");
+                        Common.showToastMessageShort(context, "No se encontro stock virtual para este producto");*/
+                        Log.d(Constants.log_arrow_response, "Error en el servidor");
+                        Common.showToastMessageShort(context, "Error en el servidor");
                     }
                     newProgressBar.setVisibility(View.GONE);
 

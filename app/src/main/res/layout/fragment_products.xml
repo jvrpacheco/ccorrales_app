@@ -147,7 +147,10 @@
                         android:layout_height="match_parent"
                         android:layout_marginRight="25dp">
                         <TextView
-                            android:text="Dias de validez: "
+                            android:textColor="@color/negro"
+                            android:textStyle="bold"
+                            android:textSize="13sp"
+                            android:text="@string/dias_de_validez_label"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:gravity="center_vertical" />

@@ -103,6 +103,7 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ClientsV
         bundle.putString("cliente_saldoTotal", client.getLinea());
         bundle.putString("cliente_saldoDisponible", client.getLinea_disponible());
         bundle.putString("rubroSeleccionado", Singleton.getInstance().getRubroSelected());
+        bundle.putString("maxdias", client.getMaxDias());
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);

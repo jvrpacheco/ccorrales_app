@@ -8,11 +8,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +27,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -101,6 +103,8 @@ public class ProductsFragment extends Fragment {
     private String cliente_saldoTotal;
     private String cliente_saldoDisponible;
     private String rubroSeleccionado;
+    private String maxDaysFromClient;
+    private String daysSelectedFromHistory = Constants.Empty;
     private String idDocumento;
     private String tipoDocumento;
     private String idFormaDePago;
@@ -111,7 +115,7 @@ public class ProductsFragment extends Fragment {
     public static ProductsAdapter productsAdapter;
     private QuotationAdapter quotationAdapter;
     private boolean comeFromHistorial;
-    private String numberOfDays = "1";
+    private String numberOfDaysToSend = "1";
 
     public static ArrayList<ProductsResponse> productsSelectedList;
 
@@ -138,7 +142,8 @@ public class ProductsFragment extends Fragment {
                 && args.containsKey("cliente_razonSocial")
                 && args.containsKey("cliente_saldoTotal")
                 && args.containsKey("cliente_saldoDisponible")
-                && args.containsKey("rubroSeleccionado")) {
+                && args.containsKey("rubroSeleccionado")
+                && args.containsKey("maxdias")) {
 
             //tvCliente.setText(args.getString("cliente_razonSocial")); //butterKnife load in onCreateView
             client_id = args.getString("cliente_id");
@@ -147,6 +152,7 @@ public class ProductsFragment extends Fragment {
             cliente_saldoTotal = args.getString("cliente_saldoTotal");
             cliente_saldoDisponible = args.getString("cliente_saldoDisponible");
             rubroSeleccionado = args.getString("rubroSeleccionado");
+            maxDaysFromClient = args.getString("maxdias");
 
             //when coming from HistorialDocsFragment...
             if (args.containsKey("tipoDocumento") && args.containsKey("idDocumento")) {
@@ -154,7 +160,7 @@ public class ProductsFragment extends Fragment {
                 idDocumento = args.getString("idDocumento");
                 idFormaDePago = args.getString("idFormaDePago");
                 nombreFormaDePago = args.getString("nombreFormaDePago");
-                numberOfDays = args.getString("dias");
+                daysSelectedFromHistory = args.getString("daysSelectedFromHistory");
                 comeFromHistorial = true;
             }
 
@@ -200,7 +206,13 @@ public class ProductsFragment extends Fragment {
                     loadProductsPerClient(client_id, rubroSeleccionado);
                 }
             }
-            btnSelectNumberOfDays.setText(numberOfDays);
+
+            if(!daysSelectedFromHistory.isEmpty()) {  //come from History
+                btnSelectNumberOfDays.setText(daysSelectedFromHistory);
+            } else {
+                btnSelectNumberOfDays.setText(maxDaysFromClient);
+            }
+
 
             fromOnCreate = false;
         }
@@ -346,28 +358,34 @@ public class ProductsFragment extends Fragment {
                     productsArrayList.clear();
                     productsArrayList = response.body();
 
-                    if (productsArrayList.size() > 0) {
-                        //guardando primera descarga de productos
-                        originalProductsArrayList = productsArrayList;
+                    if(productsArrayList!= null && productsArrayList.size()>0) {
+                        if (productsArrayList.size() > 0) {
+                            //guardando primera descarga de productos
+                            originalProductsArrayList = productsArrayList;
 
-                        if (comeFromHistorial) {
-                            if (Common.isOnline(getActivity())) {
-                                getProductsFromDocumentDetail(idDocumento.trim());
+                            if (comeFromHistorial) {
+                                if (Common.isOnline(getActivity())) {
+                                    getProductsFromDocumentDetail(idDocumento.trim());
+                                }
+                            } else {
+                                productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter, mainProgressBar);
+                                recyclerViewProductos.setAdapter(productsAdapter);
+                                StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                                recyclerViewProductos.setLayoutManager(sgm);
                             }
-                        } else {
-                            productsAdapter = new ProductsAdapter(getActivity(), productsArrayList, quotationAdapter, mainProgressBar);
-                            recyclerViewProductos.setAdapter(productsAdapter);
-                            StaggeredGridLayoutManager sgm = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-                            recyclerViewProductos.setLayoutManager(sgm);
-                        }
 
+                        } else {
+                            Log.d(Constants.log_arrow_response, "No se encontraron productos para este cliente");
+                            Common.showToastMessage(getActivity(), "No se encontraron productos para este cliente");
+                        }
                     } else {
-                        Log.d(Constants.log_arrow_response, "No se encontraron productos para este cliente");
-                        Common.showToastMessage(getActivity(), "No se encontraron productos para este cliente");
+                        Log.d(Constants.log_arrow, "loadProductsPerClient - Error al consultar la data.");
+                        Common.showToastMessage(getActivity(), "Error al consultar la data.");
                     }
+
                     mainProgressBar.setVisibility(View.GONE);
                 } else {
-                    Log.d(Constants.log_arrow_response, "response null");
+                    Log.d(Constants.log_arrow_response, "loadProductsPerClient - response null");
                     Common.showToastMessage(getActivity(), "Error en el servidor");
                     mainProgressBar.setVisibility(View.GONE);
                 }
@@ -382,7 +400,7 @@ public class ProductsFragment extends Fragment {
         });
     }
 
-    int tempNumberOfdays;
+    int nroDiasIngresado = -1;
     @OnClick(R.id.btnSelectNumberOfDays)
     public void onClick() {
 
@@ -394,22 +412,57 @@ public class ProductsFragment extends Fragment {
         final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
         final Button btnCloseDialog = (Button) dialog.findViewById(R.id.btnClose);
         final ImageView ivClose = (ImageView) dialog.findViewById(R.id.ivClose);
-        final TextView tvnumberOfDays = (TextView) dialog.findViewById(R.id.tvnumberOfDays);
-        final NumberPicker numberPicker = (NumberPicker) dialog.findViewById(R.id.numberPicker1);
+        final EditText edtNumberOfDays = (EditText) dialog.findViewById(R.id.edtNumberOfDays);
+        final TextView tvMsgMaxDias = (TextView) dialog.findViewById(R.id.tvMsgMaxDias);
+        final TextView tvMaxOfDays = (TextView) dialog.findViewById(R.id.tvMaxOfDays);
 
-        numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        numberPicker.setMinValue(Constants.minNumberOfDays);
-        numberPicker.setMaxValue(Constants.maxNumberOfDays);
-        numberPicker.setValue(Integer.valueOf(numberOfDays));
+        edtNumberOfDays.setText(numberOfDaysToSend);
+        //tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_dentro_del_rango));
+        //tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.verde));
 
-        tvnumberOfDays.setText(String.valueOf(numberPicker.getValue()));
+        tvMsgMaxDias.setText(String.format("%s %s.", getActivity().getResources().getString(R.string.nro_dias_maximo), maxDaysFromClient));
+        ////tvMaxOfDays.setText("");
 
-
-        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        edtNumberOfDays.addTextChangedListener(new TextWatcher() {
+            private static final char space = ' ';
             @Override
-            public void onValueChange(NumberPicker numberPicker, int i, int valueSelected) {
-                tempNumberOfdays = valueSelected;
-                tvnumberOfDays.setText(String.valueOf(tempNumberOfdays));
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String daysInserted = s.toString();
+
+                // Remove spacing char
+                /*if (s.length() > 0 && (s.length() % 5) == 0) {
+                    final char c = s.charAt(s.length() - 1);
+                    if (space == c) {
+                        s.delete(s.length() - 1, s.length());
+                    }
+                }*/
+
+                if(!daysInserted.isEmpty() && daysInserted.length() > 0 && !daysInserted.equals(".") && !daysInserted.equals(",")) {
+                    if(Integer.valueOf(daysInserted) <= Integer.valueOf(maxDaysFromClient)) {
+                        tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_dentro_del_rango));
+                        tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.verde));
+                        btnAcceptDialog.setEnabled(true);
+                        nroDiasIngresado = Integer.valueOf(daysInserted);
+                    } else {
+                        tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_fuera_del_rango));
+                        tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.rojo));
+                        btnAcceptDialog.setEnabled(false);
+                    }
+                } else {
+                    tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_ingresado_vacio));
+                    tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.rojo));
+                    btnAcceptDialog.setEnabled(false);
+                }
             }
         });
 
@@ -423,8 +476,8 @@ public class ProductsFragment extends Fragment {
         btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                numberOfDays = String.valueOf(tempNumberOfdays);
-                btnSelectNumberOfDays.setText(numberOfDays);
+                numberOfDaysToSend = String.valueOf(nroDiasIngresado);
+                btnSelectNumberOfDays.setText(numberOfDaysToSend);
                 dialog.dismiss();
             }
         });
@@ -589,7 +642,7 @@ public class ProductsFragment extends Fragment {
                                     Singleton.getInstance().getTipoDocumento(),
                                     Singleton.getInstance().getIdPaymentTypeSelected(),
                                     tvMontoTotal.getText().toString().trim(),
-                                    numberOfDays,
+                                    numberOfDaysToSend,
                                     dataToSend);
                         }
                     }
@@ -689,6 +742,32 @@ public class ProductsFragment extends Fragment {
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     for (int j = 0; j < namePaymentsType.size(); j++) {
                         if (namePaymentsType.get(j).equals(adapterView.getItemAtPosition(i).toString())) {
+
+                            if(idPaymentsType.get(j).equals(Constants.idTipoDePagoEfectivo)) {
+                                numberOfDaysToSend = "0";
+                                btnSelectNumberOfDays.setText(numberOfDaysToSend);
+                                btnSelectNumberOfDays.setEnabled(false);
+
+                            } else if(idPaymentsType.get(j).equals(Constants.idTipoDePagoDeposito)) {
+                                numberOfDaysToSend = "1";
+                                btnSelectNumberOfDays.setText(numberOfDaysToSend);
+                                btnSelectNumberOfDays.setEnabled(false);
+
+                            } else {
+                                //Luego de la carga del historial, muestro el valor de dias.... si cambio de tipo de pago
+                                //debo seguir mostrando ese numero que vino del historial o resetear a 1?
+                                if(!daysSelectedFromHistory.isEmpty()) {  //come from History
+                                    numberOfDaysToSend = daysSelectedFromHistory;
+                                    btnSelectNumberOfDays.setText(daysSelectedFromHistory);
+                                    btnSelectNumberOfDays.setEnabled(true);
+                                } else {
+                                    numberOfDaysToSend = "1";
+                                    btnSelectNumberOfDays.setText(numberOfDaysToSend);
+                                    btnSelectNumberOfDays.setEnabled(true);
+                                }
+
+                            }
+
                             Singleton.getInstance().setIdPaymentTypeSelected(idPaymentsType.get(i));
                             break;
                         }
