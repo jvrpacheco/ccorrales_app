@@ -312,6 +312,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         final ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.newProgressBar);
         progressBar.setVisibility(View.GONE);
 
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         if(Common.isOnline(myContext)) {
             getDocumentUrl(progressBar, dialog, edtMensaje, idCliente, idDocumento);
         }
@@ -342,8 +344,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
             }
         });
 
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
+        //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        //dialog.show();
     }
 
     String messageToCopy = Constants.Empty;
@@ -365,17 +367,24 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
 
                     ArrayList<MensajeResponse> respuesta = response.body();
 
-                    if(!respuesta.get(0).getUrl().isEmpty()) {
-                        Common.showToastMessageShort(myContext, "Mensaje obtenido");
-                        messageToCopy = respuesta.get(0).getUrl();
-                        edt.setText(messageToCopy);
-                        Common.hideKeyboard(myContext, edt);
-                        progressBar.setVisibility(View.GONE);
+                    if(response.body()!= null && response.body().size()>0) {
+                        if(!respuesta.get(0).getUrl().isEmpty()) {
+                            dialog.show();
+                            Common.showToastMessageShort(myContext, "Mensaje obtenido");
+                            messageToCopy = respuesta.get(0).getUrl();
+                            edt.setText(messageToCopy);
+                            Common.hideKeyboard(myContext, edt);
+                            progressBar.setVisibility(View.GONE);
+                        } else {
+                            Common.showToastMessage(myContext, "Error en el servidor");
+                            Log.e(Constants.log_arrow_failure, respuesta.get(0).getUrl());
+                            progressBar.setVisibility(View.GONE);
+                            Common.hideKeyboard(myContext, edt);
+                        }
                     } else {
-                        Common.showToastMessage(myContext, "Error en el servidor");
-                        Log.e(Constants.log_arrow_failure, respuesta.get(0).getUrl());
+                        Log.d(Constants.log_arrow, "Error al consultar la data.");
+                        Common.showToastMessage(myContext, "Error al consultar la data.");
                         progressBar.setVisibility(View.GONE);
-                        Common.hideKeyboard(myContext, edt);
                     }
 
                 } else {

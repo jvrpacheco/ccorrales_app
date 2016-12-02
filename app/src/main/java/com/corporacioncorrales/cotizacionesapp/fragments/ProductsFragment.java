@@ -78,8 +78,6 @@ public class ProductsFragment extends Fragment {
     EditText edtGhost;
     @BindView(R.id.tvMontoTotal)
     TextView tvMontoTotal;
-    @BindView(R.id.tvLineaDeCreditoCliente)
-    TextView tvLineaDeCreditoCliente;
     @BindView(R.id.tvIndicadorSaldoDisponible)
     TextView tvIndicadorSaldoDisponible;
     @BindView(R.id.productsMainLayout)
@@ -89,12 +87,18 @@ public class ProductsFragment extends Fragment {
     Spinner spFormaPago;
     @BindView(R.id.btnSelectNumberOfDays)
     Button btnSelectNumberOfDays;
+    @BindView(R.id.tvLineaDeCreditoTotalCliente)
+    TextView tvLineaDeCreditoTotalCliente;
+    @BindView(R.id.tvLineaDeCreditoDisponibleCliente)
+    TextView tvLineaDeCreditoDisponibleCliente;
+
 
     private String TAG = getClass().getCanonicalName();
     private ProgressBar mainProgressBar;
     private Boolean fromOnCreate;
     private String client_id;
     private String client_razonSocial;
+    private String cliente_saldoTotal;
     private String cliente_saldoDisponible;
     private String rubroSeleccionado;
     private String idDocumento;
@@ -132,6 +136,7 @@ public class ProductsFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null && args.containsKey("cliente_id")
                 && args.containsKey("cliente_razonSocial")
+                && args.containsKey("cliente_saldoTotal")
                 && args.containsKey("cliente_saldoDisponible")
                 && args.containsKey("rubroSeleccionado")) {
 
@@ -139,6 +144,7 @@ public class ProductsFragment extends Fragment {
             client_id = args.getString("cliente_id");
             Singleton.getInstance().setIdclientSelected(client_id);
             client_razonSocial = args.getString("cliente_razonSocial");
+            cliente_saldoTotal = args.getString("cliente_saldoTotal");
             cliente_saldoDisponible = args.getString("cliente_saldoDisponible");
             rubroSeleccionado = args.getString("rubroSeleccionado");
 
@@ -171,7 +177,8 @@ public class ProductsFragment extends Fragment {
         super.onResume();
 
         tvCliente.setText(client_razonSocial);
-        tvLineaDeCreditoCliente.setText(cliente_saldoDisponible);
+        tvLineaDeCreditoTotalCliente.setText(cliente_saldoTotal);
+        tvLineaDeCreditoDisponibleCliente.setText(cliente_saldoDisponible);
         svFilterProduct.setOnQueryTextListener(productsFilterListener);
         Common.hideKeyboard(getActivity(), edtGhost);
 
@@ -384,10 +391,10 @@ public class ProductsFragment extends Fragment {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_select_number_of_days);
 
-        final Button btnAcceptDialog = (Button)dialog.findViewById(R.id.btnAccept);
-        final Button btnCloseDialog = (Button)dialog.findViewById(R.id.btnClose);
-        final ImageView ivClose = (ImageView)dialog.findViewById(R.id.ivClose);
-        final TextView tvnumberOfDays = (TextView)dialog.findViewById(R.id.tvnumberOfDays);
+        final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
+        final Button btnCloseDialog = (Button) dialog.findViewById(R.id.btnClose);
+        final ImageView ivClose = (ImageView) dialog.findViewById(R.id.ivClose);
+        final TextView tvnumberOfDays = (TextView) dialog.findViewById(R.id.tvnumberOfDays);
         final NumberPicker numberPicker = (NumberPicker) dialog.findViewById(R.id.numberPicker1);
 
         numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);

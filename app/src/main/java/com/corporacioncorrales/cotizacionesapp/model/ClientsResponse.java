@@ -34,7 +34,13 @@ public class ClientsResponse {
     @Expose
     private String Linea;
 
+    @SerializedName("Linea_disponible")
+    @Expose
+    private String Linea_disponible;
 
+    @SerializedName("Dias_max")
+    @Expose
+    private String maxDias;
 
     /*public String getLinea() {
 
@@ -77,7 +83,7 @@ public class ClientsResponse {
     public String getLinea() {
 
         try{
-            Double lineaCredito = Double.parseDouble(Linea);
+            Double lineaCredito = Double.parseDouble(Linea.trim());
             Linea = String.format("%.2f",lineaCredito);
         } catch (Exception ex) {
             Log.e(Constants.log_arrow_error, ex.toString());
@@ -113,6 +119,31 @@ public class ClientsResponse {
     public String getFoto() {
         return Foto;
     }
+
+    public String getLinea_disponible() {
+
+        try{
+            Double lineaCredito = Double.parseDouble(Linea_disponible.trim());
+            Linea_disponible = String.format("%.2f",lineaCredito);
+        } catch (Exception ex) {
+            Log.e(Constants.log_arrow_error, ex.toString());
+        }
+
+        return Linea_disponible;
+    }
+
+    public void setLinea_disponible(String linea_disponible) {
+        Linea_disponible = linea_disponible;
+    }
+
+    public String getMaxDias() {
+        return maxDias;
+    }
+
+    public void setMaxDias(String maxDias) {
+        this.maxDias = maxDias;
+    }
+
 
     @Override
     public String toString()

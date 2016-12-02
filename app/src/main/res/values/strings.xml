@@ -24,6 +24,7 @@
     <string name="msg_user_or_pass_incorrect">Usuario y/o clave incorrecto(s).</string>
     <string name="no_se_encontraron_docs">No se encontraron documentos para este usuario</string>
     <string name="error_android_id">Error al obtener id único del dispositivo.</string>
+    <string name="saldo_total">Saldo total:</string>
     <string name="saldo_disponible">Saldo disponible:</string>
     <string name="saldo_disponible_suficiente">Saldo disponible suficiente</string>
     <string name="saldo_disponible_insuficiente">Saldo disponible insuficiente</string>
