@@ -120,6 +120,23 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
                     android:layout_alignParentRight="true">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="25dp">
+                        <TextView
+                            android:text="Dias de validez: "
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical" />
+                        <Button
+                            android:id="@+id/btnSelectNumberOfDays"
+                            android:text="XX"
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/turquesa_claro"/>
+                    </LinearLayout>
                     <Spinner
                         android:id="@+id/spFormaPago"
                         android:background="@color/turquesa_claro"

@@ -10,7 +10,7 @@ public class QuotationProductRequest {
     private String precio_real;
     private String cantidad;
     private String mas_bajo_que_limite;
-    private String idUnidad;
+    private String unidad;
 
 
     public String getMas_bajo_que_limite() {
@@ -54,11 +54,11 @@ public class QuotationProductRequest {
     }
 
     public String getIdUnidad() {
-        return idUnidad;
+        return unidad;
     }
 
     public void setIdUnidad(String idUnidad) {
-        this.idUnidad = idUnidad;
+        this.unidad = idUnidad;
     }
 
 }

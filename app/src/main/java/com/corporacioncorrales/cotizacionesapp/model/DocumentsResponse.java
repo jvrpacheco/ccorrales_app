@@ -80,6 +80,19 @@ public class DocumentsResponse {
     @Expose
     private String nombreFormaDePago;
 
+    @SerializedName("dias")
+    @Expose
+    private String dias;
+
+
+
+    public String getDias() {
+        return dias;
+    }
+
+    public void setDias(String dias) {
+        this.dias = dias;
+    }
 
     public String getIdFormaDePago() {
         return idFormaDePago;

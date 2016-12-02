@@ -1,6 +1,9 @@
 package com.corporacioncorrales.cotizacionesapp.fragments;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -14,11 +17,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,7 +45,6 @@ import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,6 +87,8 @@ public class ProductsFragment extends Fragment {
     NavigationView nvMainActivity;
     @BindView(R.id.spFormaPago)
     Spinner spFormaPago;
+    @BindView(R.id.btnSelectNumberOfDays)
+    Button btnSelectNumberOfDays;
 
     private String TAG = getClass().getCanonicalName();
     private ProgressBar mainProgressBar;
@@ -100,6 +107,7 @@ public class ProductsFragment extends Fragment {
     public static ProductsAdapter productsAdapter;
     private QuotationAdapter quotationAdapter;
     private boolean comeFromHistorial;
+    private String numberOfDays = "1";
 
     public static ArrayList<ProductsResponse> productsSelectedList;
 
@@ -140,6 +148,7 @@ public class ProductsFragment extends Fragment {
                 idDocumento = args.getString("idDocumento");
                 idFormaDePago = args.getString("idFormaDePago");
                 nombreFormaDePago = args.getString("nombreFormaDePago");
+                numberOfDays = args.getString("dias");
                 comeFromHistorial = true;
             }
 
@@ -184,6 +193,7 @@ public class ProductsFragment extends Fragment {
                     loadProductsPerClient(client_id, rubroSeleccionado);
                 }
             }
+            btnSelectNumberOfDays.setText(numberOfDays);
 
             fromOnCreate = false;
         }
@@ -205,7 +215,7 @@ public class ProductsFragment extends Fragment {
                     productsFromDocument.clear();
                     productsFromDocument = response.body();
 
-                    if(productsFromDocument!=null) {
+                    if (productsFromDocument != null) {
                         if (productsFromDocument.size() > 0) {  // el detalle siempre contiene productos
                             for (int i = 0; i < productsFromDocument.size(); i++) {
                                 DocumentDetailResponse productFromDocument = productsFromDocument.get(i);
@@ -235,17 +245,17 @@ public class ProductsFragment extends Fragment {
                                         }
 
                                         //unidad
-                                        if(productFromDocument.getIdUnidad()!=null && !productFromDocument.getIdUnidad().isEmpty()) {
+                                        if (productFromDocument.getIdUnidad() != null && !productFromDocument.getIdUnidad().isEmpty()) {
                                             actualProduct.setNuevaUnidad(productFromDocument.getIdUnidad());
                                         } else {
                                             //actualProduct.setNuevaUnidad(actualProduct.getIdUnidad());
                                         }
 
-                                        if(productFromDocument.getNombreUnidad()!=null && !productFromDocument.getNombreUnidad().isEmpty()) {
+                                        if (productFromDocument.getNombreUnidad() != null && !productFromDocument.getNombreUnidad().isEmpty()) {
                                             actualProduct.setNuevaPresentacion(productFromDocument.getNombreUnidad());
                                         }
 
-                                        if(productFromDocument.getStockUnidad()!=null && !productFromDocument.getStockUnidad().isEmpty()) {
+                                        if (productFromDocument.getStockUnidad() != null && !productFromDocument.getStockUnidad().isEmpty()) {
                                             actualProduct.setNuevaCantidad(productFromDocument.getStockUnidad());
                                         }
 
@@ -363,6 +373,64 @@ public class ProductsFragment extends Fragment {
                 Common.showToastMessage(getActivity(), "Error en el servidor");
             }
         });
+    }
+
+    int tempNumberOfdays;
+    @OnClick(R.id.btnSelectNumberOfDays)
+    public void onClick() {
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_select_number_of_days);
+
+        final Button btnAcceptDialog = (Button)dialog.findViewById(R.id.btnAccept);
+        final Button btnCloseDialog = (Button)dialog.findViewById(R.id.btnClose);
+        final ImageView ivClose = (ImageView)dialog.findViewById(R.id.ivClose);
+        final TextView tvnumberOfDays = (TextView)dialog.findViewById(R.id.tvnumberOfDays);
+        final NumberPicker numberPicker = (NumberPicker) dialog.findViewById(R.id.numberPicker1);
+
+        numberPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        numberPicker.setMinValue(Constants.minNumberOfDays);
+        numberPicker.setMaxValue(Constants.maxNumberOfDays);
+        numberPicker.setValue(Integer.valueOf(numberOfDays));
+
+        tvnumberOfDays.setText(String.valueOf(numberPicker.getValue()));
+
+
+        numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker numberPicker, int i, int valueSelected) {
+                tempNumberOfdays = valueSelected;
+                tvnumberOfDays.setText(String.valueOf(tempNumberOfdays));
+            }
+        });
+
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                numberOfDays = String.valueOf(tempNumberOfdays);
+                btnSelectNumberOfDays.setText(numberOfDays);
+                dialog.dismiss();
+            }
+        });
+
+        btnCloseDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
     @OnClick(R.id.btnEnviarDocumento)
@@ -514,6 +582,7 @@ public class ProductsFragment extends Fragment {
                                     Singleton.getInstance().getTipoDocumento(),
                                     Singleton.getInstance().getIdPaymentTypeSelected(),
                                     tvMontoTotal.getText().toString().trim(),
+                                    numberOfDays,
                                     dataToSend);
                         }
                     }
@@ -529,7 +598,7 @@ public class ProductsFragment extends Fragment {
         alert.show();
     }
 
-    private void sendQuotation(String idCliente, String idRubro, String idUsuario, String sobregiro, String tipoDocumento, String idFormaPago, String montoTotal, ArrayList<QuotationProductRequest> data) {
+    private void sendQuotation(String idCliente, String idRubro, String idUsuario, String sobregiro, String tipoDocumento, String idFormaPago, String montoTotal, String numberOfDays, ArrayList<QuotationProductRequest> data) {
         mainProgressBar.setVisibility(View.VISIBLE);
         productsMainLayout.setEnabled(false);
         btnEnviarDocumento.setEnabled(false);
@@ -537,7 +606,7 @@ public class ProductsFragment extends Fragment {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.url_server).addConverterFactory(GsonConverterFactory.create()).build();
         QuotationApi request = retrofit.create(QuotationApi.class);
 
-        Call<String> call = request.sendQuotation(idCliente, idRubro, idUsuario, sobregiro, tipoDocumento, idFormaPago, montoTotal, data);
+        Call<String> call = request.sendQuotation(idCliente, idRubro, idUsuario, sobregiro, tipoDocumento, idFormaPago, montoTotal, numberOfDays, data);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -585,15 +654,15 @@ public class ProductsFragment extends Fragment {
         int positionInitialPaymentType = -1;
         ArrayList<PaymentsResponse> paymentTypes = Singleton.getInstance().getPaymentTypes();  //para grabar, se valido que tenga al menos un tipo de pago
 
-        if(paymentTypes!=null) {
+        if (paymentTypes != null) {
             final ArrayList<String> idPaymentsType = new ArrayList<String>();
             final ArrayList<String> namePaymentsType = new ArrayList<String>();
 
-            for(int i=0; i<paymentTypes.size(); i++) {
+            for (int i = 0; i < paymentTypes.size(); i++) {
                 idPaymentsType.add(paymentTypes.get(i).getIdPaymentType());
                 namePaymentsType.add(paymentTypes.get(i).getPaymentType());
 
-                if(paymentTypes.get(i).getIdPaymentType().equals(idInitialPaymentType)) {
+                if (paymentTypes.get(i).getIdPaymentType().equals(idInitialPaymentType)) {
                     existsIdInitialPaymentType = true;
                     positionInitialPaymentType = i;
                 }
@@ -602,7 +671,7 @@ public class ProductsFragment extends Fragment {
             ArrayAdapter adapterFormaPago = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, namePaymentsType);
             spFormaPago.setAdapter(adapterFormaPago);
 
-            if(existsIdInitialPaymentType && positionInitialPaymentType>0) {
+            if (existsIdInitialPaymentType && positionInitialPaymentType > 0) {
                 spFormaPago.setSelection(positionInitialPaymentType);  //VERIFICAR QUE EXISTA 'DEPOSITO' EN LO QUE TRAJO EL SERVER, DE LO CONTRARIO MOSTRAR EL PRIMERO QUE VENGA
             } else {
                 spFormaPago.setSelection(0); //sino encuentra el id inicial en la lista selecciona el primero por defecto
@@ -611,8 +680,8 @@ public class ProductsFragment extends Fragment {
             spFormaPago.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    for(int j=0; j<namePaymentsType.size(); j++) {
-                        if(namePaymentsType.get(j).equals(adapterView.getItemAtPosition(i).toString())) {
+                    for (int j = 0; j < namePaymentsType.size(); j++) {
+                        if (namePaymentsType.get(j).equals(adapterView.getItemAtPosition(i).toString())) {
                             Singleton.getInstance().setIdPaymentTypeSelected(idPaymentsType.get(i));
                             break;
                         }
@@ -694,5 +763,6 @@ public class ProductsFragment extends Fragment {
         }
         return false;
     }
+
 
 }

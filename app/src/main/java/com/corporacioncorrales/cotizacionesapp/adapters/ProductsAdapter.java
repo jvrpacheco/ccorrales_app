@@ -243,8 +243,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                         }
 
                     } else {
-                        Log.d(Constants.log_arrow_response, "No se encontro stock virtual para este producto");
-                        Common.showToastMessageShort(context, "No se encontro stock virtual para este producto");
+                        Log.d(Constants.log_arrow_response, "Error en el servidor");
+                        Common.showToastMessageShort(context, "Error en el servidor");
                     }
                     newProgressBar.setVisibility(View.GONE);
 

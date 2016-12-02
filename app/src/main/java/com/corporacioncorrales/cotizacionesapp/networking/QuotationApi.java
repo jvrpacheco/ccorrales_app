@@ -27,6 +27,7 @@ public interface QuotationApi {
             @Header(Constants.idTipoDocHeader) String tipoDocumento,
             @Header(Constants.formaPagoHeader) String formaDePago,
             @Header(Constants.totalHeader) String montoTotal,
+            @Header(Constants.numberOfDaysHeader) String numberOfDays,
             @Body ArrayList<QuotationProductRequest> data
     );
 

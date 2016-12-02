@@ -80,6 +80,7 @@ public class Constants {
     public static final String idSobregiroHeader = "Sobregiro";
     public static final String formaPagoHeader = "formaPago";
     public static final String totalHeader = "total";
+    public static final String numberOfDaysHeader = "dias";
     public static final String idTipoDocHeader = "TipoDoc";
     public static final String idArticuloHeader = "idArticulo";
     public static final String articuloUnitsHeader = "Articulo";
@@ -90,6 +91,7 @@ public class Constants {
     public static final String correosDestinatariosHeader = "idCorreoDestinatarios";
     public static final String correoAsuntoHeader = "Asunto";
     public static final String correoCuerpoHeader = "Cuerpo";
+    public static final String idProformaHeader = "Idproforma";
     public static final String correoAdjuntoHeader = "Adjunto";
     public static final String idDocumentoHeader = "idproforma";
     public static final String imeiHeader = "serie";
@@ -117,4 +119,7 @@ public class Constants {
     public static final int baseInteger = 1;
 
     public static final String imeiResultOK = "1";
+
+    public static final int minNumberOfDays = 0;
+    public static final int maxNumberOfDays = 200;
 }

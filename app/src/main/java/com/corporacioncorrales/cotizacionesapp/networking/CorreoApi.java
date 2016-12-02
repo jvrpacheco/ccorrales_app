@@ -25,7 +25,8 @@ public interface CorreoApi {
             @Header(Constants.correosDestinatariosHeader) String idCorreoDestinatariosHeader,
             @Header(Constants.correoAsuntoHeader) String asunto,
             @Header(Constants.correoCuerpoHeader) String cuerpo,
-            @Header(Constants.correoAdjuntoHeader) String adjunto
+            @Header(Constants.correoAdjuntoHeader) String adjunto,
+            @Header(Constants.idProformaHeader) String idProforma
     );
 
 }

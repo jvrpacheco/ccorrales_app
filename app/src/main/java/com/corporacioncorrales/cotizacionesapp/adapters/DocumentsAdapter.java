@@ -130,7 +130,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
                             document.getIdDocumento(),
                             document.getIdTipoDocumento(),
                             document.getIdFormaDePago(),
-                            document.getNombreFormaDePago());
+                            document.getNombreFormaDePago(),
+                            document.getDias());
                 }
             }
         });
@@ -142,7 +143,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
     }
 
     private void loadProductsOfDocument(FragmentActivity mContext, String idCliente, String razonSocial, String saldoDisponible,
-                                        String rubroSeleccionado, String idDocumento, String tipoDocumento, String idFormaDePago, String nombreFormaDePago) {
+                                        String rubroSeleccionado, String idDocumento, String tipoDocumento, String idFormaDePago,
+                                        String nombreFormaDePago, String dias) {
         ProductsFragment pf = new ProductsFragment();
         Bundle bundle = new Bundle();
         bundle.putString("cliente_id", idCliente);
@@ -153,6 +155,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         bundle.putString("tipoDocumento", tipoDocumento);
         bundle.putString("idFormaDePago", idFormaDePago);
         bundle.putString("nombreFormaDePago", nombreFormaDePago);
+        bundle.putString("dias", dias);
         pf.setArguments(bundle);
         FragmentTransaction ft = mContext.getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, pf);
@@ -170,7 +173,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         builder.setPositiveButton("Correo electronico",
                 new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
-                        showDialogSendDocumentByEmail(idCliente);
+                        showDialogSendDocumentByEmail(idCliente, idDocumento);
                     }
                 });
 
@@ -185,7 +188,7 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         alert.show();
     }
 
-    private void showDialogSendDocumentByEmail(final String idCliente) {
+    private void showDialogSendDocumentByEmail(final String idCliente, final String idDocumento) {
 
         final Dialog dialog = new Dialog(myContext);
         dialog.setCanceledOnTouchOutside(false);
@@ -217,7 +220,8 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
                                     edtDestinatarios.getText().toString(),
                                     edtAsunto.getText().toString(),
                                     edtCuerpo.getText().toString().replaceAll("\n", "%0A"),
-                                    "1");
+                                    "1",
+                                    idDocumento);
                         } else {
                             Common.showToastMessageShort(myContext, myContext.getResources().getString(R.string.msg_invalid_email));
                         }
@@ -247,14 +251,14 @@ public class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.Clie
         dialog.show();
     }
 
-    private void sendEmail(final ProgressBar progressBar, final Dialog dialog, final EditText edt, String idCliente, String idUsuario, String destinatarios, String asunto, String cuerpo, String adjunto) {
+    private void sendEmail(final ProgressBar progressBar, final Dialog dialog, final EditText edt, String idCliente, String idUsuario, String destinatarios, String asunto, String cuerpo, String adjunto, String idDocumento) {
         progressBar.setVisibility(View.VISIBLE);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.url_server)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         CorreoApi request = retrofit.create(CorreoApi.class);
-        Call<ArrayList<CorreoResponse>> call = request.sendDataToEmail(idCliente, idUsuario, destinatarios, asunto, cuerpo, adjunto); //("jsalazar", "00");
+        Call<ArrayList<CorreoResponse>> call = request.sendDataToEmail(idCliente, idUsuario, destinatarios, asunto, cuerpo, adjunto, idDocumento); //("jsalazar", "00");
 
         call.enqueue(new Callback<ArrayList<CorreoResponse>>() {
 
