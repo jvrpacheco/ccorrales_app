@@ -58,20 +58,68 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:background="@color/grey300">
-                    <TextView
-                        android:id="@+id/tvTittle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:layout_centerInParent="true"
-                        android:text="XXXXX"
-                        android:textStyle="bold"
-                        android:textSize="14sp"/>
-                </RelativeLayout>
+                    android:layout_height="30dp"
+                    android:orientation="horizontal"
+                    android:background="@color/gris_fondo">
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/unit_code_row_width"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:textColor="@color/negro"
+                            android:textSize="@dimen/font_size_row_documents_history"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/unidad_venta_codigo"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:maxLines="1"
+                            android:layout_centerInParent="true"/>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/grey100"/>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:textColor="@color/negro"
+                            android:textSize="@dimen/font_size_row_documents_history"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/unidad_venta_presentacion"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:maxLines="1"
+                            android:layout_centerInParent="true"/>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/grey100"/>
+                    <RelativeLayout
+                        android:layout_width="@dimen/unit_stock_row_width"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/tvId"
+                            android:textColor="@color/negro"
+                            android:textSize="@dimen/font_size_row_documents_history"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/unidad_venta_stock"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:maxLines="1"
+                            android:layout_centerInParent="true"/>
+                    </RelativeLayout>
+
+                </LinearLayout>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rvUnitsPerArticle"

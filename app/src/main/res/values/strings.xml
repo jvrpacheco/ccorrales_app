@@ -49,6 +49,9 @@
     <string name="select_client_tittle">SELECCIONE CLIENTE</string>
     //dialog Unidad de Venta
     <string name="unidad_venta_tittle">UNIDAD DE VENTA</string>
+    <string name="unidad_venta_codigo">Código</string>
+    <string name="unidad_venta_presentacion">Presentación</string>
+    <string name="unidad_venta_stock">Stock</string>
     //dialog maximo de dias
     <string name="nro_dias_maximo">El máximo de días permitidos para este cliente es</string>
     <string name="nro_dias_dentro_del_rango">Número de días permitido.</string>
@@ -56,8 +59,8 @@
     <string name="nro_dias_ingresado_vacio">Por favor ingrese el número de días.</string>
 
     <string-array name="array_rubros">
-        <item>Vidrio</item>
         <item>Aluminio</item>
+        <item>Vidrio</item>
         <item>Accesorio</item>
         <item>Plastico</item>
     </string-array>

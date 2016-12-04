@@ -420,6 +420,16 @@ public class ProductsFragment extends Fragment {
         //tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_dentro_del_rango));
         //tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.verde));
 
+        if(Integer.valueOf(numberOfDaysToSend) <= Integer.valueOf(maxDaysFromClient)) {
+            tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_dentro_del_rango));
+            tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.verde));
+            btnAcceptDialog.setEnabled(true);
+        } else {
+            tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_fuera_del_rango));
+            tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.rojo));
+            btnAcceptDialog.setEnabled(false);
+        }
+
         tvMsgMaxDias.setText(String.format("%s %s.", getActivity().getResources().getString(R.string.nro_dias_maximo), maxDaysFromClient));
         ////tvMaxOfDays.setText("");
 

@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         progressBarLogin.setVisibility(View.GONE);
 
         etLoginUser.setText("jsalazar");
-        etLoginClave.setText("123");
+        etLoginClave.setText("j123");
     }
 
     @Override

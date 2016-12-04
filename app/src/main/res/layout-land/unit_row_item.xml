@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:background="@color/grey300"/>
         <RelativeLayout
-            android:layout_width="120dp"
+            android:layout_width="@dimen/unit_code_row_width"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvCodUnidad"
@@ -61,7 +61,7 @@
             android:layout_height="match_parent"
             android:background="@color/grey300"/>
         <RelativeLayout
-            android:layout_width="120dp"
+            android:layout_width="@dimen/unit_stock_row_width"
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/tvStockUnidad"

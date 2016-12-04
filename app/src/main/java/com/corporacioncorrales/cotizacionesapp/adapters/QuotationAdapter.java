@@ -1057,10 +1057,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final ProgressBar newProgressBar = (ProgressBar) dialog.findViewById(R.id.newProgressBar);
         final ImageView ivClose = (ImageView) dialog.findViewById(R.id.ivClose);
         final RecyclerView rvUnitsPerArticle = (RecyclerView) dialog.findViewById(R.id.rvUnitsPerArticle);
-        final TextView tvTittle = (TextView) dialog.findViewById(R.id.tvTittle);
+        final TextView tvZoomDialogTitle = (TextView) dialog.findViewById(R.id.tvZoomDialogTitle);
         final TextView tvSelectedUnit = (TextView) dialog.findViewById(R.id.tvSelectedUnit);
 
-        tvTittle.setText(product.getId());
+        tvZoomDialogTitle.setText(String.format("%s - %s", context.getString(R.string.unidad_venta_tittle), product.getId()));
 
         //seteando unidad por defecto
         tvSelectedUnit.setText(String.format("Codigo: %s, Presentacion: %s, Stock: %s", product.getIdUnidad(), product.getPresentacionUnidad(), product.getCantidad()));

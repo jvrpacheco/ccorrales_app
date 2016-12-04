@@ -23,4 +23,8 @@
 
     <dimen name="quotation_unidad_venta_width">190dp</dimen>
 
+    <dimen name="unit_code_row_width">120dp</dimen>
+    <!--<dimen name="unit_presentation_row_width">120dp</dimen>-->
+    <dimen name="unit_stock_row_width">120dp</dimen>
+
 </resources>
