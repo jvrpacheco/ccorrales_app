@@ -98,6 +98,10 @@ public class Constants {
     public static final String imeiHeader = "serie";
     public static final String idUnidadVentaHeader = "Uni_Vta";
     public static final String precioIngresadoHeader = "Precio_nuevo";
+    //stock virtual ultimo cambio Sammer sin avisar :)
+    public static final String stockVirtualUsuario = "usuario";
+    public static final String stockVirtualRubro = "rubro";
+    public static final String stockVirtualArticulo = "articulo";
 
     public static final String montoTotalMayorALineaDeCredito = "1";
     public static final String montoTotalMenorOIgualALineaDeCredito = "0";
@@ -113,6 +117,8 @@ public class Constants {
 
     public static final String todosLosClientes = "Todos";
     public static final String todosLosClientesId = "0";
+
+
 
     // en cuanto incrementara o disminuira el precio en el dialogo de cambio de precios
     public static final Double baseDouble = 0.001;

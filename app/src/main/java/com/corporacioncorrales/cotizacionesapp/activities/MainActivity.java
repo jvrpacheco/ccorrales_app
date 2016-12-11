@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d(Constants.log_arrow + TAG, "ONCREATE");
+
         ButterKnife.bind(this);
 
         mProgressBar.setScaleY(.2f);
@@ -269,7 +271,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void goToLogin() {
-        finish();
+        this.finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(Constants.log_arrow + TAG, "onDestroy");
+    }
 }

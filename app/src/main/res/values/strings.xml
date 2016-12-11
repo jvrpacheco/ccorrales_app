@@ -57,6 +57,8 @@
     <string name="nro_dias_dentro_del_rango">Número de días permitido.</string>
     <string name="nro_dias_fuera_del_rango">Número de días no permitido</string>
     <string name="nro_dias_ingresado_vacio">Por favor ingrese el número de días.</string>
+    //dialog stock virtual
+    <string name="sin_stock_virtual">No se encontro stock virtual para este producto</string>
 
     <string-array name="array_rubros">
         <item>Aluminio</item>

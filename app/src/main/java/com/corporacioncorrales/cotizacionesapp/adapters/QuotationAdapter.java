@@ -979,10 +979,11 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final RecyclerView rvStockVirtual = (RecyclerView) dialog.findViewById(R.id.rvStockVirtual);
         final ImageView ivClose = (ImageView)dialog.findViewById(R.id.ivClose);
         final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
+        final TextView tvMsgNoVirtualStock = (TextView) dialog.findViewById(R.id.tvMsgNoVirtualStock);
         progressBar = (ProgressBar)dialog.findViewById(R.id.newProgressBar);
 
         if(Common.isOnline(mContext)) {
-            getVirtualStock(context, idUsuario, idRubro, idArticulo, rvStockVirtual);
+            getVirtualStock(context, idUsuario, idRubro, idArticulo, rvStockVirtual, tvMsgNoVirtualStock);
         }
 
         btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
@@ -1003,7 +1004,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         dialog.show();
     }
 
-    private void getVirtualStock(final Context context, String idUsuario, String idRubro, String idArticulo, final RecyclerView rvStockVirtual) {
+    private void getVirtualStock(final Context context, String idUsuario, String idRubro, String idArticulo, final RecyclerView rvStockVirtual, final TextView tvMsgNoVirtualStock) {
         progressBar.setVisibility(View.VISIBLE);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.url_server)
@@ -1020,12 +1021,14 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 if(response != null) {
                     ArrayList<VirtualStockResponse> virtualStockList = response.body();
                     if(virtualStockList!=null && virtualStockList.size()>0) {
+                        tvMsgNoVirtualStock.setVisibility(View.GONE);
                         VirtualStockAdapter virtualStockAdapter = new VirtualStockAdapter(mContext, virtualStockList);
                         rvStockVirtual.setAdapter(virtualStockAdapter);
                         LinearLayoutManager llm = new LinearLayoutManager(mContext);
                         rvStockVirtual.setLayoutManager(llm);
                     } else {
-                        Log.d(Constants.log_arrow_response, "No se encontro stock virtual para este producto");
+                        tvMsgNoVirtualStock.setVisibility(View.VISIBLE);
+                        Log.d(Constants.log_arrow_response, context.getResources().getString(R.string.sin_stock_virtual));
                     }
                     progressBar.setVisibility(View.GONE);
 

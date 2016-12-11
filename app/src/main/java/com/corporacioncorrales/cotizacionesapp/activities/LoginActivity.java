@@ -54,6 +54,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        Log.d(Constants.log_arrow + TAG, "\"" + Singleton.getInstance().getUser() + "\"");
+        Log.d(Constants.log_arrow + TAG, "ONCREATE");
+
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
@@ -63,6 +67,8 @@ public class LoginActivity extends AppCompatActivity {
 
         etLoginUser.setText("jsalazar");
         etLoginClave.setText("j123");
+
+
     }
 
     @Override

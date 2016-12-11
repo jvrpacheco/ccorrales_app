@@ -17,9 +17,9 @@ public interface VirtualStockApi {
 
     @POST(Constants.url_get_virtual_stock)
     Call<ArrayList<VirtualStockResponse>> getVirtualStock(
-            @Header(Constants.idUsuarioHeader) String idUsuario,
-            @Header(Constants.idRubroHeader) String idRubro,
-            @Header(Constants.idArticuloHeader) String idArticulo
+            @Header(Constants.stockVirtualUsuario) String idUsuario,
+            @Header(Constants.stockVirtualRubro) String idRubro,
+            @Header(Constants.stockVirtualArticulo) String idArticulo
     );
 
 }

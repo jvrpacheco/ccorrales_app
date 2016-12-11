@@ -94,6 +94,8 @@ public class ClientsFragment extends Fragment {
         ordenSelected = Constants.orden_nombre;
 
         fromOnCreate = true;
+        Log.d(Constants.log_arrow + TAG, "onCreate, fromOnCreate: " + fromOnCreate.toString());
+
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
     }
 
@@ -121,10 +123,12 @@ public class ClientsFragment extends Fragment {
 
         svFilterClient.setOnQueryTextListener(clientsFilterListener);
         Log.d(Constants.log_arrow + TAG, "onResume, rubroSelected: " + rubroSelected);
+        Log.d(Constants.log_arrow + TAG, "onResume, fromOnCreate: " + fromOnCreate.toString());
 
         initSpinnerRubro();
         initSpinnerOrden();
         clearClientsFilter();
+
 
         if (fromOnCreate) {
             initViews3();

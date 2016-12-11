@@ -185,6 +185,19 @@
                 android:max="100"
                 android:progress="20"/>
 
+            <TextView
+                android:id="@+id/tvMsgNoVirtualStock"
+                android:textColor="@color/negro"
+                android:textSize="@dimen/font_size_row_documents_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sin_stock_virtual"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:maxLines="1"
+                android:layout_centerInParent="true"
+                android:visibility="gone"/>
+
         </RelativeLayout>
 
     </LinearLayout>
