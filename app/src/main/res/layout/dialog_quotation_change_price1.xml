@@ -230,6 +230,21 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tvProductCode"
+                    android:layout_marginTop="0dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
+                    android:textColor="@color/negro"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:textSize="16sp"
+                    android:text="0000"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
                     android:id="@+id/tvProductDes"
                     android:layout_marginTop="0dp"
                     android:layout_width="wrap_content"

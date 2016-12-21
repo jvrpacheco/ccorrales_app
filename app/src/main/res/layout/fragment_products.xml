@@ -166,7 +166,7 @@
                         android:popupBackground="@color/turquesa_claro"
                         android:layout_width="120dp"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="5dp"/>
+                        android:layout_marginRight="5dp" />
                     <Spinner
                         android:id="@+id/spTipoDoc"
                         android:background="@color/turquesa_claro"

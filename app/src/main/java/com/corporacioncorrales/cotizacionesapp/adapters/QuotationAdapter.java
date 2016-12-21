@@ -371,12 +371,14 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final EditText edtQuantity = (EditText)dialog.findViewById(R.id.edtQuantity);
         final TextView tvStock = (TextView)dialog.findViewById(R.id.tvStock);
         final TextView tvCompareResult = (TextView)dialog.findViewById(R.id.tvCompareResult);
+        final TextView tvProductCode = (TextView)dialog.findViewById(R.id.tvProductCode);
         final ImageView ivUpQuantity = (ImageView) dialog.findViewById(R.id.ivUpQuantity);
         final ImageView ivDownQuantity = (ImageView) dialog.findViewById(R.id.ivDownQuantity);
         //final String stock = product.getCantidad();
         final String stock = product.getNuevaCantidad();
 
         tvProductDes.setText(product.getNombre());
+        tvProductCode.setText(product.getId());
         quantityInserted = product.getCantidadSolicitada();
         tvStock.setText(stock);
 
@@ -512,6 +514,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final TextView tvPrecioIngresado = (TextView)dialog.findViewById(R.id.tvPrecioIngresado);
         final TextView tvCompareResult = (TextView)dialog.findViewById(R.id.tvCompareResult);
         final TextView tvProductDes = (TextView)dialog.findViewById(R.id.tvProductDes);
+        final TextView tvProductCode = (TextView)dialog.findViewById(R.id.tvProductCode);
         final EditText edtPrice = (EditText)dialog.findViewById(R.id.edtPrice);
         final ImageView ivUpPrice = (ImageView) dialog.findViewById(R.id.ivUpPrice);
         final ImageView ivDownPrice = (ImageView) dialog.findViewById(R.id.ivDownPrice);
@@ -521,28 +524,68 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final LinearLayout ll_prices = (LinearLayout) dialog.findViewById(R.id.ll_prices);
         final RecyclerView rvPricesHistory = (RecyclerView) dialog.findViewById(R.id.rvPricesHistory);
 
+
         try {
             tvPrecio.setText(String.format(Constants.round_three_decimals, Double.parseDouble(price)));
             tvPrecioLimiteInferior.setText(String.format(Constants.round_three_decimals, Double.parseDouble(priceMinLimit)));
-            tvPrecioIngresado.setText(String.format(Constants.round_three_decimals, Double.parseDouble(product.getNuevoPrecio())));
+            //tvPrecioIngresado.setText(String.format(Constants.round_three_decimals, Double.parseDouble(product.getNuevoPrecio())));
+            tvPrecioIngresado.setText(String.format(Constants.round_three_decimals, Double.parseDouble(product.getPrecioRecalculado())));
+
+            //el precio ingresado es... respecto al precio minimo
+            String priceInserted0 = product.getPrecioRecalculado();
+            String resultComparePrices = Common.comparePrices(Double.valueOf(priceInserted0), Double.valueOf(priceMinLimit));
+            if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                if(resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
+                    tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
+                    tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
+                    precioIngresado = priceInserted0;
+                    esPrecioMenorAlLimite = false;
+                    btnAcceptDialog.setEnabled(true);
+
+                } else if(resultComparePrices.equals(Constants.comparar_esMenor)) {
+                    tvCompareResult.setText(context.getResources().getString(R.string.precio_fuera_del_rango));
+                    tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
+                    btnAcceptDialog.setEnabled(false);
+                }
+
+            } else if(tipoDocumento.equals(Constants.tipoDoc_proforma) || tipoDocumento.equals(Constants.tipoDoc_preventa)) {
+                if(resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
+                    tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
+                    tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
+                    precioIngresado = priceInserted0;
+                    esPrecioMenorAlLimite = false;
+                    btnAcceptDialog.setEnabled(true);
+                } else if(resultComparePrices.equals(Constants.comparar_esMenor)) {
+                    tvCompareResult.setText(context.getResources().getString(R.string.precio_fuera_del_rango));
+                    tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
+                    precioIngresado = priceInserted0;
+                    esPrecioMenorAlLimite = true;
+                    btnAcceptDialog.setEnabled(true);
+                }
+            }
+
         } catch (Exception e) {
             Log.e(Constants.log_arrow_error, e.toString());
         }
 
+        tvProductCode.setText(product.getId());
         tvProductDes.setText(product.getNombre());
 
-        precioIngresado = product.getNuevoPrecio();
+        //precioIngresado = product.getNuevoPrecio();
         //precioIngresado = product.getPrecio();
+
+        precioIngresado = product.getPrecioRecalculado();
+
         edtPrice.setText(String.valueOf(Double.parseDouble(precioIngresado)));
 
-        String cp = Common.comparePrices(Double.valueOf(product.getNuevoPrecio()), Double.valueOf(product.getPre_inferior()));
+        /*String cp = Common.comparePrices(Double.valueOf(product.getNuevoPrecio()), Double.valueOf(product.getPre_inferior()));
         if(cp.equals(Constants.comparar_esMayor) || cp.equals(Constants.comparar_esIgual)) {
             tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
             tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
         } else if(cp.equals(Constants.comparar_esMenor)) {
             tvCompareResult.setText(context.getResources().getString(R.string.precio_fuera_del_rango));
             tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
-        }
+        }*/
 
         edtPrice.addTextChangedListener(new TextWatcher() {
             @Override

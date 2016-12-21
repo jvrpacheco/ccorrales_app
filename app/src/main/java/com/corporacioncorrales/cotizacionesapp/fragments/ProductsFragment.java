@@ -420,10 +420,16 @@ public class ProductsFragment extends Fragment {
         //tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_dentro_del_rango));
         //tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.verde));
 
-        if(Integer.valueOf(numberOfDaysToSend) <= Integer.valueOf(maxDaysFromClient)) {
-            tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_dentro_del_rango));
-            tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.verde));
-            btnAcceptDialog.setEnabled(true);
+        if(Integer.valueOf(maxDaysFromClient)>0) {
+            if(Integer.valueOf(numberOfDaysToSend) <= Integer.valueOf(maxDaysFromClient)) {
+                tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_dentro_del_rango));
+                tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.verde));
+                btnAcceptDialog.setEnabled(true);
+            } else {
+                tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_fuera_del_rango));
+                tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.rojo));
+                btnAcceptDialog.setEnabled(false);
+            }
         } else {
             tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_fuera_del_rango));
             tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.rojo));
@@ -486,6 +492,13 @@ public class ProductsFragment extends Fragment {
         btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                /*if(Integer.valueOf(maxDaysFromClient)>0) {
+                    numberOfDaysToSend = String.valueOf(nroDiasIngresado);
+                } else {
+                    numberOfDaysToSend = "0";
+                }*/
+
                 numberOfDaysToSend = String.valueOf(nroDiasIngresado);
                 btnSelectNumberOfDays.setText(numberOfDaysToSend);
                 dialog.dismiss();
@@ -767,6 +780,7 @@ public class ProductsFragment extends Fragment {
                                 //Luego de la carga del historial, muestro el valor de dias.... si cambio de tipo de pago
                                 //debo seguir mostrando ese numero que vino del historial o resetear a 1?
                                 if(!daysSelectedFromHistory.isEmpty()) {  //come from History
+                                    nroDiasIngresado = Integer.valueOf(daysSelectedFromHistory);
                                     numberOfDaysToSend = daysSelectedFromHistory;
                                     btnSelectNumberOfDays.setText(daysSelectedFromHistory);
                                     btnSelectNumberOfDays.setEnabled(true);
