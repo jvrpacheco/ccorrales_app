@@ -26,6 +26,20 @@
             android:layout_height="match_parent"
             android:background="@android:color/holo_orange_dark"/>
         <RelativeLayout
+            android:layout_width="@dimen/warehouse_column_width"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/ivWarehouse"
+                android:src="@mipmap/ic_launcher"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_orange_dark"/>
+        <RelativeLayout
             android:layout_width="75dp"
             android:layout_height="match_parent">
             <TextView

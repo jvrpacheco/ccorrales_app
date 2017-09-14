@@ -27,4 +27,6 @@
     <!--<dimen name="unit_presentation_row_width">120dp</dimen>-->
     <dimen name="unit_stock_row_width">120dp</dimen>
 
+    <dimen name="warehouse_column_width">30dp</dimen>
+
 </resources>
