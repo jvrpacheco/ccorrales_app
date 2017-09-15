@@ -2,22 +2,31 @@
 <items version="2" >
 
     <item
-        is-multidex="true"
-        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.5.2/7446d06ec8d4f7ffcc53f1da37c95f200dcb9387/picasso-2.5.2.jar"
-        jumboMode="true"
+        is-multidex="false"
+        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit2/retrofit/2.3.0/bcacde6a8ccedcc56c127403d26b76072fe6214d/retrofit-2.3.0.jar"
+        jumboMode="false"
         optimize="true"
         revision="23.0.3"
-        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/picasso-2.5.2_b1eb0a5829105517b4c99af66ee7218418bbd001/classes.dex" />
+        sha1="bcacde6a8ccedcc56c127403d26b76072fe6214d">
+        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/retrofit-2.3.0_82aa4f51a7835cda14ad2ede966015fa3a8f10cf.jar" />
     </item>
     <item
-        is-multidex="true"
-        jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.jakewharton/butterknife/8.2.1/jars/classes.jar"
-        jumboMode="true"
+        is-multidex="false"
+        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.8.0/5a11f020cce2d11eb71ba916700600e18c4547e7/okhttp-3.8.0.jar"
+        jumboMode="false"
         optimize="true"
         revision="23.0.3"
-        sha1="ca5e58104f56f918f0fb3a5b1b371ab599ae56b2">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.jakewharton-butterknife-8.2.1_909e569a04673a867744db63bfd781676b763d01/classes.dex" />
+        sha1="5a11f020cce2d11eb71ba916700600e18c4547e7">
+        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/okhttp-3.8.0_5fce41602d0a27534082e8076cae8ba0036158ca.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.13.0/a9283170b7305c8d92d25aff02a6ab7e45d06cbe/okio-1.13.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="a9283170b7305c8d92d25aff02a6ab7e45d06cbe">
+        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/okio-1.13.0_6c668fe09d7dba0f17bc6ce12418623057759ea8.jar" />
     </item>
     <item
         is-multidex="false"
@@ -29,15 +38,6 @@
         <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/com.jakewharton-butterknife-8.2.1_909e569a04673a867744db63bfd781676b763d01.jar" />
     </item>
     <item
-        is-multidex="true"
-        jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="e5f1db208e1e0802e800f77f02694264906c5c3f">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_c2f2f71276e32b53cdeccc3bcc2403aeb68b37c5/classes.dex" />
-    </item>
-    <item
         is-multidex="false"
         jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.5.2/7446d06ec8d4f7ffcc53f1da37c95f200dcb9387/picasso-2.5.2.jar"
         jumboMode="false"
@@ -45,24 +45,6 @@
         revision="23.0.3"
         sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
         <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/picasso-2.5.2_b1eb0a5829105517b4c99af66ee7218418bbd001.jar" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.4.0/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="d9ecde39b460470e655de6e47c05573d2d5a8bfb">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-cardview-v7-23.4.0_281de8d4c0207f406fed280ba6d5ff27ec06e5fd/classes.dex" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.3.0/2b802460eea20f8f2ad9c08c74e0f14718e88aa9/okhttp-3.3.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="23.0.3"
-        sha1="2b802460eea20f8f2ad9c08c74e0f14718e88aa9">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/okhttp-3.3.0_cd7c66bd046643129181323bb053b661e9ec9260.jar" />
     </item>
     <item
         is-multidex="false"
@@ -83,33 +65,6 @@
         <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-23.4.0_461996588507fd86f0977061fa7e1e99121ea860.jar" />
     </item>
     <item
-        is-multidex="true"
-        jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.4.0/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-23.4.0_461996588507fd86f0977061fa7e1e99121ea860/classes.dex" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit2/retrofit/2.1.0/2de7cd8b95b7021b1d597f049bcb422055119f2c/retrofit-2.1.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="23.0.3"
-        sha1="2de7cd8b95b7021b1d597f049bcb422055119f2c">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/retrofit-2.1.0_8909d7435053d23ffe99a14ec8c6ac8ad2d9df32.jar" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit2/retrofit/2.1.0/2de7cd8b95b7021b1d597f049bcb422055119f2c/retrofit-2.1.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="2de7cd8b95b7021b1d597f049bcb422055119f2c">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/retrofit-2.1.0_8909d7435053d23ffe99a14ec8c6ac8ad2d9df32/classes.dex" />
-    </item>
-    <item
         is-multidex="false"
         jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.4.0/jars/classes.jar"
         jumboMode="false"
@@ -117,15 +72,6 @@
         revision="23.0.3"
         sha1="d9ecde39b460470e655de6e47c05573d2d5a8bfb">
         <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/com.android.support-cardview-v7-23.4.0_281de8d4c0207f406fed280ba6d5ff27ec06e5fd.jar" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.jakewharton/butterknife-annotations/8.2.1/d6f54d76edfbe779a50a8636b10fd3f555d8f780/butterknife-annotations-8.2.1.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="d6f54d76edfbe779a50a8636b10fd3f555d8f780">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/butterknife-annotations-8.2.1_40a67063dd8852142957e07ed0c649b38a1ec3cf/classes.dex" />
     </item>
     <item
         is-multidex="false"
@@ -137,40 +83,13 @@
         <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/support-annotations-24.0.0_3c8db40d579e0919a0ea9c0c0168761b4e4a3bbb.jar" />
     </item>
     <item
-        is-multidex="true"
-        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.7/751f548c85fa49f330cecbb1875893f971b33c4e/gson-2.7.jar"
-        jumboMode="true"
+        is-multidex="false"
+        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit2/converter-gson/2.3.0/9e09011e9767bb76b5e27c9b8223476b93b14631/converter-gson-2.3.0.jar"
+        jumboMode="false"
         optimize="true"
         revision="23.0.3"
-        sha1="751f548c85fa49f330cecbb1875893f971b33c4e">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/gson-2.7_3ec6e68e810ecd69b734a8166239668da31bd330/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/24.0.0/support-annotations-24.0.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="2943c74db6d4346ab8c6531adac91fa05c137c40">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-24.0.0_3c8db40d579e0919a0ea9c0c0168761b4e4a3bbb/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="48524708a06de6fcda2fd29507286b465717465e">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_9eb8ab511fb971d4087910977d22db1ba64adf3a/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.android.support/design/23.4.0/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="5326d9a850d491714fef8cbfaa9ea3416f0bf0d2">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-design-23.4.0_ffb2d83d2c9c05ce45a922d8f8c8f172b2b12821/classes.dex" />
+        sha1="9e09011e9767bb76b5e27c9b8223476b93b14631">
+        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/converter-gson-2.3.0_81f0389c9458ccd39e9c20da5644178c9de9356e.jar" />
     </item>
     <item
         is-multidex="false"
@@ -191,33 +110,6 @@
         <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/gson-2.7_3ec6e68e810ecd69b734a8166239668da31bd330.jar" />
     </item>
     <item
-        is-multidex="true"
-        jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.4.0/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-vector-drawable-23.4.0_02a4f7daa3b5d61f8e46fdc145afc57e7578bc99/classes.dex" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.8.0/5ea7af56cc7c567ed9856d99efb30740e9b17ff/okio-1.8.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="23.0.3"
-        sha1="05ea7af56cc7c567ed9856d99efb30740e9b17ff">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/okio-1.8.0_aa91493993cffc4c372a98ec084a810832abdc88.jar" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.8.0/5ea7af56cc7c567ed9856d99efb30740e9b17ff/okio-1.8.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="05ea7af56cc7c567ed9856d99efb30740e9b17ff">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/okio-1.8.0_aa91493993cffc4c372a98ec084a810832abdc88/classes.dex" />
-    </item>
-    <item
         is-multidex="false"
         jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.4.0/jars/classes.jar"
         jumboMode="false"
@@ -227,15 +119,6 @@
         <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/com.android.support-recyclerview-v7-23.4.0_03be91457febf4b272576ae05e3169daadfeefb1.jar" />
     </item>
     <item
-        is-multidex="true"
-        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.3.0/2b802460eea20f8f2ad9c08c74e0f14718e88aa9/okhttp-3.3.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="2b802460eea20f8f2ad9c08c74e0f14718e88aa9">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/okhttp-3.3.0_cd7c66bd046643129181323bb053b661e9ec9260/classes.dex" />
-    </item>
-    <item
         is-multidex="false"
         jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.4.0/jars/libs/internal_impl-23.4.0.jar"
         jumboMode="false"
@@ -243,33 +126,6 @@
         revision="23.0.3"
         sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
         <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/internal_impl-23.4.0_41c6e263f220b0c5684016832196934e335d525e.jar" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.4.0/jars/libs/internal_impl-23.4.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-23.4.0_41c6e263f220b0c5684016832196934e335d525e/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.4.0/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-recyclerview-v7-23.4.0_03be91457febf4b272576ae05e3169daadfeefb1/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.4.0/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-animated-vector-drawable-23.4.0_a911ad2973226ceb515af60e127d520ed09ba4df/classes.dex" />
     </item>
     <item
         is-multidex="false"
@@ -288,33 +144,6 @@
         revision="23.0.3"
         sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
         <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-23.4.0_5d8d2ae49c0043f1579f374a882e1ee3595396f0.jar" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit2/converter-gson/2.1.0/aa557d71ead91cbf26e0c316a0f593d168303309/converter-gson-2.1.0.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="aa557d71ead91cbf26e0c316a0f593d168303309">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/converter-gson-2.1.0_57989d5f16699d8055c7bc631a2e07ac6cd7a0ed/classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
-        jar="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.4.0/jars/classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.3"
-        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-23.4.0_5d8d2ae49c0043f1579f374a882e1ee3595396f0/classes.dex" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/victor/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit2/converter-gson/2.1.0/aa557d71ead91cbf26e0c316a0f593d168303309/converter-gson-2.1.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="23.0.3"
-        sha1="aa557d71ead91cbf26e0c316a0f593d168303309">
-        <dex dex="/Users/victor/Documents/AndroidProjects/ccorrales_app/app/build/intermediates/pre-dexed/debug/converter-gson-2.1.0_57989d5f16699d8055c7bc631a2e07ac6cd7a0ed.jar" />
     </item>
     <item
         is-multidex="false"
