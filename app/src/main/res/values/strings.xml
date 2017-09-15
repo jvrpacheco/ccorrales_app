@@ -59,6 +59,11 @@
     <string name="nro_dias_ingresado_vacio">Por favor ingrese el número de días.</string>
     //dialog stock virtual
     <string name="sin_stock_virtual">No se encontro stock virtual para este producto</string>
+    //dialog Seleccion de Almacen
+    <string name="warehouse_selection_tittle">SELECCION DE ALMACEN</string>
+    <string name="warehouse_tittle">Almacén</string>
+    <string name="warehouse_quantity_header">Cantidad</string>
+    <string name="warehouse_stock_header">Stock</string>
 
     <string-array name="array_rubros">
         <item>Aluminio</item>
