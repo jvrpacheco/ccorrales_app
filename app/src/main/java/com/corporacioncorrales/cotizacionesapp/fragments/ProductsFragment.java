@@ -813,6 +813,7 @@ public class ProductsFragment extends Fragment {
         if (comeFromHistorial) {
             //set the spinner value only when come from Historial
             if (initialValue != null && !initialValue.isEmpty()) {
+                //TODO AGREGAR BOLETA MISMA FUNCIONALIDAD DE LA FACTURA ENVIANDO OTRO CODIGO
                 if (initialValue.equals(Constants.tipoDoc_factura)) {
                     spTipoDoc.setSelection(0);
                 } else if (initialValue.equals(Constants.tipoDoc_proforma)) {

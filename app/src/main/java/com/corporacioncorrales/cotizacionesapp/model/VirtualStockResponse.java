@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by victor on 8/10/16.
+ * Created by victor on 9/12/17.
  */
 public class VirtualStockResponse {
 

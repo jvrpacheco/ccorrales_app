@@ -12,9 +12,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.corporacioncorrales.cotizacionesapp.R;
@@ -162,5 +164,10 @@ public class Common {
         } else {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
         }
+    }
+
+    public static void logFailureServerCall(Context ctx,String errorMessage) {
+        Common.showToastMessage(ctx, ctx.getResources().getString(R.string.error_on_server));
+        Log.e(Constants.log_arrow_response, errorMessage);
     }
 }

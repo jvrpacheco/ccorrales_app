@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,17 +31,20 @@ import com.corporacioncorrales.cotizacionesapp.model.PricesHistoryResponse;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.UnitsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.VirtualStockResponse;
+import com.corporacioncorrales.cotizacionesapp.model.WarehouseResponse;
 import com.corporacioncorrales.cotizacionesapp.networking.NewPriceApi;
 import com.corporacioncorrales.cotizacionesapp.networking.ProductsApi;
 import com.corporacioncorrales.cotizacionesapp.networking.UnitsApi;
 import com.corporacioncorrales.cotizacionesapp.networking.VirtualStockApi;
+import com.corporacioncorrales.cotizacionesapp.networking.WarehousesApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -93,16 +98,16 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.tvDescription.setText(product.getNombre());
 
         //Nuevo Precio y Cantidad Solicitada
-        if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
+        if (product.getCantidadSolicitada() == null && product.getNuevoPrecio() != null) {
 
             holder.ivChangeQuantity.setVisibility(View.GONE);
             holder.tvCantidadSolicitada.setText("0");
             //holder.tvNewPrice.setText(product.getNuevoPrecio());
             holder.tvNewPrice.setText(product.getPrecioRecalculado());
 
-        } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()==null) {
+        } else if (product.getCantidadSolicitada() != null && product.getNuevoPrecio() == null) {
 
-            if(product.getCantidad().equals("0")) {
+            if (product.getCantidad().equals("0")) {
                 holder.ivChangeQuantity.setVisibility(View.GONE);
                 holder.tvCantidadSolicitada.setText("0");
                 //holder.tvNewPrice.setText(product.getPrecio());
@@ -114,10 +119,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 holder.tvNewPrice.setText(product.getPrecioRecalculado());
             } //
 
-        } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
+        } else if (product.getCantidadSolicitada() == null && product.getNuevoPrecio() == null) {
 
-            if(tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
-                if(product.getCantidad().equals("0")) {
+            if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                if (product.getCantidad().equals("0")) {
                     holder.ivChangeQuantity.setVisibility(View.GONE);
                     holder.tvCantidadSolicitada.setText("0");
                     //holder.tvNewPrice.setText(product.getPrecio());
@@ -128,7 +133,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     //holder.tvNewPrice.setText(product.getPrecio());
                     holder.tvNewPrice.setText(product.getPrecioRecalculado());
                 }
-            } else if(tipoDocumento.equals(Constants.tipoDoc_preventa)) {
+            } else if (tipoDocumento.equals(Constants.tipoDoc_preventa)) {
                 holder.ivChangeQuantity.setVisibility(View.VISIBLE);
                 holder.tvCantidadSolicitada.setText("0");
                 //holder.tvNewPrice.setText(product.getPrecio());
@@ -136,10 +141,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
 
 
-        } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
+        } else if (product.getCantidadSolicitada() != null && product.getNuevoPrecio() != null) {
 
-            if(tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
-                if(product.getNuevaCantidad().equals("0")) {
+            if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                if (product.getNuevaCantidad().equals("0")) {
                     holder.ivChangeQuantity.setVisibility(View.GONE);
                     //product.setCantidadSolicitada("0");
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
@@ -151,7 +156,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     //holder.tvNewPrice.setText(product.getNuevoPrecio());
                     holder.tvNewPrice.setText(product.getPrecioRecalculado());
                 }
-            } else if(tipoDocumento.equals(Constants.tipoDoc_preventa)) {
+            } else if (tipoDocumento.equals(Constants.tipoDoc_preventa)) {
                 holder.ivChangeQuantity.setVisibility(View.VISIBLE);
                 //product.setCantidadSolicitada("0");
                 holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
@@ -181,7 +186,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }*/
         }
 
-        if(product.getEsPrecioMenorAlLimite()) {
+        if (product.getEsPrecioMenorAlLimite()) {
             holder.ivChangePrice.setImageResource(R.drawable.hand_red_52);
         } else {
             holder.ivChangePrice.setImageResource(R.drawable.hand_green_52);
@@ -193,40 +198,40 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
         //Precio total
         //if(Integer.parseInt(product.getCantidad())>0) {
-            try {
-                Double total = 0.00;
-                if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()!=null) {
-                    holder.tvCantidadSolicitada.setText("0");
-                    //holder.tvNewPrice.setText(product.getNuevoPrecio());
-                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
-                    holder.tvTotalPrice.setText("0.00");
+        try {
+            Double total = 0.00;
+            if (product.getCantidadSolicitada() == null && product.getNuevoPrecio() != null) {
+                holder.tvCantidadSolicitada.setText("0");
+                //holder.tvNewPrice.setText(product.getNuevoPrecio());
+                holder.tvNewPrice.setText(product.getPrecioRecalculado());
+                holder.tvTotalPrice.setText("0.00");
 
-                } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()==null) {
-                    holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
-                    //holder.tvNewPrice.setText(product.getPrecio());
-                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
-                    total = Double.valueOf(product.getPrecioRecalculado()) * Integer.valueOf(product.getCantidadSolicitada());
-                    holder.tvTotalPrice.setText(String.format( Constants.round_two_decimals, total));
+            } else if (product.getCantidadSolicitada() != null && product.getNuevoPrecio() == null) {
+                holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
+                //holder.tvNewPrice.setText(product.getPrecio());
+                holder.tvNewPrice.setText(product.getPrecioRecalculado());
+                total = Double.valueOf(product.getPrecioRecalculado()) * Integer.valueOf(product.getCantidadSolicitada());
+                holder.tvTotalPrice.setText(String.format(Constants.round_two_decimals, total));
 
-                } else if(product.getCantidadSolicitada()==null && product.getNuevoPrecio()==null) {
-                    holder.tvCantidadSolicitada.setText("0");
-                    product.setCantidadSolicitada("0");
-                    //holder.tvNewPrice.setText(product.getPrecio());
-                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
-                    total = Double.valueOf(product.getPrecioRecalculado());
-                    holder.tvTotalPrice.setText(String.format(Constants.round_two_decimals, total));
+            } else if (product.getCantidadSolicitada() == null && product.getNuevoPrecio() == null) {
+                holder.tvCantidadSolicitada.setText("0");
+                product.setCantidadSolicitada("0");
+                //holder.tvNewPrice.setText(product.getPrecio());
+                holder.tvNewPrice.setText(product.getPrecioRecalculado());
+                total = Double.valueOf(product.getPrecioRecalculado());
+                holder.tvTotalPrice.setText(String.format(Constants.round_two_decimals, total));
 
-                } else if(product.getCantidadSolicitada()!=null && product.getNuevoPrecio()!=null) {
-                    holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
-                    //holder.tvNewPrice.setText(product.getNuevoPrecio());
-                    holder.tvNewPrice.setText(product.getPrecioRecalculado());
-                    total = Double.valueOf(product.getPrecioRecalculado()) * Integer.valueOf(product.getCantidadSolicitada());
-                    holder.tvTotalPrice.setText(String.format(Constants.round_two_decimals, total));
-                }
-
-            } catch (Exception ex) {
-                Log.e(Constants.log_arrow_error, ex.toString());
+            } else if (product.getCantidadSolicitada() != null && product.getNuevoPrecio() != null) {
+                holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
+                //holder.tvNewPrice.setText(product.getNuevoPrecio());
+                holder.tvNewPrice.setText(product.getPrecioRecalculado());
+                total = Double.valueOf(product.getPrecioRecalculado()) * Integer.valueOf(product.getCantidadSolicitada());
+                holder.tvTotalPrice.setText(String.format(Constants.round_two_decimals, total));
             }
+
+        } catch (Exception ex) {
+            Log.e(Constants.log_arrow_error, ex.toString());
+        }
         //} else {
         //    holder.tvTotalPrice.setText("0");
         //}
@@ -234,10 +239,16 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.ivRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 product.setSelected(false);
                 removeItem(product);
                 ProductsFragment.productsAdapter.refreshItem(product, false);  // update the left list!
+            }
+        });
+
+        holder.ivWarehouse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showSelectWarehouseDialog(mContext, product.getId(), product.getIdUnidad());
             }
         });
 
@@ -245,7 +256,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             @Override
             public void onClick(View v) {
 
-                if(!product.getPrecioProductResponse().isEmpty() && !product.getPre_inferior().isEmpty()) {
+                if (!product.getPrecioProductResponse().isEmpty() && !product.getPre_inferior().isEmpty()) {
                     showChangePriceDialog(mContext, product, position, product.getPrecioProductResponse(), product.getPre_inferior());
                 } else {
                     Common.showToastMessage(mContext, "No existe precio o precio inferior para este producto");
@@ -257,11 +268,11 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             @Override
             public void onClick(View v) {
 
-                if(tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
-                    if(!product.getNuevaCantidad().isEmpty() && Integer.parseInt(product.getNuevaCantidad())>0) {
+                if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                    if (!product.getNuevaCantidad().isEmpty() && Integer.parseInt(product.getNuevaCantidad()) > 0) {
                         showChangeQuantityDialog(mContext, product, position);
                     }
-                } else if(tipoDocumento.equals(Constants.tipoDoc_preventa)) {
+                } else if (tipoDocumento.equals(Constants.tipoDoc_preventa)) {
                     showChangeQuantityDialog(mContext, product, position);
                 }
             }
@@ -294,20 +305,21 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         return productsList;
     }
 
-    public static class QuotationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class QuotationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvId, tvUnidadVenta, tvDescription, tvPrice, tvQuantity, tvNewPrice, tvCantidadSolicitada, tvTotalPrice;
-        ImageView ivRemove, ivArrival, ivChangePrice, ivChangeQuantity, ivVirtualStock, ivShowDialogUnidad;
+        ImageView ivRemove, ivWarehouse, ivArrival, ivChangePrice, ivChangeQuantity, ivVirtualStock, ivShowDialogUnidad;
 
         public QuotationViewHolder(View view) {
             super(view);
-            tvId = (TextView)view.findViewById(R.id.tvId);
-            tvUnidadVenta = (TextView)view.findViewById(R.id.tvUnidadVenta);
-            tvDescription = (TextView)view.findViewById(R.id.tvDescription);
-            tvNewPrice = (TextView)view.findViewById(R.id.tvNewPrice);
-            tvQuantity = (TextView)view.findViewById(R.id.tvQuantity);
-            tvTotalPrice = (TextView)view.findViewById(R.id.tvTotalPrice);
-            tvCantidadSolicitada = (TextView)view.findViewById(R.id.tvCantidadSolicitada);
+            tvId = (TextView) view.findViewById(R.id.tvId);
+            tvUnidadVenta = (TextView) view.findViewById(R.id.tvUnidadVenta);
+            tvDescription = (TextView) view.findViewById(R.id.tvDescription);
+            tvNewPrice = (TextView) view.findViewById(R.id.tvNewPrice);
+            tvQuantity = (TextView) view.findViewById(R.id.tvQuantity);
+            tvTotalPrice = (TextView) view.findViewById(R.id.tvTotalPrice);
+            tvCantidadSolicitada = (TextView) view.findViewById(R.id.tvCantidadSolicitada);
             ivRemove = (ImageView) view.findViewById(R.id.ivRemove);
+            ivWarehouse = (ImageView) view.findViewById(R.id.ivWarehouse);
             ivChangePrice = (ImageView) view.findViewById(R.id.ivChangePrice);
             ivChangeQuantity = (ImageView) view.findViewById(R.id.ivChangeQuantity);
             ivVirtualStock = (ImageView) view.findViewById(R.id.ivVirtualStock);
@@ -322,7 +334,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     public void removeItem(ProductsResponse product) {
         int currPosition = productsList.indexOf(product);
-        if(currPosition > -1) {
+        if (currPosition > -1) {
             productsList.remove(currPosition);
             notifyItemRemoved(currPosition);
             updateTotalProducts();
@@ -354,7 +366,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     }
 
     public void resetProducts() {
-        for(int i=0; i<productsList.size(); i++) {
+        for (int i = 0; i < productsList.size(); i++) {
             resetProduct(productsList.get(i));
         }
     }
@@ -365,13 +377,13 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_quotation_change_quantity);
 
-        final Button btnAcceptDialog = (Button)dialog.findViewById(R.id.btnAccept);
-        final Button btnCloseDialog = (Button)dialog.findViewById(R.id.btnClose);
-        final TextView tvProductDes = (TextView)dialog.findViewById(R.id.tvProductDes);
-        final EditText edtQuantity = (EditText)dialog.findViewById(R.id.edtQuantity);
-        final TextView tvStock = (TextView)dialog.findViewById(R.id.tvStock);
-        final TextView tvCompareResult = (TextView)dialog.findViewById(R.id.tvCompareResult);
-        final TextView tvProductCode = (TextView)dialog.findViewById(R.id.tvProductCode);
+        final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
+        final Button btnCloseDialog = (Button) dialog.findViewById(R.id.btnClose);
+        final TextView tvProductDes = (TextView) dialog.findViewById(R.id.tvProductDes);
+        final EditText edtQuantity = (EditText) dialog.findViewById(R.id.edtQuantity);
+        final TextView tvStock = (TextView) dialog.findViewById(R.id.tvStock);
+        final TextView tvCompareResult = (TextView) dialog.findViewById(R.id.tvCompareResult);
+        final TextView tvProductCode = (TextView) dialog.findViewById(R.id.tvProductCode);
         final ImageView ivUpQuantity = (ImageView) dialog.findViewById(R.id.ivUpQuantity);
         final ImageView ivDownQuantity = (ImageView) dialog.findViewById(R.id.ivDownQuantity);
         //final String stock = product.getCantidad();
@@ -382,7 +394,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         quantityInserted = product.getCantidadSolicitada();
         tvStock.setText(stock);
 
-        if(Integer.valueOf(quantityInserted) > 0) {
+        if (Integer.valueOf(quantityInserted) > 0) {
             edtQuantity.setText(quantityInserted);
         } else {
             edtQuantity.setText(quantityInserted);
@@ -429,7 +441,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             public void onClick(View view) {
                 try {
                     int newValue = Integer.valueOf(quantityInserted) - Constants.baseInteger;
-                    if(newValue >= 0) {
+                    if (newValue >= 0) {
                         quantityInserted = String.valueOf(newValue);
                         edtQuantity.setText(String.valueOf(newValue));
                     }
@@ -464,10 +476,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     }
 
     private void checkQuantity(Context context, TextView tvCompareResult, Button btnAcceptDialog, String qInserted, String stock) {
-        if(!qInserted.isEmpty()) {
-            if(Integer.parseInt(qInserted)>0) {
-                if(tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
-                    if(Integer.parseInt(qInserted) <= Integer.parseInt(stock)) {
+        if (!qInserted.isEmpty()) {
+            if (Integer.parseInt(qInserted) > 0) {
+                if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                    if (Integer.parseInt(qInserted) <= Integer.parseInt(stock)) {
                         tvCompareResult.setText(context.getResources().getString(R.string.cantidad_solicitada_permitida));
                         tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
                         btnAcceptDialog.setEnabled(true);
@@ -478,14 +490,14 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                         btnAcceptDialog.setEnabled(false);
                         //quantityInserted = qInserted;
                     }
-                } else if(tipoDocumento.equals(Constants.tipoDoc_preventa)) {
+                } else if (tipoDocumento.equals(Constants.tipoDoc_preventa)) {
                     Log.d(Constants.log_arrow, "Preventa, no importa si no hay stock. Cualquier cantidad permitida");
                     tvCompareResult.setText(context.getResources().getString(R.string.cantidad_solicitada_permitida));
                     tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
                     btnAcceptDialog.setEnabled(true);
                     quantityInserted = qInserted;
                 }
-            } else if(qInserted.equals("0")){
+            } else if (qInserted.equals("0")) {
                 tvCompareResult.setText(context.getResources().getString(R.string.cantidad_solicitada_mayor_a_cero));
                 tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
                 //tvCompareResult.setVisibility(View.VISIBLE);
@@ -507,15 +519,15 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_quotation_change_price1);
 
-        final Button btnAcceptDialog = (Button)dialog.findViewById(R.id.btnAccept);
-        final Button btnCloseDialog = (Button)dialog.findViewById(R.id.btnClose);
-        final TextView tvPrecio = (TextView)dialog.findViewById(R.id.tvPrecio);
-        final TextView tvPrecioLimiteInferior = (TextView)dialog.findViewById(R.id.tvPrecioLimInferior);
-        final TextView tvPrecioIngresado = (TextView)dialog.findViewById(R.id.tvPrecioIngresado);
-        final TextView tvCompareResult = (TextView)dialog.findViewById(R.id.tvCompareResult);
-        final TextView tvProductDes = (TextView)dialog.findViewById(R.id.tvProductDes);
-        final TextView tvProductCode = (TextView)dialog.findViewById(R.id.tvProductCode);
-        final EditText edtPrice = (EditText)dialog.findViewById(R.id.edtPrice);
+        final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
+        final Button btnCloseDialog = (Button) dialog.findViewById(R.id.btnClose);
+        final TextView tvPrecio = (TextView) dialog.findViewById(R.id.tvPrecio);
+        final TextView tvPrecioLimiteInferior = (TextView) dialog.findViewById(R.id.tvPrecioLimInferior);
+        final TextView tvPrecioIngresado = (TextView) dialog.findViewById(R.id.tvPrecioIngresado);
+        final TextView tvCompareResult = (TextView) dialog.findViewById(R.id.tvCompareResult);
+        final TextView tvProductDes = (TextView) dialog.findViewById(R.id.tvProductDes);
+        final TextView tvProductCode = (TextView) dialog.findViewById(R.id.tvProductCode);
+        final EditText edtPrice = (EditText) dialog.findViewById(R.id.edtPrice);
         final ImageView ivUpPrice = (ImageView) dialog.findViewById(R.id.ivUpPrice);
         final ImageView ivDownPrice = (ImageView) dialog.findViewById(R.id.ivDownPrice);
         final ImageView ivShowPricesHistory = (ImageView) dialog.findViewById(R.id.ivShowPricesHistory);
@@ -534,28 +546,28 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             //el precio ingresado es... respecto al precio minimo
             String priceInserted0 = product.getPrecioRecalculado();
             String resultComparePrices = Common.comparePrices(Double.valueOf(priceInserted0), Double.valueOf(priceMinLimit));
-            if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
-                if(resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
+            if (tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                if (resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
                     tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
                     tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
                     precioIngresado = priceInserted0;
                     esPrecioMenorAlLimite = false;
                     btnAcceptDialog.setEnabled(true);
 
-                } else if(resultComparePrices.equals(Constants.comparar_esMenor)) {
+                } else if (resultComparePrices.equals(Constants.comparar_esMenor)) {
                     tvCompareResult.setText(context.getResources().getString(R.string.precio_fuera_del_rango));
                     tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
                     btnAcceptDialog.setEnabled(false);
                 }
 
-            } else if(tipoDocumento.equals(Constants.tipoDoc_proforma) || tipoDocumento.equals(Constants.tipoDoc_preventa)) {
-                if(resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
+            } else if (tipoDocumento.equals(Constants.tipoDoc_proforma) || tipoDocumento.equals(Constants.tipoDoc_preventa)) {
+                if (resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
                     tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
                     tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
                     precioIngresado = priceInserted0;
                     esPrecioMenorAlLimite = false;
                     btnAcceptDialog.setEnabled(true);
-                } else if(resultComparePrices.equals(Constants.comparar_esMenor)) {
+                } else if (resultComparePrices.equals(Constants.comparar_esMenor)) {
                     tvCompareResult.setText(context.getResources().getString(R.string.precio_fuera_del_rango));
                     tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
                     precioIngresado = priceInserted0;
@@ -603,33 +615,33 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 //Log.v("afterTextChanged ---->", s.toString());
                 String priceInserted = s.toString();
 
-                if(!priceInserted.isEmpty() && !priceInserted.equals(".") && !priceInserted.equals(",")) {
+                if (!priceInserted.isEmpty() && !priceInserted.equals(".") && !priceInserted.equals(",")) {
                     tvPrecioIngresado.setText(priceInserted);
                     //el precio ingresado es... respecto al precio minimo
                     String resultComparePrices = Common.comparePrices(Double.valueOf(priceInserted), Double.valueOf(priceMinLimit));
 
-                    if(tipoDocumento.equals(Constants.tipoDoc_factura)) {
-                        if(resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
+                    if (tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                        if (resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
                             tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
                             tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
                             precioIngresado = priceInserted;
                             esPrecioMenorAlLimite = false;
                             btnAcceptDialog.setEnabled(true);
 
-                        } else if(resultComparePrices.equals(Constants.comparar_esMenor)) {
+                        } else if (resultComparePrices.equals(Constants.comparar_esMenor)) {
                             tvCompareResult.setText(context.getResources().getString(R.string.precio_fuera_del_rango));
                             tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
                             btnAcceptDialog.setEnabled(false);
                         }
 
-                    } else if(tipoDocumento.equals(Constants.tipoDoc_proforma) || tipoDocumento.equals(Constants.tipoDoc_preventa)) {
-                        if(resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
+                    } else if (tipoDocumento.equals(Constants.tipoDoc_proforma) || tipoDocumento.equals(Constants.tipoDoc_preventa)) {
+                        if (resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
                             tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
                             tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
                             precioIngresado = priceInserted;
                             esPrecioMenorAlLimite = false;
                             btnAcceptDialog.setEnabled(true);
-                        } else if(resultComparePrices.equals(Constants.comparar_esMenor)) {
+                        } else if (resultComparePrices.equals(Constants.comparar_esMenor)) {
                             tvCompareResult.setText(context.getResources().getString(R.string.precio_fuera_del_rango));
                             tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.rojo));
                             precioIngresado = priceInserted;
@@ -652,7 +664,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         ivUpPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!precioIngresado.isEmpty() && !precioIngresado.equals(".")) {
+                if (!precioIngresado.isEmpty() && !precioIngresado.equals(".")) {
                     try {
                         Double newValue = Double.valueOf(precioIngresado) + Constants.baseDouble;
                         String np = String.format(Constants.round_three_decimals, newValue);
@@ -668,10 +680,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         ivDownPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!precioIngresado.isEmpty() && !precioIngresado.equals(".")) {
+                if (!precioIngresado.isEmpty() && !precioIngresado.equals(".")) {
                     try {
                         Double newValue = Double.valueOf(precioIngresado) - Constants.baseDouble;
-                        if(newValue >= 0) {
+                        if (newValue >= 0) {
                             String np = String.format(Constants.round_three_decimals, newValue);
                             edtPrice.setText(np.toString());
                             precioIngresado = np;
@@ -693,7 +705,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 refreshItems();
                 dialog.dismiss();*/
 
-                if(Common.isOnline(context)) {
+                if (Common.isOnline(context)) {
                     getNewPriceRecalculatedFromChangePriceDialog(context, dialog, productsProgressBar, product, precioIngresado, btnAcceptDialog, btnCloseDialog);
                 }
             }
@@ -705,7 +717,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 ll_prices.setVisibility(View.GONE);
                 ll_pricesHistory.setVisibility(View.VISIBLE);
 
-                if(Common.isOnline(mContext)) {
+                if (Common.isOnline(mContext)) {
                     loadPricesHistory(
                             rvPricesHistory,
                             //Singleton.getInstance().getUserCode(),
@@ -750,15 +762,15 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         call.enqueue(new Callback<ArrayList<NewPriceResponse>>() {
             @Override
             public void onResponse(Call<ArrayList<NewPriceResponse>> call, Response<ArrayList<NewPriceResponse>> response) {
-                if(response != null) {
-                    if(response.body()!=null) {
+                if (response != null) {
+                    if (response.body() != null) {
                         ArrayList<NewPriceResponse> newPriceReca = response.body();
 
-                        if(newPriceReca.size()>0) {
-                            if(newPriceReca.get(0)!=null && !newPriceReca.get(0).getImporteRecalculado().isEmpty()) {
+                        if (newPriceReca.size() > 0) {
+                            if (newPriceReca.get(0) != null && !newPriceReca.get(0).getImporteRecalculado().isEmpty()) {
                                 String priceRecalculated = newPriceReca.get(0).getImporteRecalculado();
 
-                                if(!priceRecalculated.isEmpty()) {
+                                if (!priceRecalculated.isEmpty()) {
                                     product.setNuevoPrecio(precioIngresado);
                                     product.setPrecioRecalculado(String.format(Constants.round_three_decimals, Double.parseDouble(priceRecalculated)));
                                     product.setEsPrecioMenorAlLimite(esPrecioMenorAlLimite);
@@ -804,15 +816,15 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         call.enqueue(new Callback<ArrayList<NewPriceResponse>>() {
             @Override
             public void onResponse(Call<ArrayList<NewPriceResponse>> call, Response<ArrayList<NewPriceResponse>> response) {
-                if(response != null) {
-                    if(response.body()!=null) {
+                if (response != null) {
+                    if (response.body() != null) {
                         ArrayList<NewPriceResponse> newPriceReca = response.body();
 
-                        if(newPriceReca.size()>0) {
-                            if(newPriceReca.get(0)!=null && !newPriceReca.get(0).getImporteRecalculado().isEmpty()) {
+                        if (newPriceReca.size() > 0) {
+                            if (newPriceReca.get(0) != null && !newPriceReca.get(0).getImporteRecalculado().isEmpty()) {
                                 String priceRecalculated = newPriceReca.get(0).getImporteRecalculado();
 
-                                if(!priceRecalculated.isEmpty()) {
+                                if (!priceRecalculated.isEmpty()) {
                                     product.setNuevaUnidad(unitSelected.getUnidad());
                                     product.setNuevaPresentacion(unitSelected.getPresentacion());
                                     product.setNuevaCantidad(unitSelected.getStock());
@@ -849,7 +861,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         });
     }
 
-    private void loadPricesHistory(final RecyclerView rv, String idCliente ,String idProduct) {
+    private void loadPricesHistory(final RecyclerView rv, String idCliente, String idProduct) {
 
         rv.setHasFixedSize(true);
         Retrofit retrofit = new Retrofit.Builder()
@@ -868,7 +880,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     ArrayList<PricesHistoryResponse> pricesHistory = response.body();
                     pricesHistory = response.body();
 
-                    if(pricesHistory!=null && pricesHistory.size() > 0) {
+                    if (pricesHistory != null && pricesHistory.size() > 0) {
 
                         PricesHistoryAdapter pricesHistoryAdapter = new PricesHistoryAdapter(mContext, pricesHistory);
                         rv.setAdapter(pricesHistoryAdapter);
@@ -899,93 +911,23 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     }
 
-    /*private void updateTotalProducts() {
-
-        if(tvTotalProductos!=null) {
-            //tvTotalProductos.setText(String.valueOf(getItemCount()));
-        }
-        if(tvMontoTotal!=null) {
-            if(productsList.size()>0) {
-                int cont = 0;
-                int minQuantity = -1;
-                Double suma = 0.00;
-                Double precioTotalPorProducto = 0.00;
-                String tipoDoc = Singleton.getInstance().getTipoDocumento();
-
-                try {
-                    for(int i=0; i<productsList.size(); i++) {
-
-                        ProductsResponse product = productsList.get(i);
-
-                        if(tipoDoc.equals(Constants.tipoDoc_factura)) {
-                            minQuantity = 1;
-                        } else if(tipoDoc.equals(Constants.tipoDoc_proforma) || tipoDoc.equals(Constants.tipoDoc_preventa)) {
-                            minQuantity = 0;
-                        }
-
-                        if(Integer.valueOf(product.getCantidadSolicitada()) >= minQuantity) {
-
-                            if(product.getCantidadSolicitada()==null && product.getPrecioRecalculado()!=null) {
-                                precioTotalPorProducto = Double.parseDouble(product.getPrecioRecalculado());
-                            } else if(product.getCantidadSolicitada()!=null && product.getPrecioRecalculado()==null) {
-                                Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
-                                precioTotalPorProducto = Double.parseDouble(product.getPrecioProductResponse()) * cantidadSolicitada;
-                            } else if(product.getCantidadSolicitada()==null && product.getPrecioRecalculado()==null) {
-                                precioTotalPorProducto = Double.parseDouble(product.getPrecioProductResponse());
-                            } else if(product.getCantidadSolicitada()!=null && product.getPrecioRecalculado()!=null) {
-                                Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
-                                precioTotalPorProducto = Double.parseDouble(product.getPrecioRecalculado()) * cantidadSolicitada;
-                            }
-
-                            //cont++;
-                            suma = suma + precioTotalPorProducto;
-                        }
-
-                        if(Integer.valueOf(product.getCantidadSolicitada())>0) {
-                            cont++;
-                        }
-
-                    }
-                    tvTotalProductos.setText(String.valueOf(cont));
-                    tvMontoTotal.setText(String.format(Constants.round_two_decimals, suma));
-
-                    if(!Singleton.getInstance().getSaldoDisponibleCliente().isEmpty()) {
-                        if(isUpToCreditLine(suma, Singleton.getInstance().getSaldoDisponibleCliente())) {
-                            setSaldoDisponibleIndicator(false);
-                        } else {
-                            setSaldoDisponibleIndicator(true);
-                        }
-                    }
-
-                } catch (Exception ex) {
-                    Log.e(Constants.log_arrow_failure, ex.toString());
-                }
-            } else {
-                tvTotalProductos.setText("0");
-                tvMontoTotal.setText("0.00");
-                setSaldoDisponibleIndicator(true);
-            }
-
-        }
-    }*/
-
     private void updateTotalProducts() {
-        if(tvMontoTotal!=null) {
-            if(productsList.size()>0) {
+        if (tvMontoTotal != null) {
+            if (productsList.size() > 0) {
                 int cont = 0;
                 int minQuantity = -1;
                 Double suma = 0.00;
                 Double precioTotalPorProducto = 0.00;
                 String tipoDoc = Singleton.getInstance().getTipoDocumento();
 
-                for(int i=0; i<productsList.size(); i++) {
+                for (int i = 0; i < productsList.size(); i++) {
                     ProductsResponse product = productsList.get(i);
 
-                    if(product.getCantidadSolicitada()!=null && product.getPrecioRecalculado()!=null) {
+                    if (product.getCantidadSolicitada() != null && product.getPrecioRecalculado() != null) {
                         try {
                             Integer cantidadSolicitada = Integer.parseInt(product.getCantidadSolicitada());
                             precioTotalPorProducto = Double.parseDouble(product.getPrecioRecalculado()) * cantidadSolicitada;
-                        }catch (Exception ex) {
+                        } catch (Exception ex) {
                             Log.e(Constants.log_arrow_failure, ex.toString());
                         }
                     }
@@ -997,8 +939,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 tvTotalProductos.setText(String.valueOf(cont));
                 tvMontoTotal.setText(String.format(Constants.round_two_decimals, suma));
 
-                if(!Singleton.getInstance().getSaldoDisponibleCliente().isEmpty()) {
-                    if(isUpToCreditLine(suma, Singleton.getInstance().getSaldoDisponibleCliente())) {
+                if (!Singleton.getInstance().getSaldoDisponibleCliente().isEmpty()) {
+                    if (isUpToCreditLine(suma, Singleton.getInstance().getSaldoDisponibleCliente())) {
                         setSaldoDisponibleIndicator(false);
                     } else {
                         setSaldoDisponibleIndicator(true);
@@ -1020,12 +962,12 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         dialog.setContentView(R.layout.dialog_stock_virtual);
 
         final RecyclerView rvStockVirtual = (RecyclerView) dialog.findViewById(R.id.rvStockVirtual);
-        final ImageView ivClose = (ImageView)dialog.findViewById(R.id.ivClose);
+        final ImageView ivClose = (ImageView) dialog.findViewById(R.id.ivClose);
         final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
         final TextView tvMsgNoVirtualStock = (TextView) dialog.findViewById(R.id.tvMsgNoVirtualStock);
-        progressBar = (ProgressBar)dialog.findViewById(R.id.newProgressBar);
+        progressBar = (ProgressBar) dialog.findViewById(R.id.newProgressBar);
 
-        if(Common.isOnline(mContext)) {
+        if (Common.isOnline(mContext)) {
             getVirtualStock(context, idUsuario, idRubro, idArticulo, rvStockVirtual, tvMsgNoVirtualStock);
         }
 
@@ -1047,6 +989,46 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         dialog.show();
     }
 
+    private void getWarehousesStock(String idArticulo, String unidad, final RecyclerView rvWarehouses) {
+        progressBar.setVisibility(View.VISIBLE);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.url_server)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        WarehousesApi request = retrofit.create(WarehousesApi.class);
+        Call<ArrayList<WarehouseResponse>> call = request.getWarehousesStock(idArticulo, unidad);
+
+        call.enqueue(new Callback<ArrayList<WarehouseResponse>>() {
+            @Override
+            public void onResponse(Call<ArrayList<WarehouseResponse>> call, Response<ArrayList<WarehouseResponse>> response) {
+                if(response!=null) {
+                    ArrayList<WarehouseResponse> warehouses = response.body();
+
+                    if(warehouses.size()>0) {
+                        WarehouseAdapter whAdapter = new WarehouseAdapter(mContext, warehouses);
+                        rvWarehouses.setAdapter(whAdapter);
+                        LinearLayoutManager llm = new LinearLayoutManager(mContext);
+                        rvWarehouses.setLayoutManager(llm);
+                    } else {
+                        Common.showToastMessageShort(mContext, "No existe informacion de almacenes para este producto");
+                    }
+                    progressBar.setVisibility(View.GONE);
+
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    Common.logFailureServerCall(mContext, response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<WarehouseResponse>> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Common.logFailureServerCall(mContext, t.getMessage());
+            }
+        });
+    }
+
     private void getVirtualStock(final Context context, String idUsuario, String idRubro, String idArticulo, final RecyclerView rvStockVirtual, final TextView tvMsgNoVirtualStock) {
         progressBar.setVisibility(View.VISIBLE);
         Retrofit retrofit = new Retrofit.Builder()
@@ -1061,9 +1043,9 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             @Override
             public void onResponse(Call<ArrayList<VirtualStockResponse>> call, Response<ArrayList<VirtualStockResponse>> response) {
 
-                if(response != null) {
+                if (response != null) {
                     ArrayList<VirtualStockResponse> virtualStockList = response.body();
-                    if(virtualStockList!=null && virtualStockList.size()>0) {
+                    if (virtualStockList != null && virtualStockList.size() > 0) {
                         tvMsgNoVirtualStock.setVisibility(View.GONE);
                         VirtualStockAdapter virtualStockAdapter = new VirtualStockAdapter(mContext, virtualStockList);
                         rvStockVirtual.setAdapter(virtualStockAdapter);
@@ -1085,11 +1067,58 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             @Override
             public void onFailure(Call<ArrayList<VirtualStockResponse>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
-                Common.showToastMessage(context, "Error en el servidor");
-                Log.e(Constants.log_arrow_response, t.toString());
+                Common.logFailureServerCall(mContext, t.getMessage());
             }
         });
 
+    }
+
+    public void showSelectWarehouseDialog(final Context context, String idArticulo, String unidad) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_warehouse_selection);
+
+        final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
+        final Button btnCloseDialog = (Button) dialog.findViewById(R.id.btnCancel);
+        //final ProgressBar newProgressBar = (ProgressBar) dialog.findViewById(R.id.newProgressBar);
+        final ImageView ivClose = (ImageView) dialog.findViewById(R.id.ivClose);
+        final RecyclerView rvWarehouses = (RecyclerView) dialog.findViewById(R.id.rvWarehouses);
+        final CheckBox chkTodos = (CheckBox) dialog.findViewById(R.id.chkTodos);
+        progressBar = (ProgressBar) dialog.findViewById(R.id.newProgressBar);
+
+        btnCloseDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        chkTodos.setChecked(true);
+        chkTodos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked) {
+
+                } else {
+
+                }
+            }
+        });
+
+        if(Common.isOnline(context)) {
+            getWarehousesStock(idArticulo, unidad, rvWarehouses);
+        }
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
     public void showUnidadDeMedidaDialog(final Context context, final ProductsResponse product) {
@@ -1111,7 +1140,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         //seteando unidad por defecto
         tvSelectedUnit.setText(String.format("Codigo: %s, Presentacion: %s, Stock: %s", product.getIdUnidad(), product.getPresentacionUnidad(), product.getCantidad()));
 
-        if(Common.isOnline(context)) {
+        if (Common.isOnline(context)) {
             getUnitsPerArticle(context, newProgressBar, product.getId(), rvUnitsPerArticle, tvSelectedUnit);
         }
 
@@ -1119,12 +1148,12 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             @Override
             public void onClick(View view) {
 
-                if(unitsAdapter!=null && unitsAdapter.getUnitSelected()!=null) {
+                if (unitsAdapter != null && unitsAdapter.getUnitSelected() != null) {
 
-                    if(Common.isOnline(context)) {
+                    if (Common.isOnline(context)) {
                         UnitsResponse unitSelected = unitsAdapter.getUnitSelected();
 
-                        if(!product.getNuevoPrecio().isEmpty()) {
+                        if (!product.getNuevoPrecio().isEmpty()) {
                             getNewPriceRecalculatedFromChangeUnitDialog(unitSelected, context, dialog, productsProgressBar, product, product.getNuevoPrecio(), btnAcceptDialog, btnCloseDialog);
                         } else {
                             getNewPriceRecalculatedFromChangeUnitDialog(unitSelected, context, dialog, productsProgressBar, product, product.getPrecioProductResponse(), btnAcceptDialog, btnCloseDialog);
@@ -1177,10 +1206,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             @Override
             public void onResponse(Call<ArrayList<UnitsResponse>> call, Response<ArrayList<UnitsResponse>> response) {
 
-                if(response != null) {
+                if (response != null) {
                     ArrayList<UnitsResponse> unitsPerArticleList = response.body();
 
-                    if(unitsPerArticleList!=null && unitsPerArticleList.size()>0) {
+                    if (unitsPerArticleList != null && unitsPerArticleList.size() > 0) {
                         unitsAdapter = new UnitsAdapter(context, unitsPerArticleList, tvSelectedUnit);
                         rvUnitsPerArticle.setAdapter(unitsAdapter);
                         LinearLayoutManager llm = new LinearLayoutManager(mContext);
@@ -1194,8 +1223,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     newProgressBar.setVisibility(View.GONE);
 
                 } else {
-                    Common.showToastMessage(context, "Error en el servidor");
-                    Log.e(Constants.log_arrow_response, response.message());
+                    Common.logFailureServerCall(mContext, response.message());
                     newProgressBar.setVisibility(View.GONE);
                 }
             }
@@ -1203,8 +1231,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             @Override
             public void onFailure(Call<ArrayList<UnitsResponse>> call, Throwable t) {
                 newProgressBar.setVisibility(View.GONE);
-                Common.showToastMessage(context, "Error en el servidor");
-                Log.e(Constants.log_arrow_response, t.toString());
+                Common.logFailureServerCall(mContext, t.getMessage());
             }
         });
     }
@@ -1223,7 +1250,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     }
 
     private void setSaldoDisponibleIndicator(Boolean saldoSuficiente) {
-        if(saldoSuficiente) {
+        if (saldoSuficiente) {
             tvIndicadorSaldoDisponible.setText(mContext.getString(R.string.saldo_disponible_suficiente));
             tvIndicadorSaldoDisponible.setTextColor(ContextCompat.getColor(mContext, R.color.verde));
         } else {

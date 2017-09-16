@@ -31,6 +31,7 @@ public class Constants {
     public static final String url_get_units = "api/UnidadMedida/consultarunidad";
     public static final String url_get_new_price = "api/PrecioxUnidad/calculoprecio";
     public static final String url_get_payment_options = "api/formapago";
+    public static final String url_get_warehouses_stock = "api/Almacen/veralmacen";
 
     public static final String rubro_aluminio_label = "Aluminio";
     public static final String rubro_aluminio = "00";
@@ -117,6 +118,9 @@ public class Constants {
 
     public static final String todosLosClientes = "Todos";
     public static final String todosLosClientesId = "0";
+
+    public static final String stockAlmacenIdArticulo = "articulo";
+    public static final String stockAlmacenUnidad = "unidad";
 
 
 

@@ -64,6 +64,8 @@
     <string name="warehouse_tittle">Almacén</string>
     <string name="warehouse_quantity_header">Cantidad</string>
     <string name="warehouse_stock_header">Stock</string>
+    //Error en el llamado al server
+    <string name="error_on_server">Error en el servidor</string>
 
     <string-array name="array_rubros">
         <item>Aluminio</item>
