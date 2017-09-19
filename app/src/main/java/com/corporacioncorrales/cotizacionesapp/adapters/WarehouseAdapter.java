@@ -1,19 +1,18 @@
 package com.corporacioncorrales.cotizacionesapp.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
+import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.WarehouseResponse;
-import com.corporacioncorrales.cotizacionesapp.utils.Common;
 
 import java.util.ArrayList;
 
@@ -27,10 +26,12 @@ public class WarehouseAdapter extends RecyclerView.Adapter<WarehouseAdapter.Ware
 
     ArrayList<WarehouseResponse> warehousesList;
     Context mContext;
+    ProductsResponse mProduct;
 
-    public WarehouseAdapter(Context mContext, ArrayList<WarehouseResponse> warehousesList) {
+    public WarehouseAdapter(Context mContext, ArrayList<WarehouseResponse> warehousesList, ProductsResponse product) {
         this.mContext = mContext;
         this.warehousesList = warehousesList;
+        this.mProduct = product;
     }
 
     @Override
@@ -44,51 +45,70 @@ public class WarehouseAdapter extends RecyclerView.Adapter<WarehouseAdapter.Ware
     public void onBindViewHolder(final WarehouseViewHolder holder, final int position) {
         final WarehouseResponse warehouse = warehousesList.get(position);
 
+        holder.tvCodigo.setText(warehouse.getCodigo());
         holder.tvAlmacen.setText(warehouse.getDescripcion());
         holder.tvStock.setText(warehouse.getStock());
 
-        if(Integer.valueOf(warehouse.getStock())<=0) {
+        if (Integer.valueOf(warehouse.getStock()) <= 0) {
             holder.ivSelect.setImageResource(R.drawable.disabled_checkbox_64);
         } else {
-            holder.ivSelect.setOnClickListener(new View.OnClickListener() {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    if(warehouse.isSelected()) {
+                    if (warehouse.isSelected()) {
                         holder.ivSelect.setImageResource(R.drawable.unchecked_checkbox_50);
                         warehouse.setSelected(false);
-                        holder.etCantidad.clearFocus();
-                        holder.etCantidad.setText("");
+                        holder.llHeader.setBackgroundColor(Color.TRANSPARENT);
                     } else {
                         holder.ivSelect.setImageResource(R.drawable.checked_checkbox_50);
+                        holder.llHeader.setBackgroundColor(mContext.getResources().getColor(R.color.turquesa_claro));
                         warehouse.setSelected(true);
-                        holder.etCantidad.requestFocus();
                     }
 
+                    /*for(WarehouseResponse otherWarehouse : warehousesList) {
+                        if(otherWarehouse == warehouse) {
+                            if(warehouse.isSelected()) {
+                                holder.ivSelect.setImageResource(R.drawable.unchecked_checkbox_50);
+                                warehouse.setSelected(false);
+                                holder.llHeader.setBackgroundColor(Color.TRANSPARENT);
+                            } else {
+                                holder.ivSelect.setImageResource(R.drawable.checked_checkbox_50);
+                                warehouse.setSelected(true);
+                                holder.llHeader.setBackgroundColor(mContext.getResources().getColor(R.color.turquesa_claro));
+                            }
+                        } else {
+                            holder.ivSelect.setImageResource(R.drawable.unchecked_checkbox_50);
+                            otherWarehouse.setSelected(false);
+                            holder.llHeader.setBackgroundColor(Color.TRANSPARENT);
+                        }
+                    }*/
+
+                    //setWarehousesSelection(warehouse, holder.ivSelect, holder.llHeader);
                 }
             });
         }
+    }
 
-        holder.etCantidad.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+    private void setWarehousesSelection(WarehouseResponse warehouseSelected, ImageView ivSelect, LinearLayout row) {
+        for(WarehouseResponse otherWarehouse : warehousesList) {
+            if(otherWarehouse == warehouseSelected) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String quantityInserted = editable.toString();
-
-                if(!quantityInserted.isEmpty()) {
-
+                if(warehouseSelected.isSelected()) {
+                    ivSelect.setImageResource(R.drawable.unchecked_checkbox_50);
+                    warehouseSelected.setSelected(false);
+                    row.setBackgroundColor(Color.TRANSPARENT);
+                } else {
+                    ivSelect.setImageResource(R.drawable.checked_checkbox_50);
+                    warehouseSelected.setSelected(true);
+                    row.setBackgroundColor(mContext.getResources().getColor(R.color.turquesa_claro));
                 }
+
+            } else {
+                ivSelect.setImageResource(R.drawable.unchecked_checkbox_50);
+                otherWarehouse.setSelected(false);
+                row.setBackgroundColor(Color.TRANSPARENT);
             }
-        });
+        }
     }
 
     @Override
@@ -97,14 +117,16 @@ public class WarehouseAdapter extends RecyclerView.Adapter<WarehouseAdapter.Ware
     }
 
     public static class WarehouseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @BindView(R.id.ll_header)
+        LinearLayout llHeader;
         @BindView(R.id.ivSelect)
         ImageView ivSelect;
         @BindView(R.id.tvAlmacen)
         TextView tvAlmacen;
         @BindView(R.id.tvStock)
         TextView tvStock;
-        @BindView(R.id.etCantidad)
-        EditText etCantidad;
+        @BindView(R.id.tvCodigo)
+        TextView tvCodigo;
 
         public WarehouseViewHolder(View view) {
             super(view);

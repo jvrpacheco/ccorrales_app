@@ -43,6 +43,7 @@ import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -248,7 +249,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.ivWarehouse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectWarehouseDialog(mContext, product.getId(), product.getIdUnidad());
+                showSelectWarehouseDialog(mContext, product.getId(), product.getIdUnidad(), product);
             }
         });
 
@@ -989,7 +990,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         dialog.show();
     }
 
-    private void getWarehousesStock(String idArticulo, String unidad, final RecyclerView rvWarehouses) {
+    ArrayList<WarehouseResponse> mWarehouses;
+    private void getWarehousesStock(String idArticulo, String unidad, final RecyclerView rvWarehouses, final ProductsResponse product) {
         progressBar.setVisibility(View.VISIBLE);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.url_server)
@@ -1005,8 +1007,9 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 if(response!=null) {
                     ArrayList<WarehouseResponse> warehouses = response.body();
 
-                    if(warehouses.size()>0) {
-                        WarehouseAdapter whAdapter = new WarehouseAdapter(mContext, warehouses);
+                    if(warehouses!=null && warehouses.size()>0) {
+                        mWarehouses = warehouses;
+                        WarehouseAdapter whAdapter = new WarehouseAdapter(mContext, mWarehouses, product);
                         rvWarehouses.setAdapter(whAdapter);
                         LinearLayoutManager llm = new LinearLayoutManager(mContext);
                         rvWarehouses.setLayoutManager(llm);
@@ -1073,7 +1076,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     }
 
-    public void showSelectWarehouseDialog(final Context context, String idArticulo, String unidad) {
+    public void showSelectWarehouseDialog(final Context context, String idArticulo, String unidad, final ProductsResponse product) {
         final Dialog dialog = new Dialog(context);
         dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
@@ -1090,6 +1093,19 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         btnCloseDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                product.setCantidadSolicitada("0");
+
+                String stockDeAlmacenSeleccionado = getStockOfWarehouseSelected(mWarehouses);
+                product.setNuevaCantidad(stockDeAlmacenSeleccionado);
+
+                refreshItems();
                 dialog.dismiss();
             }
         });
@@ -1114,11 +1130,28 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         });
 
         if(Common.isOnline(context)) {
-            getWarehousesStock(idArticulo, unidad, rvWarehouses);
+            getWarehousesStock(idArticulo, unidad, rvWarehouses, product);
         }
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
+    }
+
+    //Retorna el stock del almacen seleccionado
+    private String getStockOfWarehouseSelected(List<WarehouseResponse> warehouses) {
+        String stock = "";
+
+        if(warehouses!=null && warehouses.size()>0) {
+            for(WarehouseResponse warehouse : warehouses) {
+                //TODO validar que solo un almacen este seleccionado
+                if(warehouse.isSelected()) {
+                    stock = warehouse.getStock();
+                    break;
+                }
+            }
+        }
+
+        return stock;
     }
 
     public void showUnidadDeMedidaDialog(final Context context, final ProductsResponse product) {

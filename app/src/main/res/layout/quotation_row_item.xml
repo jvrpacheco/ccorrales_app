@@ -30,7 +30,7 @@
             android:layout_height="match_parent">
             <ImageView
                 android:id="@+id/ivWarehouse"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/warehouse_50"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_centerInParent="true"/>
@@ -63,13 +63,13 @@
             android:layout_height="match_parent">
             <ImageView
                 android:visibility="visible"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:id="@+id/ivShowDialogUnidad"
-                android:src="@drawable/wincha_45x45"
+                android:src="@drawable/surface_50"
                 android:layout_alignParentRight="true"/>
             <TextView
                 android:id="@+id/tvUnidadVenta"
