@@ -122,8 +122,6 @@ public class Constants {
     public static final String stockAlmacenIdArticulo = "articulo";
     public static final String stockAlmacenUnidad = "unidad";
 
-
-
     // en cuanto incrementara o disminuira el precio en el dialogo de cambio de precios
     public static final Double baseDouble = 0.001;
     // en cuanto incrementara o disminuira la cantidad en el dialogo de cambio de cantidad de productos
@@ -133,4 +131,6 @@ public class Constants {
 
     public static final int minNumberOfDays = 0;
     public static final int maxNumberOfDays = 200;
+
+    public static final String todosLosAlmacenes = "0";
 }
