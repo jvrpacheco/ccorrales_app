@@ -145,7 +145,7 @@ public class ClientsFragment extends Fragment {
     }
 
     private void initSpinnerOrden() {
-        ArrayAdapter adapterRubroOrden = ArrayAdapter.createFromResource(getActivity(), R.array.array_orden, android.R.layout.simple_list_item_1);
+        ArrayAdapter adapterRubroOrden = ArrayAdapter.createFromResource(getActivity(), R.array.array_orden, R.layout.spinner_item_products);
         spOrden.setAdapter(adapterRubroOrden);
 
         spOrden.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -175,7 +175,7 @@ public class ClientsFragment extends Fragment {
     }
 
     private void initSpinnerRubro() {
-        ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_rubros, android.R.layout.simple_list_item_1);
+        ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_rubros, R.layout.spinner_item_products);
         spRubro.setAdapter(adapterRubroType);
 
         spRubro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

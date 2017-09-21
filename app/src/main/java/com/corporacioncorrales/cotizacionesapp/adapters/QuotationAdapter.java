@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
@@ -61,7 +62,6 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     Context mContext;
     ArrayList<ProductsResponse> productsList;
     private ProgressBar progressBar;
-    private AppCompatActivity mActivity;
     private TextView tvTotalProductos;
     private TextView tvMontoTotal;
     private TextView tvIndicadorSaldoDisponible;
@@ -911,7 +911,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     }
 
     ArrayList<WarehouseResponse> mWarehouses;
-    private void getWarehousesStock(String idArticulo, String unidad, final RecyclerView rvWarehouses, final ProductsResponse product/*, final CheckBox chkTodos*/) {
+    private void getWarehousesStock(String idArticulo, String unidad, final RecyclerView rvWarehouses, final ProductsResponse product, final ImageView ivTodos) {
         progressBar.setVisibility(View.VISIBLE);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.url_server)
@@ -929,17 +929,25 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
                     if(warehouses!=null && warehouses.size()>0) {
                         mWarehouses = warehouses;
-                        warehousesAdapter = new WarehouseAdapter(mContext, mWarehouses, product);
+
+                        if(product.getIdAlmacenAsociado().equals(Constants.todosLosAlmacenes)) {
+                            ivTodos.setBackgroundResource(R.drawable.checked_checkbox_50);
+                        } else {
+                            ivTodos.setBackgroundResource(R.drawable.unchecked_checkbox_50);
+
+                            for(WarehouseResponse warehouse : mWarehouses) {
+                                if(warehouse.getCodigo().equals(product.getIdAlmacenAsociado())) {
+                                    warehouse.setSelected(true);
+                                }
+                            }
+                        }
+                        ivTodos.setEnabled(true);
+
+                        warehousesAdapter = new WarehouseAdapter(mContext, mWarehouses, product, ivTodos);
                         rvWarehouses.setAdapter(warehousesAdapter);
                         LinearLayoutManager llm = new LinearLayoutManager(mContext);
                         rvWarehouses.setLayoutManager(llm);
 
-                        /*if(warehousesAdapter.getSelectedWarehouse()!=null) {
-                            //hay un almacen seleccionado...
-                            chkTodos.setChecked(false);
-                        } else {
-                            chkTodos.setChecked(true);
-                        }*/
                     } else {
                         Common.showToastMessageShort(mContext, "No existe informacion de almacenes para este producto");
                     }
@@ -1002,6 +1010,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     }
 
+    //boolean isTodosChecked = false;
     public void showSelectWarehouseDialog(final Context context, String idArticulo, String unidad, final ProductsResponse product) {
         final Dialog dialog = new Dialog(context);
         dialog.setCanceledOnTouchOutside(false);
@@ -1022,27 +1031,45 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
         });
 
+
+        if(product.getIdAlmacenAsociado().equals(Constants.todosLosAlmacenes))
+            setTodosChecked(true, ivTodos);
+
+        /*if(product.getIdAlmacenAsociado().equals(Constants.todosLosAlmacenes)) {
+            setTodosChecked(true, ivTodos);
+        } else {
+            if(warehousesAdapter.getSelectedWarehouse()!=null) {
+                warehousesAdapter.setWarehouseSelectedOnList(product.getIdAlmacenAsociado());
+            } else {
+
+            }
+            setTodosChecked(false, ivTodos);
+        }*/
+
         btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if(warehousesAdapter!=null) {
                     WarehouseResponse warehouseSelected = warehousesAdapter.getSelectedWarehouse();
 
                     if(todosIsChecked) {
                         // si cuando marcas 'Todos' algun Almacen estaba seleccionado...
-                        if(warehouseSelected!=null) {
+                        /*if(warehouseSelected!=null) {
                             warehouseSelected.setSelected(false);
                             //asignamos el id del almacen al producto seleccionado
                             product.setIdAlmacenAsociado(warehouseSelected.getCodigo());
-                        }
+                        }*/
                         product.setIdAlmacenAsociado(Constants.todosLosAlmacenes);
+                        product.setCantidadSolicitada("0");
+                        product.setNuevaCantidad(product.getCantidad());
                         //refrescamos la grilla de almacenes
-                        warehousesAdapter.notifyDataSetChanged();
+                        //warehousesAdapter.notifyDataSetChanged();
+                        refreshItems();
                     } else {
                         product.setCantidadSolicitada("0");
                         product.setNuevaCantidad(warehouseSelected.getStock());
                         product.setIdAlmacenAsociado(warehouseSelected.getCodigo());
+                        //warehouseSelected.setSelected(true);
                         refreshItems();
                     }
                 }
@@ -1062,17 +1089,35 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         ivTodos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //todosIsChecked = true;
-                warehousesAdapter.unselectWarehouses();
+                if(!todosIsChecked) {
+                    ivTodos.setBackgroundResource(R.drawable.checked_checkbox_50);
+                    todosIsChecked = true;
+                    warehousesAdapter.unselectWarehouses();
+                } else {
+                    if(warehousesAdapter.getSelectedWarehouse()==null) {
+                        Common.showToastMessage(mContext, "Por favor seleccione una opción.");
+                    } else {
+                        ivTodos.setBackgroundResource(R.drawable.unchecked_checkbox_50);
+                        todosIsChecked = false;
+                    }
+                }
             }
         });
 
         if(Common.isOnline(context)) {
-            getWarehousesStock(idArticulo, unidad, rvWarehouses, product/*, chkTodos*/);
+            getWarehousesStock(idArticulo, unidad, rvWarehouses, product, ivTodos);
         }
 
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
+    }
+
+    private void setTodosChecked(boolean isChecked, ImageView ivTodos) {
+        if(isChecked) {
+            ivTodos.setBackgroundResource(R.drawable.checked_checkbox_50);
+        } else {
+            ivTodos.setBackgroundResource(R.drawable.unchecked_checkbox_50);
+        }
     }
 
     public void showUnidadDeMedidaDialog(final Context context, final ProductsResponse product) {

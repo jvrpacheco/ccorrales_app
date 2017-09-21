@@ -26,12 +26,15 @@ public class WarehouseAdapter extends RecyclerView.Adapter<WarehouseAdapter.Ware
     private ArrayList<WarehouseResponse> warehousesList;
     private Context mContext;
     private ProductsResponse mProduct;
-    private String lastCheckedPosition = "";
+    private int lastCheckedPosition = -1;
+    private ImageView mIvTodos;
+    private boolean isFirstTime = true;
 
-    public WarehouseAdapter(Context mContext, ArrayList<WarehouseResponse> warehousesList, ProductsResponse product) {
+    public WarehouseAdapter(Context mContext, ArrayList<WarehouseResponse> warehousesList, ProductsResponse product, ImageView ivTodos) {
         this.mContext = mContext;
         this.warehousesList = warehousesList;
         this.mProduct = product;
+        this.mIvTodos = ivTodos;
     }
 
     @Override
@@ -49,34 +52,34 @@ public class WarehouseAdapter extends RecyclerView.Adapter<WarehouseAdapter.Ware
         holder.tvAlmacen.setText(warehouse.getDescripcion());
         holder.tvStock.setText(warehouse.getStock());
 
-        /*if(warehouse.isSelected()) {
+        if(!isFirstTime) {
+            if(position == lastCheckedPosition) {
+            /*holder.ivSelect.setImageResource(R.drawable.checked_checkbox_50);
+            holder.llHeader.setBackgroundColor(mContext.getResources().getColor(R.color.turquesa_claro));*/
+                warehouse.setSelected(true);
+            } else {
+            /*holder.ivSelect.setImageResource(R.drawable.unchecked_checkbox_50);
+            holder.llHeader.setBackgroundColor(Color.TRANSPARENT);*/
+                warehouse.setSelected(false);
+            }
+        }
+
+        if(warehouse.isSelected()) {
             holder.ivSelect.setImageResource(R.drawable.checked_checkbox_50);
             holder.llHeader.setBackgroundColor(mContext.getResources().getColor(R.color.turquesa_claro));
         } else {
             holder.ivSelect.setImageResource(R.drawable.unchecked_checkbox_50);
-            holder.llHeader.setBackgroundColor(Color.TRANSPARENT);
-        }*/
+            holder.llHeader.setBackgroundColor(Color.WHITE);
+        }
 
-        if (Integer.valueOf(warehouse.getStock()) <= 0) {
-            holder.ivSelect.setImageResource(R.drawable.disabled_checkbox_64);
-        } else {
-            if(warehouse.getCodigo().equals(lastCheckedPosition)) {
-                holder.ivSelect.setImageResource(R.drawable.checked_checkbox_50);
-                holder.llHeader.setBackgroundColor(mContext.getResources().getColor(R.color.turquesa_claro));
+
+    }
+
+    public void setWarehouseSelectedOnList(String idAlmacenSeleccionado) {
+        for(WarehouseResponse warehouse : warehousesList) {
+            if(warehouse.getCodigo().equals(idAlmacenSeleccionado.trim())) {
                 warehouse.setSelected(true);
-            } else {
-                holder.ivSelect.setImageResource(R.drawable.unchecked_checkbox_50);
-                holder.llHeader.setBackgroundColor(Color.TRANSPARENT);
-                warehouse.setSelected(false);
             }
-
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    lastCheckedPosition = warehouse.getCodigo();
-                    notifyItemRangeChanged(0, warehousesList.size());
-                }
-            });
         }
     }
 
@@ -96,6 +99,7 @@ public class WarehouseAdapter extends RecyclerView.Adapter<WarehouseAdapter.Ware
                 otherWarehouse.setSelected(false);
             }
         }
+        lastCheckedPosition = -1;
         notifyDataSetChanged();
     }
 
@@ -104,7 +108,7 @@ public class WarehouseAdapter extends RecyclerView.Adapter<WarehouseAdapter.Ware
         return warehousesList.size();
     }
 
-    public static class WarehouseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class WarehouseViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ll_header)
         LinearLayout llHeader;
         @BindView(R.id.ivSelect)
@@ -119,11 +123,16 @@ public class WarehouseAdapter extends RecyclerView.Adapter<WarehouseAdapter.Ware
         public WarehouseViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-        }
 
-        @Override
-        public void onClick(View v) {
-
+            llHeader.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    lastCheckedPosition = getAdapterPosition();
+                    notifyDataSetChanged();
+                    mIvTodos.setBackgroundResource(R.drawable.unchecked_checkbox_50);
+                    isFirstTime = false;
+                }
+            });
         }
     }
 

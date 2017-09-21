@@ -751,7 +751,7 @@ public class ProductsFragment extends Fragment {
                 }
             }
 
-            ArrayAdapter adapterFormaPago = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, namePaymentsType);
+            ArrayAdapter adapterFormaPago = new ArrayAdapter(getActivity(), R.layout.spinner_item_products, namePaymentsType);
             spFormaPago.setAdapter(adapterFormaPago);
 
             if (existsIdInitialPaymentType && positionInitialPaymentType > 0) {
@@ -807,7 +807,7 @@ public class ProductsFragment extends Fragment {
     }
 
     private void initSpinnerDocType(String initialValue) {
-        ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_tipos_doc, android.R.layout.simple_list_item_1);
+        ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_tipos_doc, R.layout.spinner_item_products);
         spTipoDoc.setAdapter(adapterRubroType);
 
         if (comeFromHistorial) {

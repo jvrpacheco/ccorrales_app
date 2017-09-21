@@ -152,13 +152,14 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="15dp">
 
                         <ImageView
                             android:id="@+id/ivTodos"
                             android:src="@drawable/unchecked_checkbox_50"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginRight="5dp"/>
                         <TextView
