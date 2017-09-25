@@ -323,6 +323,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         product.setNuevaPresentacion(product.getPresentacionUnidad());
         product.setNuevaCantidad(product.getCantidad());
         product.setPrecioRecalculado(product.getPrecioProductResponse());
+        product.setIdAlmacenAsociado(Constants.todosLosAlmacenes);
     }
 
     public void resetProducts() {

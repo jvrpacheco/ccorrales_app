@@ -11,7 +11,7 @@ public class QuotationProductRequest {
     private String cantidad;
     private String mas_bajo_que_limite;
     private String unidad;
-
+    private String almacen; //idAlmacen
 
     public String getMas_bajo_que_limite() {
         return mas_bajo_que_limite;
@@ -61,4 +61,11 @@ public class QuotationProductRequest {
         this.unidad = idUnidad;
     }
 
+    public String getAlmacen() {
+        return almacen;
+    }
+
+    public void setAlmacen(String almacen) {
+        this.almacen = almacen;
+    }
 }

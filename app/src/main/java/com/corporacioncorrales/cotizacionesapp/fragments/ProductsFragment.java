@@ -518,9 +518,7 @@ public class ProductsFragment extends Fragment {
 
     @OnClick(R.id.btnEnviarDocumento)
     public void OnClick() {
-
         if (quotationAdapter != null && quotationAdapter.getItemCount() > 0) {
-
             ArrayList<ProductsResponse> productsSelected = quotationAdapter.getQuotationProductsList();
             ArrayList<QuotationProductRequest> dataToSend = new ArrayList<>();
             String tipoDocumento = Singleton.getInstance().getTipoDocumento();
@@ -558,6 +556,7 @@ public class ProductsFragment extends Fragment {
                                 productToSend.setPrecio(productSelected.getNuevoPrecio());
                                 productToSend.setMas_bajo_que_limite(productSelected.getEsPrecioMenorAlLimite() ? "1" : "0");
                                 productToSend.setIdUnidad(productSelected.getNuevaUnidad());
+                                productToSend.setAlmacen(productSelected.getIdAlmacenAsociado());
                                 dataToSend.add(productToSend);
                             } else {
                                 Common.showAlertDialogMessage(
@@ -590,6 +589,7 @@ public class ProductsFragment extends Fragment {
                         productToSend.setPrecio(productSelected.getNuevoPrecio());
                         productToSend.setMas_bajo_que_limite(productSelected.getEsPrecioMenorAlLimite() ? "1" : "0");
                         productToSend.setIdUnidad(productSelected.getNuevaUnidad());
+                        productToSend.setAlmacen(productSelected.getIdAlmacenAsociado());
                         dataToSend.add(productToSend);
                     } else {
                         Common.showAlertDialogMessage(
