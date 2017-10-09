@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "347223258861",
+    "firebase_url": "https://ccorrales-f958e.firebaseio.com",
+    "project_id": "ccorrales-f958e",
+    "storage_bucket": "ccorrales-f958e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347223258861:android:f86d99b12d502591",
+        "android_client_info": {
+          "package_name": "com.corporacioncorrales.cotizacionesapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "347223258861-ul8ersnuk9761hg58srelhcsba3co5ni.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.corporacioncorrales.cotizacionesapp",
+            "certificate_hash": "041b3e36a1b330f2178f82355f27af43d565335c"
+          }
+        },
+        {
+          "client_id": "347223258861-sc2p13giqi529bnkgg5h9qvhk7fophrh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZRVOuvsrjWjy2ZwdLvarUCvAzCFQ8vX0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347223258861-sc2p13giqi529bnkgg5h9qvhk7fophrh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
