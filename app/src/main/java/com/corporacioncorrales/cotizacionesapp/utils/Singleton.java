@@ -10,7 +10,8 @@ import java.util.ArrayList;
  */
 public class Singleton {
 
-    private static Singleton ourInstance = new Singleton();
+    //private static Singleton ourInstance = new Singleton();
+    private static Singleton ourInstance;
     private String user;
     private String userCode;
     private String rubroSelected;
@@ -66,6 +67,11 @@ public class Singleton {
     }
 
     public static Singleton getInstance() {
+
+        if(ourInstance==null) {
+            ourInstance = new Singleton();
+        }
+
         return ourInstance;
     }
 
