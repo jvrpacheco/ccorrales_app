@@ -221,6 +221,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                     ArrayList<UnitsResponse> unitsPerArticleList = response.body();
                     if(unitsPerArticleList!=null && unitsPerArticleList.size()>0) {
 
+                        boolean foundUnitDescription = false;
+
                         for(int i=0; i<unitsPerArticleList.size(); i++) {
                             UnitsResponse unitAvailable = unitsPerArticleList.get(i);
 
@@ -236,10 +238,16 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                                     Log.d("Producto selecccionado", product.toString());
                                     quotationAdapter.addItem(quotationAdapter.getItemCount(), product);
 
+                                    foundUnitDescription = true;
                                     break;
                                 }
                             }
 
+                        }
+
+                        if(!foundUnitDescription) {
+                            String errorMessage = String.format("%s %s", mContext.getResources().getString(R.string.not_unit_description_message), product.getId());
+                            Common.showToastMessageShort(mContext, errorMessage);
                         }
 
                     } else {
