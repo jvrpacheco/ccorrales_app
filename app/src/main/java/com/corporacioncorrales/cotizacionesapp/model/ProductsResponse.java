@@ -23,7 +23,7 @@ public class ProductsResponse {
 
     @SerializedName("Precio")
     @Expose
-    private String Precio;
+    private String PrecioProductResponse;
 
     @SerializedName("Pre_inferior")
     @Expose
@@ -31,23 +31,33 @@ public class ProductsResponse {
 
     @SerializedName("Unidad")
     @Expose
-    private String Unidad;   //id de la unidad de medida del producto
+    private String idUnidad;   //id de la unidad de medida del producto
 
     @SerializedName("Presentacion")
     @Expose
-    private String Presentacion;   //descripcion de la unidad de medida del producto
-
-    @SerializedName("Cantidad")
-    @Expose
-    private String Cantidad;
+    private String presentacionUnidad;   //descripcion de la unidad de medida del producto
 
     @SerializedName("Foto")
     @Expose
     private String Foto;
 
+    @SerializedName("Cantidad")
+    @Expose
+    private String Cantidad;
+
     //********************************************
 
     private Boolean isSelected;
+    //por defecto "0" que quiere decir "Todos"
+    private String idAlmacenAsociado = "0";
+
+    public String getIdAlmacenAsociado() {
+        return idAlmacenAsociado;
+    }
+
+    public void setIdAlmacenAsociado(String idAlmacenAsociado) {
+        this.idAlmacenAsociado = idAlmacenAsociado;
+    }
 
     public Boolean getSelected() {
         Boolean flag;
@@ -69,8 +79,10 @@ public class ProductsResponse {
     public String getNuevoPrecio() {
         try{
             if(nuevoPrecio!=null) {
-                Double lineaCredito = Double.parseDouble(nuevoPrecio);
-                nuevoPrecio = String.format(Constants.round_three_decimals, lineaCredito);
+                Double xxx = Double.parseDouble(nuevoPrecio);
+                nuevoPrecio = String.format(Constants.round_three_decimals, xxx);
+            } else {
+                nuevoPrecio = getPrecioProductResponse();
             }
         } catch (Exception ex) {
             Log.e(Constants.log_arrow_error, "nuevoprecio...." +  ex.toString());
@@ -117,13 +129,7 @@ public class ProductsResponse {
     private String nuevaCantidad;  //nuevo Stock de acuerdo a la unidad seleccionada
 
     public String getNuevaCantidad() {
-        String temp = "";
-        if(nuevaCantidad==null) {
-            temp = getCantidad();
-        } else {
-            temp = nuevaCantidad;
-        }
-        return temp;
+        return nuevaCantidad;
     }
 
     public void setNuevaCantidad(String nuevaCantidad) {
@@ -138,7 +144,7 @@ public class ProductsResponse {
         String newUnit = "";
 
         if(nuevaUnidad==null) {
-            newUnit = getUnidad();
+            newUnit = getIdUnidad();
         } else {
             newUnit = nuevaUnidad;
         }
@@ -158,7 +164,7 @@ public class ProductsResponse {
         String newPresentation = "";
 
         if(nuevaPresentacion==null) {
-            newPresentation = getPresentacion();
+            newPresentation = getPresentacionUnidad();
         } else {
             newPresentation = nuevaPresentacion;
         }
@@ -171,18 +177,27 @@ public class ProductsResponse {
     }
 
     //********************************************
+
     private String precioRecalculado;
 
     public String getPrecioRecalculado() {
         String precioRecal = "";
 
         if(precioRecalculado==null) {
-            precioRecal = getPrecio();
+            //precioRecal = getPrecioProductResponse();
+
+            try{
+                Double precio = Double.parseDouble(getPrecioProductResponse());
+                precioRecal = String.format(Constants.round_three_decimals, precio);
+            } catch (Exception ex) {
+                Log.e(Constants.log_arrow_error, ex.toString());
+            }
         } else {
             precioRecal = precioRecalculado;
         }
 
         return precioRecal;
+        //return precioRecalculado;
     }
 
     public void setPrecioRecalculado(String precioRecalculado) {
@@ -200,18 +215,19 @@ public class ProductsResponse {
         return Nombre;
     }
 
-    public String getPrecio() {
+    public String getPrecioProductResponse() {
         try{
-            Double precioLista = Double.parseDouble(Precio);
-            Precio = String.format(Constants.round_three_decimals, precioLista);
+            Double precioLista = Double.parseDouble(PrecioProductResponse);
+            PrecioProductResponse = String.format(Constants.round_three_decimals, precioLista);
         } catch (Exception ex) {
             Log.e(Constants.log_arrow_error, ex.toString());
         }
-        return Precio;
+        return PrecioProductResponse;
     }
 
-    public void setPrecio(String precio) {
-        Precio = precio;
+
+    public void setPrecioProductResponse(String precio) {
+        PrecioProductResponse = precio;
     }
 
     public String getPre_inferior() {
@@ -226,31 +242,35 @@ public class ProductsResponse {
         return Foto;
     }
 
+    public String getIdUnidad() {
+        return idUnidad;
+    }
+
+    public void setIdUnidad(String unidad) {
+        idUnidad = unidad;
+    }
+
+    public String getPresentacionUnidad() {
+        return presentacionUnidad;
+    }
+
+    public void setPresentacionUnidad(String presentacion) {
+        presentacionUnidad = presentacion;
+    }
+
     public String getCantidad() {
         return Cantidad;
     }
 
-    public String getUnidad() {
-        return Unidad;
+    public void setCantidad(String cantidad) {
+        Cantidad = cantidad;
     }
-
-    public void setUnidad(String unidad) {
-        Unidad = unidad;
-    }
-
-    public String getPresentacion() {
-        return Presentacion;
-    }
-
-    public void setPresentacion(String presentacion) {
-        Presentacion = presentacion;
-    }
-
 
     @Override
     public String toString()
     {
-        return "Producto: [Nombre = "+Nombre+", Id = "+Id+", Foto = "+Foto+" , Cantidad = "+Cantidad+" , Pre_inferior = "+Pre_inferior + ", Precio = "+Precio+ ", Unidad = "+Unidad + ", Presentacion = "+Presentacion +"]";
+        return "Producto: [Nombre = "+Nombre+", Id = "+Id+", Foto = "+Foto+" , Pre_inferior = "+Pre_inferior + ", Precio = "+PrecioProductResponse+ ", idUnidad = "
+                + idUnidad + ", presentacionUnidad = "+ presentacionUnidad + ", Cantidad = " + Cantidad + "]";
     }
 
 }
