@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 
-                        if (response != null) {
+                        if (response != null && response.body()!=null) {
                             Log.d(Constants.log_arrow_response, response.body().getCodUsu());
 
                             if(response.body().getFocoUsu().equals(Constants.allowEnterToApp)) {
