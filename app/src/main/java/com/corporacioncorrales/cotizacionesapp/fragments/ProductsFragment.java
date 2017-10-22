@@ -533,7 +533,11 @@ public class ProductsFragment extends Fragment {
                 labelTipoDocumento = Constants.tipoDoc_preventa_label;
             }
 
-            if (tipoDocumento.equals(Constants.tipoDoc_factura)) {
+            String idTipoPago = Singleton.getInstance().getIdPaymentTypeSelected();
+            // si es Factura y es Efectivo o Deposito entonces no verifica si rebasa el Saldo Disponible
+            if (tipoDocumento.equals(Constants.tipoDoc_factura)
+                    && !idTipoPago.equals(Constants.idTipoDePagoEfectivo)
+                    && !idTipoPago.equals(Constants.idTipoDePagoDeposito)) {
                 if (rebasaSaldoDisponible) {
                     Common.showAlertDialogMessage(
                             labelTipoDocumento,
