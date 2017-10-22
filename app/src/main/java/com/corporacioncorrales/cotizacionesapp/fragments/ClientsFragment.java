@@ -43,18 +43,13 @@ public class ClientsFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    @BindView(R.id.clientsMainLayout)
-    LinearLayout clientsMainLayout;
-
 
     private String TAG = getClass().getCanonicalName();
     private List<ClientsResponse> clientsList;
     private ArrayList<ClientsResponse> clientsArrayList = new ArrayList<ClientsResponse>();
     private ArrayList<ClientsResponse> originalClientsArrayList;
     private ClientsAdapter clientsAdapter;
-    private Dialog mOverlayDialog;
-    private String user;
-    private Boolean fromOnCreate;
+    private Boolean firstLoad;
 
     @BindView(R.id.tvTotalClientes)
     TextView tvTotalClientes;
@@ -66,8 +61,9 @@ public class ClientsFragment extends Fragment {
     SearchView svFilterClient;
     @BindView(R.id.spinnerOrden)
     Spinner spOrden;
+    @BindView(R.id.clientsMainLayout)
+    LinearLayout clientsMainLayout;
 
-    private Dialog mainActivityDialog;
     private ProgressBar mainProgressBar;
     private String rubroSelected;
     private String ordenSelected;
@@ -93,8 +89,7 @@ public class ClientsFragment extends Fragment {
         rubroSelected = Constants.rubro_vidrio;
         ordenSelected = Constants.orden_nombre;
 
-        fromOnCreate = true;
-        Log.d(Constants.log_arrow + TAG, "onCreate, fromOnCreate: " + fromOnCreate.toString());
+        firstLoad = true;
 
         mainProgressBar = ((MainActivity) getActivity()).mProgressBar;
     }
@@ -105,64 +100,50 @@ public class ClientsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_clients, container, false);
         Common.setActionBarTitle(getActivity(), Constants.fragmentTagClientes);
         ButterKnife.bind(this, view);
+        setUI();
         return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
+    private void setUI() {
         Common.setActionBarTitle(getActivity(), "Clientes");
         Common.selectProductOnNavigationView(getActivity(), 0);
 
         svFilterClient.setOnQueryTextListener(clientsFilterListener);
         Log.d(Constants.log_arrow + TAG, "onResume, rubroSelected: " + rubroSelected);
-        Log.d(Constants.log_arrow + TAG, "onResume, fromOnCreate: " + fromOnCreate.toString());
+        Log.d(Constants.log_arrow + TAG, "onResume, fromOnCreate: " + firstLoad.toString());
 
         initSpinnerRubro();
         initSpinnerOrden();
         clearClientsFilter();
 
+        //Carga por defecto de Clientes
+        loadClients();
+    }
 
-        if (fromOnCreate) {
-            initViews3();
-        } else {
-            // Rebuild recyclerViewClients from first data downloaded from server in onCreate
-            if (clientsAdapter != null && clientsArrayList != null && clientsArrayList.size() > 0) {
-                updateTotalOfClients(clientsArrayList.size());
-                recyclerViewClients.setAdapter(clientsAdapter);
-                // Grid
-                StaggeredGridLayoutManager mStaggeredGridManager3 = new StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL);
-                recyclerViewClients.setLayoutManager(mStaggeredGridManager3);
-            }
-        }
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     private void initSpinnerOrden() {
         ArrayAdapter adapterRubroOrden = ArrayAdapter.createFromResource(getActivity(), R.array.array_orden, R.layout.spinner_item_products);
         spOrden.setAdapter(adapterRubroOrden);
-
+        spOrden.setSelection(0, false);
         spOrden.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (fromOnCreate) {
-                    fromOnCreate = false;
-                } else {
-                    String item = parent.getItemAtPosition(position).toString();
-                    if (item.equals(Constants.orden_nombre_label)) {
-                        ordenSelected = Constants.orden_nombre;
-                    } else if (item.equals(Constants.orden_importe_label)) {
-                        ordenSelected = Constants.orden_importe;
-                    } else if (item.equals(Constants.orden_cantidad_label)) {
-                        ordenSelected = Constants.orden_cantidad;
-                    }
-                    initViews3();
+                String item = parent.getItemAtPosition(position).toString();
+                if (item.equals(Constants.orden_nombre_label)) {
+                    ordenSelected = Constants.orden_nombre;
+                } else if (item.equals(Constants.orden_importe_label)) {
+                    ordenSelected = Constants.orden_importe;
+                } else if (item.equals(Constants.orden_cantidad_label)) {
+                    ordenSelected = Constants.orden_cantidad;
+                }
+
+                if(!firstLoad) {
+                    Log.d(TAG, "call initSpinnerOrden!");
+                    loadClients();
                 }
             }
 
@@ -177,14 +158,11 @@ public class ClientsFragment extends Fragment {
     private void initSpinnerRubro() {
         ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_rubros, R.layout.spinner_item_products);
         spRubro.setAdapter(adapterRubroType);
-
+        spRubro.setSelection(1, false); // seleccionamos por defecto el elemento en la posicion 1, en este caso "Vidrio"
         spRubro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (fromOnCreate) {
-                    fromOnCreate = false;
-                } else {
                     String item = parent.getItemAtPosition(position).toString();
                     if (item.equals(Constants.rubro_vidrio_label)) {
                         rubroSelected = Constants.rubro_vidrio;
@@ -196,12 +174,15 @@ public class ClientsFragment extends Fragment {
                     } else if (item.equals(Constants.rubro_plastico_label)) {
                         rubroSelected = Constants.rubro_plastico;
                     }
-                    initViews3();
-                }
 
-                Singleton.getInstance().setRubroSelected(rubroSelected);
-                Log.d(Constants.log_arrow + TAG, "onCreate, rubroSelected: " + rubroSelected);
-            }
+                    Singleton.getInstance().setRubroSelected(rubroSelected);
+                    Log.d(Constants.log_arrow + TAG, "onCreate, rubroSelected: " + rubroSelected);
+
+                    if(!firstLoad) {
+                        Log.d(TAG, "call initSpinnerRubro!");
+                        loadClients();
+                    }
+                }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -210,10 +191,10 @@ public class ClientsFragment extends Fragment {
         });
     }
 
-    private void initViews3() {
-        recyclerViewClients.setHasFixedSize(true);
+    private void loadClients() {
+        //recyclerViewClients.setHasFixedSize(true);
         if (!Singleton.getInstance().getUser().isEmpty()) {
-            if (Common.isOnline(getActivity())) {
+            if (Common.isOnline(getActivity())) {               firstLoad = false;
                 getClients(Singleton.getInstance().getUser(), rubroSelected, ordenSelected);   //getClients("jsalazar", "00");   rubroSelected
                 clearClientsFilter();
             }
