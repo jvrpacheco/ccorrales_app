@@ -88,6 +88,7 @@ public class ClientsFragment extends Fragment {
         //default spinner values
         rubroSelected = Constants.rubro_vidrio;
         ordenSelected = Constants.orden_nombre;
+        Singleton.getInstance().setRubroSelected(rubroSelected);
 
         firstLoad = true;
 
@@ -152,7 +153,6 @@ public class ClientsFragment extends Fragment {
 
             }
         });
-
     }
 
     private void initSpinnerRubro() {
@@ -194,7 +194,8 @@ public class ClientsFragment extends Fragment {
     private void loadClients() {
         //recyclerViewClients.setHasFixedSize(true);
         if (!Singleton.getInstance().getUser().isEmpty()) {
-            if (Common.isOnline(getActivity())) {               firstLoad = false;
+            if (Common.isOnline(getActivity())) {
+                firstLoad = false;
                 getClients(Singleton.getInstance().getUser(), rubroSelected, ordenSelected);   //getClients("jsalazar", "00");   rubroSelected
                 clearClientsFilter();
             }
