@@ -86,13 +86,13 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         if(!product.getFoto().isEmpty()) {
             Picasso.with(mContext)
                     .load(product.getFoto())
-                    .placeholder(R.drawable.marca2)
-                    .error(R.drawable.marca2)
+                    .placeholder(R.drawable.marca3_small)
+                    .error(R.drawable.marca3_small)
                     .centerInside()
                     .fit()
                     .into(holder.ivProduct);
         } else {
-            holder.ivProduct.setImageResource(R.drawable.marca2);
+            holder.ivProduct.setImageResource(R.drawable.marca3_small);
         }
 
         if(product.getSelected()) {
@@ -292,13 +292,13 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
                         if(!product.getFoto().isEmpty()) {
                             Picasso.with(mContext)
                                     .load(product.getFoto())
-                                    .placeholder(R.drawable.marca3_grande1)
-                                    .error(R.drawable.marca3_grande1)
+                                    .placeholder(R.drawable.marca3_small)
+                                    .error(R.drawable.marca3_small)
                                     .centerInside()
                                     .fit()
                                     .into(imageView);
                         } else {
-                            imageView.setImageResource(R.drawable.marca3_grande1);
+                            imageView.setImageResource(R.drawable.marca3_small);
                         }
                     } else {
                         Log.d(Constants.log_arrow, "Error al consultar la data.");

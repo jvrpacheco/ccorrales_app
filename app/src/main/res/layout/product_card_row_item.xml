@@ -22,7 +22,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/iv_Product"
-            android:src="@drawable/marca2"/>
+            android:src="@drawable/marca3_small"/>
 
         <LinearLayout
             android:layout_width="match_parent"
