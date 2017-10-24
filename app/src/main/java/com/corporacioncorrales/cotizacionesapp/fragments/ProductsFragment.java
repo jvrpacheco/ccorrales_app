@@ -93,7 +93,8 @@ public class ProductsFragment extends Fragment {
     TextView tvLineaDeCreditoTotalCliente;
     @BindView(R.id.tvLineaDeCreditoDisponibleCliente)
     TextView tvLineaDeCreditoDisponibleCliente;
-
+    @BindView(R.id.spRubro)
+    Spinner spRubro;
 
     private String TAG = getClass().getCanonicalName();
     private ProgressBar mainProgressBar;
@@ -116,6 +117,8 @@ public class ProductsFragment extends Fragment {
     private QuotationAdapter quotationAdapter;
     private boolean comeFromHistorial;
     private String numberOfDaysToSend = "1";
+    private int nroDiasIngresado = -1;
+    private boolean comeFromSpRubroSelection;
 
     public static ArrayList<ProductsResponse> productsSelectedList;
 
@@ -175,46 +178,45 @@ public class ProductsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_products, container, false);
         ButterKnife.bind(this, view);
         Common.setActionBarTitle(getActivity(), "Productos");
+        setUI(rubroSeleccionado);
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
+    private void setUI(String rubro) {
         tvCliente.setText(client_razonSocial);
         tvLineaDeCreditoTotalCliente.setText(cliente_saldoTotal);
         tvLineaDeCreditoDisponibleCliente.setText(cliente_saldoDisponible);
         svFilterProduct.setOnQueryTextListener(productsFilterListener);
         Common.hideKeyboard(getActivity(), edtGhost);
-
         Common.selectProductOnNavigationView(getActivity(), 0);
 
-        if (fromOnCreate) {
-            if (comeFromHistorial) {
-                if (Common.isOnline(getActivity())) {
-                    initSpinnerFormaPago(idFormaDePago);
-                    initSpinnerDocType(tipoDocumento);
-                    //rebuildFromQuotation();
-                    loadProductsPerClient(client_id, rubroSeleccionado);
-                }
-            } else {
-                if (Common.isOnline(getActivity())) {
-                    initSpinnerFormaPago(Constants.idTipoDePagoDeposito);   //SEGUN ESPECIFICACION, 'DEPOSITO' ES EL TIPO DE PAGO POR DEFECTO
-                    initSpinnerDocType(Constants.tipoDoc_proforma);
-                    createNewQuotation();
-                    loadProductsPerClient(client_id, rubroSeleccionado);
-                }
+        if (comeFromHistorial) {
+            if (Common.isOnline(getActivity())) {
+                initSpinnerFormaPago(idFormaDePago);
+                initSpinnerDocType(tipoDocumento);
+                //rebuildFromQuotation();
+                loadProductsPerClient(client_id, rubro);
             }
-
-            if(!daysSelectedFromHistory.isEmpty()) {  //come from History
-                btnSelectNumberOfDays.setText(daysSelectedFromHistory);
-            } else {
-                btnSelectNumberOfDays.setText(maxDaysFromClient);
+        } else {
+            if (Common.isOnline(getActivity())) {
+                initSpinnerFormaPago(Constants.idTipoDePagoDeposito);   //SEGUN ESPECIFICACION, 'DEPOSITO' ES EL TIPO DE PAGO POR DEFECTO
+                initSpinnerDocType(Constants.tipoDoc_proforma);
+                createNewQuotation();
+                loadProductsPerClient(client_id, rubro);
             }
+        }
 
+        if(!comeFromSpRubroSelection) {
+            comeFromSpRubroSelection = true;
+            initSpinnerRubro(rubro);
+        }
 
-            fromOnCreate = false;
+        //initSpinnerRubro(false, rubro);
+
+        if (!daysSelectedFromHistory.isEmpty()) {  //come from History
+            btnSelectNumberOfDays.setText(daysSelectedFromHistory);
+        } else {
+            btnSelectNumberOfDays.setText(maxDaysFromClient);
         }
     }
 
@@ -358,7 +360,7 @@ public class ProductsFragment extends Fragment {
                     productsArrayList.clear();
                     productsArrayList = response.body();
 
-                    if(productsArrayList!= null && productsArrayList.size()>0) {
+                    if (productsArrayList != null && productsArrayList.size() > 0) {
                         if (productsArrayList.size() > 0) {
                             //guardando primera descarga de productos
                             originalProductsArrayList = productsArrayList;
@@ -400,7 +402,6 @@ public class ProductsFragment extends Fragment {
         });
     }
 
-    int nroDiasIngresado = -1;
     @OnClick(R.id.btnSelectNumberOfDays)
     public void onClick() {
 
@@ -420,8 +421,8 @@ public class ProductsFragment extends Fragment {
         //tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_dentro_del_rango));
         //tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.verde));
 
-        if(Integer.valueOf(maxDaysFromClient)>0) {
-            if(Integer.valueOf(numberOfDaysToSend) <= Integer.valueOf(maxDaysFromClient)) {
+        if (Integer.valueOf(maxDaysFromClient) > 0) {
+            if (Integer.valueOf(numberOfDaysToSend) <= Integer.valueOf(maxDaysFromClient)) {
                 tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_dentro_del_rango));
                 tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.verde));
                 btnAcceptDialog.setEnabled(true);
@@ -441,6 +442,7 @@ public class ProductsFragment extends Fragment {
 
         edtNumberOfDays.addTextChangedListener(new TextWatcher() {
             private static final char space = ' ';
+
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -463,8 +465,8 @@ public class ProductsFragment extends Fragment {
                     }
                 }*/
 
-                if(!daysInserted.isEmpty() && daysInserted.length() > 0 && !daysInserted.equals(".") && !daysInserted.equals(",")) {
-                    if(Integer.valueOf(daysInserted) <= Integer.valueOf(maxDaysFromClient)) {
+                if (!daysInserted.isEmpty() && daysInserted.length() > 0 && !daysInserted.equals(".") && !daysInserted.equals(",")) {
+                    if (Integer.valueOf(daysInserted) <= Integer.valueOf(maxDaysFromClient)) {
                         tvMaxOfDays.setText(getActivity().getResources().getString(R.string.nro_dias_dentro_del_rango));
                         tvMaxOfDays.setTextColor(ContextCompat.getColor(getActivity(), R.color.verde));
                         btnAcceptDialog.setEnabled(true);
@@ -653,38 +655,6 @@ public class ProductsFragment extends Fragment {
         }
     };
 
-    private void showConfirmationToSendDocumentAlertDialog(final String title, final String message, final String textBtnOk, String textBtnCancelar, final ArrayList<QuotationProductRequest> dataToSend) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton(textBtnOk,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        if (Common.isOnline(getActivity())) {
-                            sendQuotation(client_id.trim(),
-                                    Singleton.getInstance().getRubroSelected().trim(),
-                                    Singleton.getInstance().getUserCode().trim(),
-                                    isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
-                                    Singleton.getInstance().getTipoDocumento(),
-                                    Singleton.getInstance().getIdPaymentTypeSelected(),
-                                    tvMontoTotal.getText().toString().trim(),
-                                    numberOfDaysToSend,
-                                    dataToSend);
-                        }
-                    }
-                });
-        builder.setNegativeButton(textBtnCancelar,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.dismiss();
-                    }
-                });
-
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
     private void sendQuotation(String idCliente, String idRubro, String idUsuario, String sobregiro, String tipoDocumento, String idFormaPago, String montoTotal, String numberOfDays, ArrayList<QuotationProductRequest> data) {
         mainProgressBar.setVisibility(View.VISIBLE);
         productsMainLayout.setEnabled(false);
@@ -770,12 +740,12 @@ public class ProductsFragment extends Fragment {
                     for (int j = 0; j < namePaymentsType.size(); j++) {
                         if (namePaymentsType.get(j).equals(adapterView.getItemAtPosition(i).toString())) {
 
-                            if(idPaymentsType.get(j).equals(Constants.idTipoDePagoEfectivo)) {
+                            if (idPaymentsType.get(j).equals(Constants.idTipoDePagoEfectivo)) {
                                 numberOfDaysToSend = "0";
                                 btnSelectNumberOfDays.setText(numberOfDaysToSend);
                                 btnSelectNumberOfDays.setEnabled(false);
 
-                            } else if(idPaymentsType.get(j).equals(Constants.idTipoDePagoDeposito)) {
+                            } else if (idPaymentsType.get(j).equals(Constants.idTipoDePagoDeposito)) {
                                 numberOfDaysToSend = "1";
                                 btnSelectNumberOfDays.setText(numberOfDaysToSend);
                                 btnSelectNumberOfDays.setEnabled(false);
@@ -783,7 +753,7 @@ public class ProductsFragment extends Fragment {
                             } else {
                                 //Luego de la carga del historial, muestro el valor de dias.... si cambio de tipo de pago
                                 //debo seguir mostrando ese numero que vino del historial o resetear a 1?
-                                if(!daysSelectedFromHistory.isEmpty()) {  //come from History
+                                if (!daysSelectedFromHistory.isEmpty()) {  //come from History
                                     nroDiasIngresado = Integer.valueOf(daysSelectedFromHistory);
                                     numberOfDaysToSend = daysSelectedFromHistory;
                                     btnSelectNumberOfDays.setText(daysSelectedFromHistory);
@@ -808,6 +778,49 @@ public class ProductsFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void initSpinnerRubro(/*boolean comeFromSelection, */String initialValue) {
+        ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_rubros, R.layout.spinner_item_products);
+        spRubro.setAdapter(adapterRubroType);
+
+        //if(!comeFromSelection) {
+            setSpRubroSelection(initialValue);
+        //}
+
+        spRubro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                String item = parent.getItemAtPosition(position).toString();
+                if (item.equals(Constants.rubro_vidrio_label)) {
+                    rubroSeleccionado = Constants.rubro_vidrio;
+                } else if (item.equals(Constants.rubro_aluminio_label)) {
+                    rubroSeleccionado = Constants.rubro_aluminio;
+                } else if (item.equals(Constants.rubro_accesorio_label)) {
+                    rubroSeleccionado = Constants.rubro_accesorio;
+                } else if (item.equals(Constants.rubro_plastico_label)) {
+                    rubroSeleccionado = Constants.rubro_plastico;
+                }
+
+                if(quotationAdapter.getItemCount()>0) {
+                    showConfirmationChangeRubroAlertDialog(getActivity().getString(R.string.app_name),
+                            "Desea cambiar de rubro y perder su pedido actual?",
+                            "OK",
+                            "CANCELAR",
+                            rubroSeleccionado,
+                            spRubro);
+                } else {
+                    setSpRubroSelection(rubroSeleccionado);
+                    setUI(rubroSeleccionado);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void initSpinnerDocType(String initialValue) {
@@ -879,5 +892,84 @@ public class ProductsFragment extends Fragment {
         return false;
     }
 
+    private void showConfirmationChangeRubroAlertDialog(final String title, final String message, final String textBtnOk,
+                                                        String textBtnCancelar, final String rubro, final Spinner spRubro) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton(textBtnOk,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        if (Common.isOnline(getActivity())) {
+                            setSpRubroSelection(rubro);
+                            setUI(rubro);
+                        }
+                    }
+                });
+        builder.setNegativeButton(textBtnCancelar,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.dismiss();
+                    }
+                });
 
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void showConfirmationToSendDocumentAlertDialog(final String title, final String message, final String textBtnOk, String textBtnCancelar, final ArrayList<QuotationProductRequest> dataToSend) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setCancelable(false);
+        builder.setPositiveButton(textBtnOk,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        if (Common.isOnline(getActivity())) {
+                            sendQuotation(client_id.trim(),
+                                    Singleton.getInstance().getRubroSelected().trim(),
+                                    Singleton.getInstance().getUserCode().trim(),
+                                    isUpToCreditLine(tvMontoTotal.getText().toString(), cliente_saldoDisponible) ? Constants.montoTotalMayorALineaDeCredito : Constants.montoTotalMenorOIgualALineaDeCredito,
+                                    Singleton.getInstance().getTipoDocumento(),
+                                    Singleton.getInstance().getIdPaymentTypeSelected(),
+                                    tvMontoTotal.getText().toString().trim(),
+                                    numberOfDaysToSend,
+                                    dataToSend);
+                        }
+                    }
+                });
+        builder.setNegativeButton(textBtnCancelar,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void setSpRubroSelection(String rubroSelected) {
+        //Seteamos el rubro de acuerdo al valor seleccionado de Clientes o del Historial
+        switch (rubroSelected) {
+            case Constants.rubro_aluminio:
+                spRubro.setSelection(0, true);
+                break;
+            case Constants.rubro_vidrio:
+                spRubro.setSelection(1, true);
+                break;
+            case Constants.rubro_accesorio:
+                spRubro.setSelection(2, true);
+                break;
+            case Constants.rubro_plastico:
+                spRubro.setSelection(3, true);
+                break;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 }

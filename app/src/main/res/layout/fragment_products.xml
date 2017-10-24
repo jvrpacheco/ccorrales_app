@@ -161,10 +161,17 @@
                             android:background="@color/turquesa_claro"/>
                     </LinearLayout>
                     <Spinner
+                        android:background="@color/turquesa_claro"
+                        android:popupBackground="@color/turquesa_claro"
+                        android:layout_width="95dp"
+                        android:layout_height="match_parent"
+                        android:id="@+id/spRubro"
+                        android:layout_marginRight="5dp"/>
+                    <Spinner
                         android:id="@+id/spFormaPago"
                         android:background="@color/turquesa_claro"
                         android:popupBackground="@color/turquesa_claro"
-                        android:layout_width="100dp"
+                        android:layout_width="95dp"
                         android:layout_height="match_parent"
                         android:layout_marginRight="5dp" />
                     <Spinner
