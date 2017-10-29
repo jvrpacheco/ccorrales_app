@@ -119,6 +119,7 @@ public class ProductsFragment extends Fragment {
     private String numberOfDaysToSend = "1";
     private int nroDiasIngresado = -1;
     private boolean comeFromSpRubroSelection;
+    private boolean shouldApplyRubroSelection = true;
 
     public static ArrayList<ProductsResponse> productsSelectedList;
 
@@ -207,8 +208,8 @@ public class ProductsFragment extends Fragment {
         }
 
         if(!comeFromSpRubroSelection) {
+            initSpinnerRubro(comeFromSpRubroSelection, rubro);
             comeFromSpRubroSelection = true;
-            initSpinnerRubro(rubro);
         }
 
         //initSpinnerRubro(false, rubro);
@@ -780,39 +781,48 @@ public class ProductsFragment extends Fragment {
         }
     }
 
-    private void initSpinnerRubro(/*boolean comeFromSelection, */String initialValue) {
+    private String rubroPrevio;
+    private void initSpinnerRubro(boolean comeFromSpRubroSelection, String initialValue) {
         ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_rubros, R.layout.spinner_item_products);
         spRubro.setAdapter(adapterRubroType);
+        //Guarda el valor del rubro para regresar a su valor anterior si es que se cancela la seleccion del nuevo rubro
+        rubroPrevio = rubroSeleccionado;
 
-        //if(!comeFromSelection) {
+        if(!comeFromSpRubroSelection) {
             setSpRubroSelection(initialValue);
-        //}
+        }
 
         spRubro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(shouldApplyRubroSelection) {
+                    String item = parent.getItemAtPosition(position).toString();
+                    if (item.equals(Constants.rubro_vidrio_label)) {
+                        rubroSeleccionado = Constants.rubro_vidrio;
+                    } else if (item.equals(Constants.rubro_aluminio_label)) {
+                        rubroSeleccionado = Constants.rubro_aluminio;
+                    } else if (item.equals(Constants.rubro_accesorio_label)) {
+                        rubroSeleccionado = Constants.rubro_accesorio;
+                    } else if (item.equals(Constants.rubro_plastico_label)) {
+                        rubroSeleccionado = Constants.rubro_plastico;
+                    }
 
-                String item = parent.getItemAtPosition(position).toString();
-                if (item.equals(Constants.rubro_vidrio_label)) {
-                    rubroSeleccionado = Constants.rubro_vidrio;
-                } else if (item.equals(Constants.rubro_aluminio_label)) {
-                    rubroSeleccionado = Constants.rubro_aluminio;
-                } else if (item.equals(Constants.rubro_accesorio_label)) {
-                    rubroSeleccionado = Constants.rubro_accesorio;
-                } else if (item.equals(Constants.rubro_plastico_label)) {
-                    rubroSeleccionado = Constants.rubro_plastico;
-                }
-
-                if(quotationAdapter.getItemCount()>0) {
-                    showConfirmationChangeRubroAlertDialog(getActivity().getString(R.string.app_name),
-                            "Desea cambiar de rubro y perder su pedido actual?",
-                            "OK",
-                            "CANCELAR",
-                            rubroSeleccionado,
-                            spRubro);
+                    if(quotationAdapter.getItemCount()>0) {
+                        showConfirmationChangeRubroAlertDialog(
+                                getActivity().getString(R.string.app_name),
+                                "Desea cambiar de rubro y perder su pedido actual?",
+                                "OK",
+                                "CANCELAR",
+                                rubroPrevio,
+                                rubroSeleccionado,
+                                spRubro);
+                    } else {
+                        shouldApplyRubroSelection = true;
+                        setSpRubroSelection(rubroSeleccionado);
+                        setUI(rubroSeleccionado);
+                    }
                 } else {
-                    setSpRubroSelection(rubroSeleccionado);
-                    setUI(rubroSeleccionado);
+                    shouldApplyRubroSelection = true;
                 }
             }
 
@@ -893,7 +903,7 @@ public class ProductsFragment extends Fragment {
     }
 
     private void showConfirmationChangeRubroAlertDialog(final String title, final String message, final String textBtnOk,
-                                                        String textBtnCancelar, final String rubro, final Spinner spRubro) {
+                                                        String textBtnCancelar, final String rubroAnterior, final String rubroActual, final Spinner spRubro) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(title);
         builder.setMessage(message);
@@ -902,14 +912,17 @@ public class ProductsFragment extends Fragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
                         if (Common.isOnline(getActivity())) {
-                            setSpRubroSelection(rubro);
-                            setUI(rubro);
+                            shouldApplyRubroSelection = true;
+                            setSpRubroSelection(rubroActual);
+                            setUI(rubroActual);
                         }
                     }
                 });
         builder.setNegativeButton(textBtnCancelar,
                 new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
+                        shouldApplyRubroSelection = false;
+                        setSpRubroSelection(rubroAnterior);
                         dialog.dismiss();
                     }
                 });
@@ -950,20 +963,26 @@ public class ProductsFragment extends Fragment {
         alert.show();
     }
 
+    private void getRubroSelected(Spinner spRubro) {
+        int rubroSelected = spRubro.getSelectedItemPosition();
+        Log.d(TAG, String.valueOf(rubroSelected));
+
+    }
+
     private void setSpRubroSelection(String rubroSelected) {
         //Seteamos el rubro de acuerdo al valor seleccionado de Clientes o del Historial
         switch (rubroSelected) {
             case Constants.rubro_aluminio:
-                spRubro.setSelection(0, true);
+                spRubro.setSelection(0, false);
                 break;
             case Constants.rubro_vidrio:
-                spRubro.setSelection(1, true);
+                spRubro.setSelection(1, false);
                 break;
             case Constants.rubro_accesorio:
-                spRubro.setSelection(2, true);
+                spRubro.setSelection(2, false);
                 break;
             case Constants.rubro_plastico:
-                spRubro.setSelection(3, true);
+                spRubro.setSelection(3, false);
                 break;
         }
     }
