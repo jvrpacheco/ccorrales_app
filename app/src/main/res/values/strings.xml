@@ -35,6 +35,7 @@
     <string name="not_connection_message">Por favor revise su conexión a internet.</string>
     <string name="ir_a_articulos">Ir a artículos disponibles para</string>
     <string name="msg_invalid_email">Por favor ingrese correo electrónico válido</string>
+    <string name="msg_cambio_rubro">Recuerde que al seleccionar un nuevo rubro, perderá su orden actual.</string>
 
     //dialog Precio
     <string name="precio_dentro_del_rango">Precio dentro del rango permitido.</string>
@@ -64,6 +65,8 @@
     <string name="warehouse_tittle">Almacén</string>
     <string name="warehouse_code_header">Código</string>
     <string name="warehouse_stock_header">Stock</string>
+    //dialog seleccionar rubro
+    <string name="select_rubro_tittle">SELECCIONE RUBRO</string>
     //Error en el llamado al server
     <string name="error_on_server">Error en el servidor</string>
     <string name="not_unit_description_message">No se encontró descripción de unidades para el producto con código</string>
