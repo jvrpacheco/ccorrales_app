@@ -45,9 +45,10 @@ public class MainActivity extends AppCompatActivity
     private String TAG = getClass().getCanonicalName();
     private boolean viewIsAtHome;
     public NavigationView navigationView;
+
     DrawerLayout drawer;
     Toolbar toolbar;
-    String titleClientes = "Clientes";
+    String titleClientes = "Clientes1";
     String titleHistorial = "Historial";
 
 
