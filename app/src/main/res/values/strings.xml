@@ -86,10 +86,10 @@
 
     <string-array name="array_tipos_doc">
         <item>FACTURA</item>
+        <item>BOLETA</item>
         <item>PROFORMA</item>
         <item>PREVENTA</item>
         <!--<item>Proforma</item>
-        <item>Factura</item>
         <item>Preventa</item>-->
     </string-array>
 

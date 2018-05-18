@@ -153,12 +153,13 @@
                             android:layout_height="25dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginRight="5dp"/>
+
                         <Button
                             android:id="@+id/btnSelectNumberOfDays"
-                            android:text="XX"
                             android:layout_width="45dp"
                             android:layout_height="match_parent"
-                            android:background="@color/turquesa_claro"/>
+                            android:background="@color/turquesa_claro"
+                            android:text="XX" />
                     </LinearLayout>
                     <Spinner
                         android:background="@color/turquesa_claro"
@@ -166,7 +167,26 @@
                         android:layout_width="95dp"
                         android:layout_height="match_parent"
                         android:id="@+id/spRubro"
-                        android:layout_marginRight="5dp"/>
+                        android:layout_marginRight="5dp"
+                        android:visibility="gone"/>
+
+                    <LinearLayout
+                        android:id="@+id/ll_rubro"
+                        android:layout_width="85dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:background="@color/turquesa_claro"
+                        android:visibility="invisible">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:gravity="center"
+                            android:text="Rubro" />
+                    </LinearLayout>
                     <Spinner
                         android:id="@+id/spFormaPago"
                         android:background="@color/turquesa_claro"

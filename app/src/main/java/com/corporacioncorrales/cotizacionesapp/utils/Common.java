@@ -133,7 +133,7 @@ public class Common {
     }
 
     //just for phones
-    public static String getDeviceId(Activity activity) {
+    /*public static String getDeviceId(Activity activity) {
         String deviceId = Constants.Empty;
         try{
             TelephonyManager TM = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
@@ -142,7 +142,7 @@ public class Common {
             Log.e(Constants.log_arrow_error, e.toString());
         }
         return deviceId;
-    }
+    }*/
 
     public static String getAndroidId(Context context) {
         //https://developer.android.com/reference/android/provider/Settings.Secure.html

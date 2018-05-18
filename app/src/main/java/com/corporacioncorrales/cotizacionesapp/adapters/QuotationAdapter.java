@@ -74,13 +74,16 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     private WarehouseAdapter warehousesAdapter;
     private boolean todosIsChecked = false;
 
-    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos, TextView tvMontoTotal, TextView tvIndicadorSaldoDisponible, ProgressBar productsProgressBar) {
+
+    public QuotationAdapter(Context mContext, ArrayList<ProductsResponse> productsList, TextView tvTotalProductos,
+                            TextView tvMontoTotal, TextView tvIndicadorSaldoDisponible, ProgressBar productsProgressBar  ) {
         this.mContext = mContext;
         this.productsList = productsList;
         this.tvTotalProductos = tvTotalProductos;
         this.tvMontoTotal = tvMontoTotal;
         this.tvIndicadorSaldoDisponible = tvIndicadorSaldoDisponible;
         this.productsProgressBar = productsProgressBar;
+
     }
 
     @Override
@@ -95,6 +98,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
         tipoDocumento = Singleton.getInstance().getTipoDocumento();
         final ProductsResponse product = productsList.get(position);
+
 
         holder.tvId.setText(product.getId());
         holder.tvUnidadVenta.setText(product.getNuevaPresentacion());  //al inicio es getPresentacion()
@@ -118,7 +122,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
 
         } else if (product.getCantidadSolicitada() == null && product.getNuevoPrecio() == null) {
-            if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+            if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_boleta) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
                 if (product.getCantidad().equals("0")) {
                     holder.ivChangeQuantity.setVisibility(View.GONE);
                     holder.tvCantidadSolicitada.setText("0");
@@ -135,7 +139,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
 
         } else if (product.getCantidadSolicitada() != null && product.getNuevoPrecio() != null) {
-            if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+            if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_boleta) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
                 if (product.getNuevaCantidad().equals("0")) {
                     holder.ivChangeQuantity.setVisibility(View.GONE);
                     holder.tvCantidadSolicitada.setText(product.getCantidadSolicitada());
@@ -208,7 +212,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         holder.ivWarehouse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showSelectWarehouseDialog(mContext, product.getId(), product.getIdUnidad(), product);
+                showSelectWarehouseDialog(mContext, product.getId(), product.getNuevaUnidad(), product);
             }
         });
 
@@ -228,7 +232,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             @Override
             public void onClick(View v) {
 
-                if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_boleta) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
                     if (!product.getNuevaCantidad().isEmpty() && Integer.parseInt(product.getNuevaCantidad()) > 0) {
                         showChangeQuantityDialog(mContext, product, position);
                     }
@@ -267,7 +271,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
     public static class QuotationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvId, tvUnidadVenta, tvDescription, tvPrice, tvQuantity, tvNewPrice, tvCantidadSolicitada, tvTotalPrice;
-        ImageView ivRemove, ivWarehouse, ivArrival, ivChangePrice, ivChangeQuantity, ivVirtualStock, ivShowDialogUnidad;
+        ImageView ivRemove , ivWarehouse, ivArrival, ivChangePrice, ivChangeQuantity, ivVirtualStock, ivShowDialogUnidad;
+
 
         public QuotationViewHolder(View view) {
             super(view);
@@ -284,6 +289,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             ivChangeQuantity = (ImageView) view.findViewById(R.id.ivChangeQuantity);
             ivVirtualStock = (ImageView) view.findViewById(R.id.ivVirtualStock);
             ivShowDialogUnidad = (ImageView) view.findViewById(R.id.ivShowDialogUnidad);
+
         }
 
         @Override
@@ -340,6 +346,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
 
         final Button btnAcceptDialog = (Button) dialog.findViewById(R.id.btnAccept);
         final Button btnCloseDialog = (Button) dialog.findViewById(R.id.btnClose);
+
         final TextView tvProductDes = (TextView) dialog.findViewById(R.id.tvProductDes);
         final EditText edtQuantity = (EditText) dialog.findViewById(R.id.edtQuantity);
         final TextView tvStock = (TextView) dialog.findViewById(R.id.tvStock);
@@ -348,6 +355,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
         final ImageView ivUpQuantity = (ImageView) dialog.findViewById(R.id.ivUpQuantity);
         final ImageView ivDownQuantity = (ImageView) dialog.findViewById(R.id.ivDownQuantity);
         final String stock = product.getNuevaCantidad();
+
 
         tvProductDes.setText(product.getNombre());
         tvProductCode.setText(product.getId());
@@ -396,6 +404,8 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
         });
 
+
+
         ivDownQuantity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -410,6 +420,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                 }
             }
         });
+
 
         btnAcceptDialog.setOnClickListener(new View.OnClickListener() {
 
@@ -438,7 +449,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
     private void checkQuantity(Context context, TextView tvCompareResult, Button btnAcceptDialog, String qInserted, String stock) {
         if (!qInserted.isEmpty()) {
             if (Integer.parseInt(qInserted) > 0) {
-                if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_boleta) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
                     if (Integer.parseInt(qInserted) <= Integer.parseInt(stock)) {
                         tvCompareResult.setText(context.getResources().getString(R.string.cantidad_solicitada_permitida));
                         tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
@@ -497,10 +508,10 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             tvPrecioLimiteInferior.setText(String.format(Constants.round_three_decimals, Double.parseDouble(priceMinLimit)));
             tvPrecioIngresado.setText(String.format(Constants.round_three_decimals, Double.parseDouble(product.getPrecioRecalculado())));
 
-            //el precio ingresado es... respecto al precio minimo
+                    //el precio ingresado es... respecto al precio minimo
             String priceInserted0 = product.getPrecioRecalculado();
             String resultComparePrices = Common.comparePrices(Double.valueOf(priceInserted0), Double.valueOf(priceMinLimit));
-            if (tipoDocumento.equals(Constants.tipoDoc_factura)) {
+            if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_boleta)) {
                 if (resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
                     tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
                     tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
@@ -560,7 +571,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
                     //el precio ingresado es... respecto al precio minimo
                     String resultComparePrices = Common.comparePrices(Double.valueOf(priceInserted), Double.valueOf(priceMinLimit));
 
-                    if (tipoDocumento.equals(Constants.tipoDoc_factura)) {
+                    if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_boleta)) {
                         if (resultComparePrices.equals(Constants.comparar_esMayor) || resultComparePrices.equals(Constants.comparar_esIgual)) {
                             tvCompareResult.setText(context.getResources().getString(R.string.precio_dentro_del_rango));
                             tvCompareResult.setTextColor(ContextCompat.getColor(context, R.color.verde));
@@ -876,6 +887,7 @@ public class QuotationAdapter extends RecyclerView.Adapter<QuotationAdapter.Quot
             }
         }
     }
+
 
     private void showVirtualStockDialog(final Context context, String idUsuario, String idRubro, String idArticulo) {
         final Dialog dialog = new Dialog(mContext);

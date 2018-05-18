@@ -1,5 +1,6 @@
 package com.corporacioncorrales.cotizacionesapp.activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,13 +19,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.corporacioncorrales.cotizacionesapp.R;
 import com.corporacioncorrales.cotizacionesapp.fragments.ClientsFragment;
 import com.corporacioncorrales.cotizacionesapp.fragments.HistorialDocsFragment;
 import com.corporacioncorrales.cotizacionesapp.fragments.ProductsFragment;
 import com.corporacioncorrales.cotizacionesapp.model.QuotationProductRequest;
+import com.corporacioncorrales.cotizacionesapp.utils.Common;
 import com.corporacioncorrales.cotizacionesapp.utils.Constants;
 import com.corporacioncorrales.cotizacionesapp.utils.Singleton;
 
@@ -32,6 +36,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class MainActivity extends AppCompatActivity
@@ -44,6 +49,15 @@ public class MainActivity extends AppCompatActivity
     Toolbar toolbar;
     String titleClientes = "Clientes";
     String titleHistorial = "Historial";
+
+
+    //@BindView(R.id.xxprecio)
+   // Button xxprecio;
+   // @OnClick(R.id.xxprecio)
+   // public void onClick(){
+     //   Common.showToastMessage(null,"Bienvenido!");
+    //}
+
 
     @BindView(R.id.progressBar) public ProgressBar mProgressBar;
     //public Dialog mOverlayDialog;
@@ -60,6 +74,9 @@ public class MainActivity extends AppCompatActivity
 
         mProgressBar.setScaleY(.2f);
         mProgressBar.setScaleX(.2f);
+
+
+
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -88,6 +105,10 @@ public class MainActivity extends AppCompatActivity
         setupDrawerContent(navigationView);
         selectDrawerItem(navigationView.getMenu().getItem(0));
     }
+
+
+
+
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(

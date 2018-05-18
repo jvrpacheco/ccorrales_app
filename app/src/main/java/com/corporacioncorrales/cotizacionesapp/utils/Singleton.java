@@ -22,10 +22,6 @@ public class Singleton {
     private ArrayList<PaymentsResponse> paymentTypes;
     private String idPaymentTypeSelected;
 
-
-    private Singleton() {
-    }
-
     public ArrayList<PaymentsResponse> getPaymentTypes() {
         return paymentTypes;
     }

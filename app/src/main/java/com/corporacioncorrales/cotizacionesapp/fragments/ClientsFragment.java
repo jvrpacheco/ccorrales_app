@@ -1,6 +1,7 @@
 package com.corporacioncorrales.cotizacionesapp.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -72,7 +73,8 @@ public class ClientsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ClientsFragment newInstance(String param1, String param2) {
+
+       public static ClientsFragment newInstance(String param1, String param2) {
         ClientsFragment fragment = new ClientsFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -86,7 +88,7 @@ public class ClientsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         //default spinner values
-        rubroSelected = Constants.rubro_vidrio;
+        rubroSelected = Constants.rubro_aluminio;
         ordenSelected = Constants.orden_nombre;
         Singleton.getInstance().setRubroSelected(rubroSelected);
 
@@ -158,7 +160,7 @@ public class ClientsFragment extends Fragment {
     private void initSpinnerRubro() {
         ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_rubros, R.layout.spinner_item_products);
         spRubro.setAdapter(adapterRubroType);
-        spRubro.setSelection(1, false); // seleccionamos por defecto el elemento en la posicion 1, en este caso "Vidrio"
+        spRubro.setSelection(0, false); // seleccionamos por defecto el elemento en la posicion 1, en este caso "Vidrio"
         spRubro.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

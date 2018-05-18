@@ -269,8 +269,8 @@ public class ProductsResponse {
     @Override
     public String toString()
     {
-        return "Producto: [Nombre = "+Nombre+", Id = "+Id+", Foto = "+Foto+" , Pre_inferior = "+Pre_inferior + ", Precio = "+PrecioProductResponse+ ", idUnidad = "
-                + idUnidad + ", presentacionUnidad = "+ presentacionUnidad + ", Cantidad = " + Cantidad + "]";
+        return "Producto: [Nombre = "+Nombre+", Id = "+Id+", Foto = "+Foto+" , Pre_inferior = "+Pre_inferior + ", Precio = "+PrecioProductResponse+
+               ", idUnidad = " + idUnidad + ", presentacionUnidad = "+ presentacionUnidad + ", Cantidad = " + Cantidad + "]";
     }
 
 }

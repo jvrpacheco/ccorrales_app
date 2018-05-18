@@ -36,10 +36,12 @@ import com.corporacioncorrales.cotizacionesapp.activities.MainActivity;
 import com.corporacioncorrales.cotizacionesapp.adapters.ProductsAdapter;
 import com.corporacioncorrales.cotizacionesapp.adapters.QuotationAdapter;
 import com.corporacioncorrales.cotizacionesapp.model.DocumentDetailResponse;
+import com.corporacioncorrales.cotizacionesapp.model.DocumentsTypeResponse;
 import com.corporacioncorrales.cotizacionesapp.model.PaymentsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.ProductsResponse;
 import com.corporacioncorrales.cotizacionesapp.model.QuotationProductRequest;
 import com.corporacioncorrales.cotizacionesapp.networking.DocumentsApi;
+import com.corporacioncorrales.cotizacionesapp.networking.DocumentsTypeApi;
 import com.corporacioncorrales.cotizacionesapp.networking.ProductsApi;
 import com.corporacioncorrales.cotizacionesapp.networking.QuotationApi;
 import com.corporacioncorrales.cotizacionesapp.utils.Common;
@@ -169,6 +171,8 @@ public class ProductsFragment extends Fragment {
             }
 
             Singleton.getInstance().setSaldoDisponibleCliente(cliente_saldoDisponible);
+
+            initSpinnerRubro("5");
         }
 
     }
@@ -179,7 +183,7 @@ public class ProductsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_products, container, false);
         ButterKnife.bind(this, view);
         Common.setActionBarTitle(getActivity(), "Productos");
-        setUI(rubroSeleccionado);
+        //setUI(rubroSeleccionado);
         return view;
     }
 
@@ -207,12 +211,13 @@ public class ProductsFragment extends Fragment {
             }
         }
 
-        if(!comeFromSpRubroSelection) {
+        /*if(!comeFromSpRubroSelection) {
             initSpinnerRubro(comeFromSpRubroSelection, rubro);
             comeFromSpRubroSelection = true;
-        }
+        }*/
 
         //initSpinnerRubro(false, rubro);
+
 
         if (!daysSelectedFromHistory.isEmpty()) {  //come from History
             btnSelectNumberOfDays.setText(daysSelectedFromHistory);
@@ -534,13 +539,14 @@ public class ProductsFragment extends Fragment {
                 labelTipoDocumento = Constants.tipoDoc_proforma_label;
             } else if (tipoDocumento.equals(Constants.tipoDoc_preventa)) {
                 labelTipoDocumento = Constants.tipoDoc_preventa_label;
+            } else if (tipoDocumento.equals(Constants.tipoDoc_boleta)) {
+                labelTipoDocumento = Constants.tipoDoc_boleta_label;
             }
 
             String idTipoPago = Singleton.getInstance().getIdPaymentTypeSelected();
             // si es Factura y es Efectivo o Deposito entonces no verifica si rebasa el Saldo Disponible
-            if (tipoDocumento.equals(Constants.tipoDoc_factura)
-                    && !idTipoPago.equals(Constants.idTipoDePagoEfectivo)
-                    && !idTipoPago.equals(Constants.idTipoDePagoDeposito)) {
+            if ((tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_boleta))
+                    && !idTipoPago.equals(Constants.idTipoDePagoEfectivo) && !idTipoPago.equals(Constants.idTipoDePagoDeposito)) {
                 if (rebasaSaldoDisponible) {
                     Common.showAlertDialogMessage(
                             labelTipoDocumento,
@@ -552,7 +558,7 @@ public class ProductsFragment extends Fragment {
 
             for (int i = 0; i < productsSelected.size(); i++) {
                 ProductsResponse productSelected = productsSelected.get(i);
-                if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
+                if (tipoDocumento.equals(Constants.tipoDoc_factura) || tipoDocumento.equals(Constants.tipoDoc_boleta) || tipoDocumento.equals(Constants.tipoDoc_proforma)) {
                     if (Integer.valueOf(productSelected.getNuevaCantidad()) > 0) {   //cantidad por unidad
                         if (Integer.valueOf(productSelected.getCantidadSolicitada()) > 0) {
                             if (Integer.valueOf(productSelected.getNuevaCantidad()) >= Integer.valueOf(productSelected.getCantidadSolicitada())) {
@@ -675,9 +681,7 @@ public class ProductsFragment extends Fragment {
                     if (rp != null) {
                         Log.d(Constants.log_arrow_response, rp);
                         Common.showToastMessage(getActivity(), rp);
-                        // go to Clients view
-                        getFragmentManager().popBackStackImmediate();
-                        Common.selectProductOnNavigationView2(1, nvMainActivity);
+                        goToClientsView();
                     } else {
                         Log.d(Constants.log_arrow_response, "body null:" + response.raw().message());
                         Common.showToastMessage(getActivity(), "Error en el servidor");
@@ -833,6 +837,31 @@ public class ProductsFragment extends Fragment {
         });
     }
 
+    public void initSpinnerRubro(String userId) {
+        mainProgressBar.setVisibility(View.VISIBLE);
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.url_server).addConverterFactory(GsonConverterFactory.create()).build();
+        DocumentsTypeApi request = retrofit.create(DocumentsTypeApi.class);
+        Call<ArrayList<DocumentsTypeResponse>> call = request.getDocumentTypes(userId);
+
+        call.enqueue(new Callback<ArrayList<DocumentsTypeResponse>>() {
+            @Override
+            public void onResponse(Call<ArrayList<DocumentsTypeResponse>> call, Response<ArrayList<DocumentsTypeResponse>> response) {
+                if(response!=null && response.body()!= null && response.body().size()>0) {
+                    setUI(rubroSeleccionado);
+                } else {
+                    goToClientsView();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<DocumentsTypeResponse>> call, Throwable t) {
+                mainProgressBar.setVisibility(View.GONE);
+                Common.logFailureServerCall(getActivity(), t.getMessage());
+            }
+        });
+    }
+
     private void initSpinnerDocType(String initialValue) {
         ArrayAdapter adapterRubroType = ArrayAdapter.createFromResource(getActivity(), R.array.array_tipos_doc, R.layout.spinner_item_products);
         spTipoDoc.setAdapter(adapterRubroType);
@@ -847,6 +876,8 @@ public class ProductsFragment extends Fragment {
                     spTipoDoc.setSelection(1);
                 } else if (initialValue.equals(Constants.tipoDoc_preventa)) {
                     spTipoDoc.setSelection(2);
+                } else if (initialValue.equals(Constants.tipoDoc_boleta)) {
+                    spTipoDoc.setSelection(3);
                 }
             }
         } else {
@@ -864,6 +895,8 @@ public class ProductsFragment extends Fragment {
                     Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_proforma);
                 } else if (item.equals(Constants.tipoDoc_preventa_label)) {
                     Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_preventa);
+                } else if (item.equals(Constants.tipoDoc_boleta_label)) {
+                    Singleton.getInstance().setTipoDocumento(Constants.tipoDoc_boleta);
                 }
 
                 //quotationAdapter is not null after load products
@@ -985,6 +1018,11 @@ public class ProductsFragment extends Fragment {
                 spRubro.setSelection(3, false);
                 break;
         }
+    }
+
+    private void goToClientsView() {
+        getFragmentManager().popBackStackImmediate();
+        Common.selectProductOnNavigationView2(1, nvMainActivity);
     }
 
     @Override

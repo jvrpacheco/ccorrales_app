@@ -32,6 +32,7 @@ public class Constants {
     public static final String url_get_new_price = "api/PrecioxUnidad/calculoprecio";
     public static final String url_get_payment_options = "api/formapago";
     public static final String url_get_warehouses_stock = "api/Almacen/veralmacen";
+    public static final String url_get_documents_types = "api/documentos/TipoDoc";
 
     public static final String rubro_aluminio_label = "Aluminio";
     public static final String rubro_aluminio = "00";
@@ -53,10 +54,12 @@ public class Constants {
 
     public static final String tipoDoc_factura_label = "FACTURA";
     public static final String tipoDoc_factura = "1";
+    public static final String tipoDoc_boleta_label = "BOLETA";
+    public static final String tipoDoc_boleta = "2";
     public static final String tipoDoc_proforma_label = "PROFORMA";
-    public static final String tipoDoc_proforma = "2";
+    public static final String tipoDoc_proforma = "3";
     public static final String tipoDoc_preventa_label = "PREVENTA";
-    public static final String tipoDoc_preventa = "3";
+    public static final String tipoDoc_preventa = "4";
 
     public static final String estadoDoc_todos_label = "Todos";
     public static final String estadoDoc_todos = "0";
@@ -121,6 +124,7 @@ public class Constants {
 
     public static final String stockAlmacenIdArticulo = "articulo";
     public static final String stockAlmacenUnidad = "unidad";
+    public static final String tipoDocumentoUserId = "idUsuario";
 
     // en cuanto incrementara o disminuira el precio en el dialogo de cambio de precios
     public static final Double baseDouble = 0.001;

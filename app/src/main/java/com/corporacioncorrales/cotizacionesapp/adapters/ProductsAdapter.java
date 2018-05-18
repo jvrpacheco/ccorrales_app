@@ -31,6 +31,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,6 +58,16 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         productsSelectedList = new ArrayList<>();
     }
 
+
+
+
+
+
+
+
+
+
+
     @Override
     public ProductsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_card_row_item, parent, false);
@@ -70,6 +81,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         final ProductsResponse product = productsList.get(position);
 
         holder.tvId.setText(product.getId());
+
         //holder.tvCantidad.setText("Stock: " + product.getCantidad());
 
         //*************************
